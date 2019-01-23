@@ -31,7 +31,7 @@ import java.util.UUID;
 @JsonSerialize(as = ImmutableRemoveUserOperation.class)
 @JsonDeserialize(as = ImmutableRemoveUserOperation.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-interface RemoveUserOperation extends Operation {
+public interface RemoveUserOperation extends Operation {
 
     List<UUID> users();
 

@@ -33,7 +33,7 @@ import java.util.UUID;
 @JsonSerialize(as = ImmutableAddUserOperation.class)
 @JsonDeserialize(as = ImmutableAddUserOperation.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-interface AddUserOperation extends Operation {
+public interface AddUserOperation extends Operation {
 
     UUID user();
 
