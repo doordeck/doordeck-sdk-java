@@ -19,7 +19,6 @@ package com.doordeck.sdk.core.jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
 public class Jackson {
 
@@ -28,8 +27,7 @@ public class Jackson {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new OptionalUpdateModule())
             .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule())
-            .registerModule(new AfterburnerModule().setUseValueClassLoader(false));
+            .registerModule(new JavaTimeModule());
 
     public static ObjectMapper sharedObjectMapper() {
         return OBJECT_MAPPER;
