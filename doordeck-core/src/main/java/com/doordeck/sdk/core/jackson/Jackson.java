@@ -21,22 +21,18 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 
-public enum Jackson {
+public class Jackson {
 
-    INSTANCE;
+    private Jackson() { /* static class */ }
 
-    private final ObjectMapper objectMapper;
-
-    Jackson() {
-        this.objectMapper = new ObjectMapper()
-                .registerModule(new OptionalUpdateModule())
-                .registerModule(new Jdk8Module())
-                .registerModule(new JavaTimeModule())
-                .registerModule(new AfterburnerModule().setUseValueClassLoader(false));
-    }
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .registerModule(new OptionalUpdateModule())
+            .registerModule(new Jdk8Module())
+            .registerModule(new JavaTimeModule())
+            .registerModule(new AfterburnerModule().setUseValueClassLoader(false));
 
     public static ObjectMapper sharedObjectMapper() {
-        return INSTANCE.objectMapper;
+        return OBJECT_MAPPER;
     }
 
 }

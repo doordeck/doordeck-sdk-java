@@ -17,7 +17,6 @@
 package com.doordeck.sdk.signer;
 
 import com.doordeck.sdk.signer.util.CertUtils;
-import com.google.common.collect.ImmutableSet;
 import com.google.crypto.tink.KeysetHandle;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jose.JWSAlgorithm;
@@ -30,6 +29,7 @@ import com.nimbusds.jose.util.Base64URL;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,7 +47,7 @@ public class JsonWebKeyGenerator {
         return new OctetKeyPair.Builder(Curve.Ed25519, Base64URL.encode(privateKey))
                 .d(Base64URL.encode(publicKey))
                 .keyUse(KeyUse.SIGNATURE)
-                .keyOperations(ImmutableSet.of(KeyOperation.SIGN))
+                .keyOperations(Collections.singleton(KeyOperation.SIGN))
                 .algorithm(JWSAlgorithm.EdDSA)
                 .x509CertChain(CertUtils.asBase64(certificateChain))
                 .build();

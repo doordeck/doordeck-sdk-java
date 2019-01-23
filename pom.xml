@@ -33,6 +33,7 @@
 
         <module>doordeck-core</module>
         <module>doordeck-signer</module>
+        <module>doordeck-android</module>
     </modules>
 
     <scm>
