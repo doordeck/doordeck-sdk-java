@@ -9,9 +9,9 @@ import org.immutables.value.Value;
 @JsonSerialize(as = ImmutableOperationWrapper.class)
 @JsonDeserialize(as = ImmutableOperationWrapper.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface OperationWrapper {
+public abstract class OperationWrapper {
 
-    Operation operation();
+    public abstract Operation operation();
 
     static OperationWrapper of(Operation operation) {
         return ImmutableOperationWrapper.builder().operation(operation).build();

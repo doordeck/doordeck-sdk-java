@@ -23,6 +23,11 @@
             <artifactId>tink</artifactId>
             <version>${tink.version}</version>
         </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.doordeck.sdk</groupId>

@@ -16,9 +16,14 @@
 
 package com.doordeck.sdk.core.jackson;
 
+import com.doordeck.sdk.core.jackson.deserializer.DurationDeserializer;
+import com.doordeck.sdk.core.jackson.serializer.DurationSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
+import com.fasterxml.jackson.datatype.joda.JodaModule;
+import org.joda.time.Duration;
 
 public class Jackson {
 
@@ -26,8 +31,13 @@ public class Jackson {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new OptionalUpdateModule())
-            .registerModule(new Jdk8Module())
-            .registerModule(new JavaTimeModule());
+            .registerModule(new GuavaModule())
+            .registerModule(new JodaModule())
+            .registerModule(new SimpleModule()
+                    .addSerializer(new DurationSerializer())
+                    .addDeserializer(Duration.class, new DurationDeserializer())
+            )
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     public static ObjectMapper sharedObjectMapper() {
         return OBJECT_MAPPER;

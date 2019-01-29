@@ -5,36 +5,37 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Optional;
 import org.immutables.value.Value;
+import org.joda.time.Duration;
 
-import java.time.Duration;
-import java.util.Optional;
-
-import static com.doordeck.sdk.core.util.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableMutateSetting.class)
 @JsonDeserialize(as = ImmutableMutateSetting.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface MutateSetting extends Operation {
+public abstract class MutateSetting implements Operation {
 
-    Duration MAX_UNLOCK_DURATION = Duration.ofSeconds(60);
+    private static final Duration MAX_UNLOCK_DURATION = Duration.standardSeconds(60);
 
-    Optional<Duration> unlockDuration();
+    public abstract Optional<Duration> unlockDuration();
 
     @Value.Default
     @JsonInclude(JsonInclude.Include.NON_DEFAULT)
-    default OptionalUpdate<UnlockBetweenWindow> unlockBetween() {
+    public OptionalUpdate<UnlockBetweenWindow> unlockBetween() {
         return OptionalUpdate.preserve();
     }
 
     @Value.Check
-    default void validate() {
-        unlockDuration().ifPresent(unlockDuration -> checkArgument(!unlockDuration.isNegative() && !unlockDuration.isZero(),
-                "Min unlock duration must be greater than zero"));
-
-        unlockDuration().ifPresent(unlockDuration -> checkArgument(unlockDuration.compareTo(MAX_UNLOCK_DURATION) <= 0,
-                "Unlock duration must be less than 60 seconds"));
+    protected void validate() {
+        if (unlockDuration().isPresent()) {
+            Duration unlockDuration = unlockDuration().get();
+            checkArgument(unlockDuration.getMillis() >= 0,
+                    "Min unlock duration must be greater than zero");
+            checkArgument(unlockDuration.compareTo(MAX_UNLOCK_DURATION) <= 0,
+                    "Unlock duration must be less than 60 seconds");
+        }
     }
 
 }

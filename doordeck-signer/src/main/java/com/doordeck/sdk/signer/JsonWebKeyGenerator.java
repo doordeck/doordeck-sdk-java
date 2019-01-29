@@ -39,6 +39,7 @@ public class JsonWebKeyGenerator {
     public OctetKeyPair generateKeyPair(KeysetHandle keysetHandle) throws JOSEException {
         return new OctetKeyPairGenerator(Curve.Ed25519)
                 .keyUse(KeyUse.SIGNATURE) // indicate the intended use of the key
+                .keyOperations(Collections.singleton(KeyOperation.SIGN))
                 .keyID(UUID.randomUUID().toString()) // give the key a unique ID
                 .generate();
     }

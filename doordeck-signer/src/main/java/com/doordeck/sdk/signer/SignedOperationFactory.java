@@ -27,61 +27,61 @@ import com.nimbusds.jose.jwk.OctetKeyPair;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.immutables.value.Value;
+import org.joda.time.Duration;
+import org.joda.time.Instant;
 
 import java.io.IOException;
 import java.security.PrivateKey;
-import java.sql.Date;
-import java.time.Duration;
-import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.doordeck.sdk.core.util.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkArgument;
 
 @Value.Immutable
-public interface SignedOperationFactory {
+public abstract class SignedOperationFactory {
 
-    Duration DEFAULT_TIMEOUT = Duration.ofSeconds(60);
-    Duration MAX_EXPIRY = Duration.ofDays(14);
+    private static final Duration DEFAULT_TIMEOUT = Duration.standardSeconds(60);
+    private static final Duration MAX_EXPIRY = Duration.standardDays(14);
 
-    UUID userId();
-    UUID deviceId();
-    Operation operation();
+    public abstract UUID userId();
+    public abstract UUID deviceId();
+    public abstract Operation operation();
 
     @Value.Default
-    default Instant notBefore() {
+    public Instant notBefore() {
         return Instant.now();
     }
 
     @Value.Default
-    default Instant expiresAt() {
+    public Instant expiresAt() {
         return Instant.now().plus(DEFAULT_TIMEOUT);
     }
 
     @Value.Check
-    default void validate() {
+    protected void validate() {
         checkArgument(Instant.now().plus(MAX_EXPIRY).compareTo(expiresAt()) >= 0, "Expiry must be in less than 14 days time");
     }
 
     @Value.Derived
-    default String uniqueIdentifier() {
+    public String uniqueIdentifier() {
         return UUID.randomUUID().toString();
     }
 
     @Value.Derived
-    default JWTClaimsSet asClaimSet() {
+    JWTClaimsSet asClaimSet() {
         try {
+            // FIXME this is a horrible hack to go between JSON libraries, it probably won't work consistently
             byte[] operationJson = Jackson.sharedObjectMapper().writeValueAsBytes(operation());
-            Map<String, Object> operationMap = Jackson.sharedObjectMapper().readValue(operationJson, new TypeReference<Map<String, Object>>() {
-            });
+            Map<String, Object> operationMap = Jackson.sharedObjectMapper().readValue(operationJson, new TypeReference<Map<String, Object>>() { });
 
             return new JWTClaimsSet.Builder()
                     .subject(deviceId().toString())
                     .issuer(userId().toString())
-                    .expirationTime(Date.from(expiresAt()))
-                    .notBeforeTime(Date.from(notBefore()))
+                    .expirationTime(expiresAt().toDate())
+                    .notBeforeTime(notBefore().toDate())
                     .jwtID(uniqueIdentifier())
-                    .issueTime(Date.from(Instant.now()))
+                    .issueTime(new Date())
                     .claim("operation", operationMap)
                     .build();
         } catch (IOException e) {
@@ -89,7 +89,7 @@ public interface SignedOperationFactory {
         }
     }
 
-    default String sign(OctetKeyPair signingKey) throws JOSEException {
+    public String sign(OctetKeyPair signingKey) throws JOSEException {
         checkArgument(signingKey.getX509CertChain().size() == 4, "Missing required number of certificates");
         checkArgument(Curve.Ed25519.equals(signingKey.getCurve()), "Only Ed25519 curve supported");
 
@@ -110,7 +110,7 @@ public interface SignedOperationFactory {
     }
 
     @Deprecated // Use Ed25519 signer instead
-    default String sign(PrivateKey signingKey) throws JOSEException {
+    public String sign(PrivateKey signingKey) throws JOSEException {
         JWTClaimsSet claimsSet = asClaimSet();
 
         JWSHeader jwsHeader = new JWSHeader.Builder(JWSAlgorithm.RS256)

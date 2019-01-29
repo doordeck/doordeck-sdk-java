@@ -22,34 +22,34 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.base.Optional;
 import org.immutables.value.Value;
+import org.joda.time.Instant;
 
 import java.security.PublicKey;
-import java.time.Instant;
-import java.util.Optional;
 import java.util.UUID;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableAddUserOperation.class)
 @JsonDeserialize(as = ImmutableAddUserOperation.class)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public interface AddUserOperation extends Operation {
+public abstract class AddUserOperation implements Operation {
 
-    UUID user();
+    public abstract UUID user();
 
     @JsonSerialize(using = PublicKeySerializer.class)
     @JsonDeserialize(using = PublicKeyDeserializer.class)
-    PublicKey publicKey();
+    public abstract PublicKey publicKey();
 
     @Value.Default
-    default Role role() {
+    public Role role() {
         return Role.USER;
     }
 
     @JsonInclude(JsonInclude.Include.NON_ABSENT)
-    Optional<Instant> start();
+    public abstract Optional<Instant> start();
 
     @JsonInclude(JsonInclude.Include.NON_ABSENT)
-    Optional<Instant> end();
+    public abstract Optional<Instant> end();
 
 }

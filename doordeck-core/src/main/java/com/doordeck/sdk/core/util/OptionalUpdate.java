@@ -1,7 +1,8 @@
 package com.doordeck.sdk.core.util;
 
+import com.google.common.base.Optional;
+
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Used with @Value.Immutable to specify if field was set to null, unspecified or set to a value
@@ -40,7 +41,7 @@ public class OptionalUpdate<T> {
     }
 
     public static <T> OptionalUpdate<T> preserve() {
-        return new OptionalUpdate<>(Optional.empty());
+        return new OptionalUpdate<>(Optional.<T>absent());
     }
 
     public static <T> OptionalUpdate<T> update(T value) {
