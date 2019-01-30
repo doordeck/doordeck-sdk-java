@@ -48,7 +48,7 @@
         
         <jackson.version>2.9.8</jackson.version>
         <tink.version>1.2.1</tink.version>
-        <junit.version>5.4.0-M1</junit.version>
+        <junit.version>4.12</junit.version>
         <joda.version>2.10.1</joda.version>
         <guava.version>27.0.1</guava.version>
     </properties>
@@ -75,21 +75,9 @@
 
         <!-- Test dependencies, common to all modules -->
         <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${junit.version}</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

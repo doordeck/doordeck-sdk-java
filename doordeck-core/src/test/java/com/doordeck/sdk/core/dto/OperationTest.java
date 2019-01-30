@@ -3,22 +3,23 @@ package com.doordeck.sdk.core.dto;
 import com.doordeck.sdk.core.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.UUID;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import static com.doordeck.sdk.core.util.FixtureHelpers.fixture;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class OperationTest {
 
     private static final ObjectMapper MAPPER = Jackson.sharedObjectMapper();
 
-    @BeforeEach
+    @Before
     public void before() throws Exception {
         byte[] decodedKey = BaseEncoding.base64().decode(PUBLIC_KEY);
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedKey);

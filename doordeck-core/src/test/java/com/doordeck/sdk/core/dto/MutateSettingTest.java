@@ -9,10 +9,10 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import static com.doordeck.sdk.core.util.FixtureHelpers.fixture;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 public class MutateSettingTest {
 

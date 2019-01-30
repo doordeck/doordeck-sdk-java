@@ -4,7 +4,7 @@ import com.doordeck.sdk.core.dto.ImmutableMutateDoorState;
 import com.doordeck.sdk.jwt.*;
 import com.doordeck.sdk.jwt.signer.RSASigner;
 import com.google.common.io.BaseEncoding;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
