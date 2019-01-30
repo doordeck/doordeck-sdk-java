@@ -22,10 +22,6 @@
                     <groupId>com.google.crypto.tink</groupId>
                     <artifactId>tink</artifactId>
                 </exclusion>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
             </exclusions>
         </dependency>
 
@@ -33,11 +29,6 @@
             <groupId>com.google.crypto.tink</groupId>
             <artifactId>tink-android</artifactId>
             <version>${tink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}-android</version>
         </dependency>
     </dependencies>
 
