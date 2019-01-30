@@ -19,22 +19,21 @@ package com.doordeck.sdk.core.jackson.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.joda.time.Duration;
+import org.joda.time.Instant;
 
 import java.io.IOException;
 
-public class DurationSerializer extends StdSerializer<Duration> {
+public class InstantSecondSerializer extends StdSerializer<Instant> {
 
-    private static final long serialVersionUID = 7728248063929127612L;
+    private static final long serialVersionUID = -3698042767470249087L;
 
-    public DurationSerializer() {
-        super(Duration.class);
+    protected InstantSecondSerializer() {
+        super(Instant.class);
     }
 
     @Override
-    public void serialize(Duration duration, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        // We prefer seconds
-        jsonGenerator.writeNumber(duration.getMillis() / 1000f);
+    public void serialize(Instant value, JsonGenerator gen, SerializerProvider provider) throws IOException {
+        // We need epoch seconds
+        gen.writeNumber(value.getMillis() / 1000);
     }
-
 }

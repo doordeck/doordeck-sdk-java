@@ -13,7 +13,7 @@
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
-            <url>https://aws.amazon.com/apache2.0</url>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -47,7 +47,6 @@
         <jre.version>1.7</jre.version>
         
         <jackson.version>2.9.8</jackson.version>
-        <nimbus.version>6.7</nimbus.version>
         <tink.version>1.2.1</tink.version>
         <junit.version>5.4.0-M1</junit.version>
         <joda.version>2.10.1</joda.version>

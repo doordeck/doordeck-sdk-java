@@ -19,21 +19,21 @@ package com.doordeck.sdk.core.jackson.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.joda.time.Duration;
+import org.joda.time.Instant;
 
 import java.io.IOException;
 
-public class DurationDeserializer extends StdDeserializer<Duration> {
+public class InstantSecondDeserializer extends StdDeserializer<Instant> {
 
-    private static final long serialVersionUID = -3698043767470249087L;
+    private static final long serialVersionUID = -3698043767470349087L;
 
-    public DurationDeserializer() {
-        super(Duration.class);
+    public InstantSecondDeserializer() {
+        super(Instant.class);
     }
 
     @Override
-    public Duration deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        // We expect seconds
-        return Duration.millis((long)(jsonParser.getFloatValue() * 1000));
+    public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
+        return new Instant(p.getLongValue() * 1000);
     }
+
 }

@@ -14,20 +14,11 @@
  * limitations under the License.
  */
 
-package com.doordeck.sdk.signer;
+package com.doordeck.sdk.jwt;
 
-import com.doordeck.sdk.signer.util.CertUtils;
-import com.google.crypto.tink.KeysetHandle;
+public enum SupportedAlgorithm {
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
-// FIXME this needs rebuilding to avoid using nimbus
-public class JsonWebKeyGenerator {
-
-
+    RS256,
+    EdDSA;
 
 }

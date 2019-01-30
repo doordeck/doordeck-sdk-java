@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package com.doordeck.sdk.signer;
+package com.doordeck.sdk.jwt;
 
-import com.doordeck.sdk.signer.util.CertUtils;
-import com.google.crypto.tink.KeysetHandle;
+public class JOSEException extends RuntimeException {
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+    private static final long serialVersionUID = -6044540932340391290L;
 
-// FIXME this needs rebuilding to avoid using nimbus
-public class JsonWebKeyGenerator {
-
-
+    public JOSEException(Exception cause) {
+        super(cause);
+    }
 
 }

@@ -16,23 +16,23 @@
 
 package com.doordeck.sdk.signer.util;
 
-import com.nimbusds.jose.util.Base64;
+import com.google.common.io.BaseEncoding;
 
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nimbusds.jose.util.Base64.encode;
-
 public class CertUtils {
 
     private CertUtils() { /* Static class */ }
 
-    public static List<Base64> asBase64(List<X509Certificate> certificates) throws CertificateEncodingException {
-        List<Base64> b64EncodedCertificates = new ArrayList<>(certificates.size());
+    public static List<String> asBase64(List<X509Certificate> certificates) throws CertificateEncodingException {
+        BaseEncoding encoder = BaseEncoding.base64Url().omitPadding();
+
+        List<String> b64EncodedCertificates = new ArrayList<>(certificates.size());
         for (X509Certificate certificate : certificates) {
-            b64EncodedCertificates.add(encode(certificate.getEncoded()));
+            b64EncodedCertificates.add(encoder.encode(certificate.getEncoded()));
         }
         return b64EncodedCertificates;
     }
