@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.immutables.value.Value;
+import org.joda.time.DateTimeUtils;
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -49,7 +50,8 @@ public abstract class Claims {
     @JsonSerialize(using = InstantSecondSerializer.class)
     @JsonDeserialize(using = InstantSecondDeserializer.class)
     public Instant issuedAt() {
-        return Instant.now();
+        // Truncate to seconds
+        return Instant.now().toDateTime().withMillisOfSecond(0).toInstant();
     }
 
     @Value.Default
@@ -78,8 +80,19 @@ public abstract class Claims {
     public abstract Operation operation();
 
     @Value.Check
-    protected void validate() {
+    protected Claims normalize() {
         checkArgument(Instant.now().plus(MAX_EXPIRY).compareTo(expiresAt()) >= 0, "Expiry must be in less than 14 days time");
+
+        Instant truncatedExpiresAt = expiresAt().toDateTime().withMillisOfSecond(0).toInstant();
+
+        if (!truncatedExpiresAt.equals(expiresAt())) {
+            return ImmutableClaims.builder()
+                    .from(this)
+                    .expiresAt(truncatedExpiresAt)
+                    .build();
+        }
+
+        return this;
     }
 
 }
