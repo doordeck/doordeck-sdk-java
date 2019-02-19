@@ -34,6 +34,8 @@
         <module>doordeck-core</module>
         <module>doordeck-signer</module>
         <module>doordeck-android</module>
+        <module>doordeck-http-jersey</module>
+        <module>doordeck-http-okhttp</module>
     </modules>
 
     <scm>
