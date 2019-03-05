@@ -16,18 +16,16 @@
 
 package com.doordeck.sdk.signer;
 
-import com.doordeck.sdk.signer.util.CertUtils;
-import com.google.crypto.tink.KeysetHandle;
+import com.google.crypto.tink.subtle.Ed25519Sign;
 
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.X509Certificate;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
+import java.security.GeneralSecurityException;
 
-// FIXME this needs rebuilding to avoid using nimbus
-public class JsonWebKeyGenerator {
+public class Ed25519KeyGenerator {
 
+    private Ed25519KeyGenerator() { /* static class */ }
 
+    public static Ed25519Sign.KeyPair generate() throws GeneralSecurityException  {
+        return Ed25519Sign.KeyPair.newKeyPair();
+    }
 
 }
