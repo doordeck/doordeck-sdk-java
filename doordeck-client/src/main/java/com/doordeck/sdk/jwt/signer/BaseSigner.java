@@ -25,11 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.io.BaseEncoding;
 
-import java.nio.charset.StandardCharsets;
-import java.security.GeneralSecurityException;
-import java.security.PrivateKey;
-import java.security.Signature;
-
 public abstract class BaseSigner {
 
     private final ObjectWriter payloadWriter;
