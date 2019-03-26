@@ -1,0 +1,18 @@
+<resources>
+
+    <color name="ddColorAccentLight">#45BDD1</color>
+    <color name="ddColorAccentDark">#45BDD1</color>
+    <color name="ddColorPrimaryLight">#FFFFFF</color>
+    <color name="ddColorPrimaryDark">#041C2A</color>
+    <color name="ddColorSecondaryLight">#FAFAFA</color>
+    <color name="ddColorSecondaryDark">#00283D</color>
+
+    <color name="ddColorTextLight">#ffffff</color>
+
+    <color name="statusColor">#00ffffff</color>
+
+    <color name="success">#4AC65C</color>
+    <color name="alert">#FF9442</color>
+    <color name="error">#F93251</color>
+
+</resources>

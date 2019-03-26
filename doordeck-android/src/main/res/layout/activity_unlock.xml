@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="?attr/ddColorPrimary"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:layout_weight="1"
+            android:layout_marginTop="70dp">
+
+            <ImageView
+                android:id="@+id/lock_bkg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="0dp"
+                app:srcCompat="?attr/ic_unlock_circle"
+                android:fitsSystemWindows="true"
+                />
+
+            <ProgressBar
+                android:id="@+id/logo_spinner"
+                android:layout_width="@dimen/loading_spinner"
+                android:layout_height="@dimen/loading_spinner"
+                android:indeterminateTintMode="src_atop"
+                android:indeterminateTint="@android:color/white"
+                android:layout_centerInParent="true"
+                android:indeterminateDuration="1200" />
+
+            <ImageView
+                android:id="@+id/arrow_image"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:layout_height="300dp"
+                android:paddingBottom="72dp"
+                app:srcCompat="@drawable/ic_arrow_up"
+                android:alpha="0"/>
+
+            <TextView
+                android:id="@+id/key_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/logo_spinner"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="64dp"
+                android:text="@string/RETRIEVING_KEY"
+                android:textAlignment="center"
+                android:textColor="?attr/ddTextColorPrimary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+            <TextView
+                android:id="@+id/unlock_status"
+                android:layout_width="wrap_content"
+                android:layout_height="26dp"
+                android:layout_below="@+id/key_title"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:textAlignment="center"
+                android:textColor="?attr/ddTextColorPrimary"
+                android:textSize="18sp"
+                android:text="@string/UNLOCKING"
+                android:layout_marginBottom="@dimen/sideMargin"
+                android:alpha="0.5"
+                />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fav_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/unlock_status"
+                android:layout_centerHorizontal="true"
+                app:srcCompat="@drawable/ic_heart"
+                android:visibility="gone"
+                app:backgroundTint="@color/statusColor"
+                app:elevation="0dp"
+                app:fabSize="normal"
+                />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="32dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:fitsSystemWindows="true">
+            <Button
+                android:id="@+id/dismissBtn"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/buttonHeight"
+                android:background="?attr/ic_button"
+                android:textColor="?attr/ddTextColorPrimary"
+                android:stateListAnimator="@drawable/ic_button_animation"
+                android:text="@string/DISMISS"
+                android:alpha="0.5"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

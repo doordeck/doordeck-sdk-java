@@ -26,6 +26,12 @@
             <version>4.1.1.4</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>com.jakewharton</groupId>
+            <artifactId>butterknife</artifactId>
+            <version>10.1.0</version>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,0 +1,24 @@
+<resources>
+
+
+    <!--buttons-->
+    <string name="DISMISS">Dismiss</string>
+    <string name="OK">OK</string>
+
+    <!--errors-->
+    <string name="ACCESS_DENIED">Access Denied</string>
+
+    <!--actions-->
+    <string name="RETRIEVING_KEY">Retrieving key</string>
+    <string name="UNLOCKING">Unlocking</string>
+
+    <!--permissions-->
+    <string name="GEOFENCE_PERMISSION">Geofencing is enabled for this lock. To unlock this door we need to have location permissions.</string>
+    <string name="LOCATION_PERMISSION_TITLE">Location permission needed</string>
+    <string name="LOCATION_PERMISSION_TEXT">For extra security, your building manager has requested for location services to be enabled on your device. Don’t worry - your data will never be stored or sent to us, and we only use your location briefly when the app is open.</string>
+    <string name="UNLOCKED">Unlocked</string>
+    <string name="CHECKING_GEOFENCE">Checking geofence</string>
+    <string name="ACCESS_DENIED_GEOFENCE">You are not close enough to the door to unlock it.</string>
+    <string name="NO_TOKEN">No token found. User is not logged in.</string>
+    <string name="EXPIRED_TOKEN">Your Auth Token has expired. Please contact the developers of this App.</string>
+</resources>
