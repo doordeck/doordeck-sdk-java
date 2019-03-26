@@ -33,6 +33,11 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}-android</version>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>${okhttp.version}</version>
+        </dependency>
 
         <!-- Crypto -->
         <dependency>
