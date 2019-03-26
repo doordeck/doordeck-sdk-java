@@ -19,6 +19,7 @@ package com.doordeck.sdk.jwt.signer;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;
+import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
 
@@ -36,6 +37,10 @@ public class RSASigner extends BaseSigner {
     }
 
     public String sign(Header header, Claims payload, PrivateKey privateKey) {
+        if (!header.algorithm().equals(SupportedAlgorithm.RS256)) {
+            throw new IllegalArgumentException("Header must specified algorithm as RS256");
+        }
+
         try {
             String serializedToken = serialize(header, payload);
             Signature signer = Signature.getInstance("SHA256withRSA");

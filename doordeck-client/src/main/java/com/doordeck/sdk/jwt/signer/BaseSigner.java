@@ -20,11 +20,15 @@ import com.doordeck.sdk.core.jackson.Jackson;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;
-import com.doordeck.sdk.jwt.Claims;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.google.common.io.BaseEncoding;
+
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Signature;
 
 public abstract class BaseSigner {
 

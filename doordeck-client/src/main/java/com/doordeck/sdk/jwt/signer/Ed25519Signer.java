@@ -19,14 +19,22 @@ package com.doordeck.sdk.jwt.signer;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;
+import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
-import com.google.crypto.tink.subtle.Ed25519Sign;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Security;
+import java.security.Signature;
 
 public class Ed25519Signer extends BaseSigner {
+
+    static {
+        Security.addProvider(new BouncyCastleProvider());
+    }
 
     public Ed25519Signer() {
         this(null);
@@ -36,12 +44,20 @@ public class Ed25519Signer extends BaseSigner {
         super(objectMapper);
     }
 
-    public String sign(Header header, Claims payload, byte[] privateKey) {
+    public String sign(Header header, Claims payload, PrivateKey privateKey) {
+        if (!header.algorithm().equals(SupportedAlgorithm.EdDSA)) {
+            throw new IllegalArgumentException("Header must specified algorithm as EdDSA");
+        }
+
         try {
-            Ed25519Sign tinkSigner = new Ed25519Sign(privateKey);
             String serialized = serialize(header, payload);
-            byte[] jwsSignature = tinkSigner.sign(serialized.getBytes(StandardCharsets.UTF_8));
+            Signature signer = Signature.getInstance("EdDSA", BouncyCastleProvider.PROVIDER_NAME);
+            signer.initSign(privateKey);
+            signer.update(serialized.getBytes(StandardCharsets.UTF_8));
+
+            byte[] jwsSignature = signer.sign();
             String signature = BaseEncoding.base64Url().omitPadding().encode(jwsSignature);
+
             return serialized + "." + signature;
         } catch (GeneralSecurityException e) {
             throw new JOSEException(e);
