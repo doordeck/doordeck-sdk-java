@@ -15,20 +15,8 @@
     <dependencies>
         <dependency>
             <groupId>com.doordeck.sdk</groupId>
-            <artifactId>doordeck-signer</artifactId>
+            <artifactId>doordeck-client</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.crypto.tink</groupId>
-                    <artifactId>tink</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.crypto.tink</groupId>
-            <artifactId>tink-android</artifactId>
-            <version>${tink.version}</version>
         </dependency>
     </dependencies>
 
