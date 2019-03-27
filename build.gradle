@@ -1,0 +1,40 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:3.3.2'
+//
+//        // NOTE: Do not place your application dependencies here; they belong
+//        // in the individual module build.gradle files
+//    }
+
+    ext.versions = [
+            'okhttp': '3.14.0',
+            'bouncycastle': '1.61',
+            'guava': '27.0.1-jre',
+            'findbugs': '3.0.2',
+    ]
+
+    ext.deps = [
+            'bouncycastle': "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}",
+            'guava': "com.google.guava:guava:${versions.guava}",
+            'jsr305': "com.google.code.findbugs:jsr305:${versions.findbugs}",
+            'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}"
+    ]
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

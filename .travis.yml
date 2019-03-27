@@ -1,8 +1,14 @@
-language: java
+language: android
 jdk:
-  - openjdk7
   - openjdk8
-  - openjdk11
+sudo: false
+
 cache:
   directories:
-    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
+android:
+  components:
+    - build-tools-28.0.3
+    - android-28
