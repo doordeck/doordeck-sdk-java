@@ -54,7 +54,7 @@ public class GetKeyIdFromTileService implements ThreadedService {
 
         //Instantiate params
 
-        String URL = BuildConfig.BASE_URL_API + "/tile/" + this.tileID;
+        String URL = BuildConfig.BASE_URL_API + "/device/" + this.tileID;
         JSONObject emptyParam = new JSONObject();
         //data-binary
 

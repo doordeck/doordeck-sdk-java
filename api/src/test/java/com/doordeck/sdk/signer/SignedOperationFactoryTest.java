@@ -1,11 +1,14 @@
 package com.doordeck.sdk.signer;
 
-import com.doordeck.sdk.core.dto.ImmutableMutateDoorState;
-import com.doordeck.sdk.jwt.*;
+import com.doordeck.sdk.dto.ImmutableMutateDoorState;
+import com.doordeck.sdk.jwt.Claims;
+import com.doordeck.sdk.jwt.ImmutableClaims;
+import com.doordeck.sdk.jwt.Header;
+import com.doordeck.sdk.jwt.ImmutableHeader;
+import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.doordeck.sdk.jwt.signer.Ed25519Signer;
 import com.doordeck.sdk.jwt.signer.RSASigner;
 import com.google.common.io.BaseEncoding;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Test;
 
 import java.security.*;

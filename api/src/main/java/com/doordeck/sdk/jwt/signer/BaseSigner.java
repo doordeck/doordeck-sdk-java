@@ -16,7 +16,7 @@
 
 package com.doordeck.sdk.jwt.signer;
 
-import com.doordeck.sdk.core.jackson.Jackson;
+import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;

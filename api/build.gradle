@@ -24,6 +24,8 @@ dependencies {
     api 'joda-time:joda-time:2.10.1'
     implementation 'com.google.guava:guava:23.5-jre'
 
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.0'
 
     compileOnly deps.jsr305

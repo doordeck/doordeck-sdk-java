@@ -1,14 +1,24 @@
 package com.doordeck.sdk.http;
 
+import com.doordeck.sdk.http.interceptor.AuthenticationInterceptor;
+import com.doordeck.sdk.http.service.DeviceService;
+import com.doordeck.sdk.jackson.Jackson;
+import com.doordeck.sdk.http.interceptor.OriginInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Optional;
 import okhttp3.*;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 
 public class DoordeckClient {
+
+    private static final URI DEFAULT_BASE_URL = URI.create("https://api.doordeck.com");
 
     private static final String[] TRUSTED_CERTIFICATES = {
             "sha256/++MBgDH5WGvL9Bcn5Be30cRcL0f5O+NyoXuWtQdX1aI=",
@@ -24,8 +34,11 @@ public class DoordeckClient {
     };
 
     private final OkHttpClient okHttp;
+    private final Retrofit retrofit;
 
-    private DoordeckClient() {
+    private final DeviceService tileService;
+
+    private DoordeckClient(Builder config) {
         this.okHttp = new OkHttpClient.Builder()
                 .connectionSpecs(Collections.singletonList(ConnectionSpec.RESTRICTED_TLS))
                 .protocols(Arrays.asList(Protocol.HTTP_2, Protocol.HTTP_1_1))
@@ -34,10 +47,49 @@ public class DoordeckClient {
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new OriginInterceptor(config.origin))
+                .addNetworkInterceptor(new AuthenticationInterceptor())
+                .addNetworkInterceptor(new LoggingInterceptor())
+                .followRedirects(true)
+                .followSslRedirects(false)
                 .certificatePinner(new CertificatePinner.Builder()
                         .add("*", TRUSTED_CERTIFICATES)
                         .build())
                 .build();
+
+        this.retrofit = new Retrofit.Builder()
+                .client(okHttp)
+                .baseUrl(Optional.fromNullable(config.baseUrl).or(DEFAULT_BASE_URL).toString())
+                .addConverterFactory(
+                        JacksonConverterFactory.create(Optional
+                                .fromNullable(config.objectMapper)
+                                .or(Jackson.sharedObjectMapper())))
+                .build();
+
+        this.tileService = retrofit.create(DeviceService.class);
+    }
+
+    public static class LoggingInterceptor implements Interceptor {
+        @Override public Response intercept(Interceptor.Chain chain) throws IOException {
+            Request request = chain.request();
+
+            long t1 = System.nanoTime();
+            System.out.println(String.format("Sending request %s on %s%n%s",
+                    request.url(), chain.connection(), request.headers()));
+
+            Response response = chain.proceed(request);
+
+            long t2 = System.nanoTime();
+            System.out.println(response.code());
+            System.out.println(String.format("Received response for %s in %.1fms%n%s",
+                    response.request().url(), (t2 - t1) / 1e6d, response.headers()));
+
+            return response;
+        }
+    }
+
+    public DeviceService device() {
+        return tileService;
     }
 
     public static class Builder {
@@ -45,9 +97,15 @@ public class DoordeckClient {
         private String userAgent;
         private URI origin;
         private ObjectMapper objectMapper;
+        private URI baseUrl;
 
         public Builder userAgent(String userAgent) {
             this.userAgent = userAgent;
+            return this;
+        }
+
+        public Builder baseUrl(URI baseUrl) {
+            this.baseUrl = baseUrl;
             return this;
         }
 
@@ -63,7 +121,7 @@ public class DoordeckClient {
         }
 
         public DoordeckClient build() {
-            return new DoordeckClient();
+            return new DoordeckClient(this);
         }
 
     }

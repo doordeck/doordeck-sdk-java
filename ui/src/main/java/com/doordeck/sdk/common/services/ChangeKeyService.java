@@ -28,7 +28,7 @@ import static com.doordeck.sdk.common.utils.DoordeckPreconditions.getValueOrDefa
 
 public class ChangeKeyService implements ThreadedService {
 
-    private final String TAG = LogoutService.class.getName();
+    private final String TAG = ChangeKeyService.class.getName();
 
     private final Executor executor;
     private final MainThread mainThread;
