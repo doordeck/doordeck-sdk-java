@@ -16,7 +16,7 @@
 
 package com.doordeck.sdk.jwt;
 
-import com.doordeck.sdk.dto.Operation;
+import com.doordeck.sdk.dto.operation.Operation;
 import com.doordeck.sdk.jackson.deserializer.InstantSecondDeserializer;
 import com.doordeck.sdk.jackson.serializer.InstantSecondSerializer;
 import com.fasterxml.jackson.annotation.JsonProperty;

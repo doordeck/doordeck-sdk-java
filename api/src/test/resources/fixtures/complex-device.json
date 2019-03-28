@@ -1,0 +1,54 @@
+{
+  "id": "ddb74c90-7c1e-11e7-9823-a9f736dac766",
+  "name": "Paxton Net2 (1787501)",
+  "colour": "#24BD9A",
+  "start": 1526026500,
+  "end": 1526661000,
+  "role": "ADMIN",
+  "settings": {
+    "unlockTime": 5,
+    "permittedAddresses": [],
+    "defaultName": "Paxton Net2 (1787501)",
+    "usageRequirements": {
+      "location": {
+        "latitude": 51.52196559999999,
+        "longitude": -0.08481929999993554,
+        "enabled": false,
+        "radius": 50,
+        "accuracy": 20
+      },
+      "time": [
+        {
+          "start": "08:00",
+          "end": "18:00",
+          "timezone": "Europe/London",
+          "days": [
+            "WEDNESDAY",
+            "FRIDAY"
+          ]
+        }
+      ]
+    },
+    "unlockBetweenWindow": {
+      "start": "08:00",
+      "end": "18:00",
+      "timezone": "Europe/London",
+      "days": [
+        "TUESDAY",
+        "WEDNESDAY"
+      ],
+      "exceptions": [
+        "2019-03-29"
+      ]
+    },
+    "tiles": [
+      "baef898d-4c07-4546-91c8-3d03f5dd4702",
+      "ddb74c90-7c1e-11e7-9823-a9f736dac766"
+    ]
+  },
+  "state": {
+    "locked": true,
+    "connected": true
+  },
+  "favourite": false
+}

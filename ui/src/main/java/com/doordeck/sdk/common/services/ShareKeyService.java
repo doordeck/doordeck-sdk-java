@@ -20,9 +20,8 @@ import com.doordeck.sdk.common.network.RequestQueue;
 import com.doordeck.sdk.common.utils.Helper;
 import com.doordeck.sdk.common.utils.JWTUtil;
 import com.doordeck.sdk.common.utils.PreferencesManager;
-import com.doordeck.sdk.dto.ImmutableAddUserOperation;
-import com.doordeck.sdk.dto.ImmutableMutateDoorState;
-import com.doordeck.sdk.dto.Operation;
+import com.doordeck.sdk.dto.operation.ImmutableAddUserOperation;
+import com.doordeck.sdk.dto.operation.Operation;
 import com.google.common.base.Optional;
 
 import org.joda.time.Duration;

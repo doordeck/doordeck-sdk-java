@@ -1,5 +1,6 @@
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.device;
 
+import com.doordeck.sdk.dto.device.UnlockBetweenWindow;
 import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.util.DayOfWeek;
 import com.fasterxml.jackson.databind.ObjectMapper;

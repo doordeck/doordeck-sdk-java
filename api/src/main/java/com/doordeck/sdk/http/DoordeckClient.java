@@ -1,11 +1,14 @@
 package com.doordeck.sdk.http;
 
 import com.doordeck.sdk.http.interceptor.AuthenticationInterceptor;
+import com.doordeck.sdk.http.service.CertificateService;
 import com.doordeck.sdk.http.service.DeviceService;
+import com.doordeck.sdk.http.service.SiteService;
 import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.http.interceptor.OriginInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
+import com.google.common.base.Supplier;
 import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
@@ -36,7 +39,9 @@ public class DoordeckClient {
     private final OkHttpClient okHttp;
     private final Retrofit retrofit;
 
-    private final DeviceService tileService;
+    private final DeviceService deviceService;
+    private final SiteService siteService;
+    private final CertificateService certificateService;
 
     private DoordeckClient(Builder config) {
         this.okHttp = new OkHttpClient.Builder()
@@ -48,7 +53,7 @@ public class DoordeckClient {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addNetworkInterceptor(new OriginInterceptor(config.origin))
-                .addNetworkInterceptor(new AuthenticationInterceptor())
+                .addNetworkInterceptor(new AuthenticationInterceptor(config.authTokenSupplier))
                 .addNetworkInterceptor(new LoggingInterceptor())
                 .followRedirects(true)
                 .followSslRedirects(false)
@@ -66,7 +71,9 @@ public class DoordeckClient {
                                 .or(Jackson.sharedObjectMapper())))
                 .build();
 
-        this.tileService = retrofit.create(DeviceService.class);
+        this.deviceService = retrofit.create(DeviceService.class);
+        this.certificateService = retrofit.create(CertificateService.class);
+        this.siteService = retrofit.create(SiteService.class);
     }
 
     public static class LoggingInterceptor implements Interceptor {
@@ -89,11 +96,12 @@ public class DoordeckClient {
     }
 
     public DeviceService device() {
-        return tileService;
+        return deviceService;
     }
 
     public static class Builder {
 
+        private Supplier<String> authTokenSupplier;
         private String userAgent;
         private URI origin;
         private ObjectMapper objectMapper;
@@ -117,6 +125,16 @@ public class DoordeckClient {
 
         public Builder objectMapper(ObjectMapper objectMapper) {
             this.objectMapper = objectMapper;
+            return this;
+        }
+
+        public Builder authToken(Supplier<String> authTokenSupplier) {
+            this.authTokenSupplier = authTokenSupplier;
+            return this;
+        }
+
+        public Builder authToken(String authToken) {
+            this.authTokenSupplier = () -> authToken;
             return this;
         }
 

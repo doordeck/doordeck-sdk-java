@@ -19,8 +19,8 @@ import com.doordeck.sdk.common.executor.ThreadedService;
 import com.doordeck.sdk.common.network.RequestQueue;
 import com.doordeck.sdk.common.utils.JWTUtil;
 import com.doordeck.sdk.common.utils.PreferencesManager;
-import com.doordeck.sdk.dto.ImmutableMutateDoorState;
-import com.doordeck.sdk.dto.Operation;
+import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
+import com.doordeck.sdk.dto.operation.Operation;
 
 import org.joda.time.Duration;
 import org.joda.time.Instant;

@@ -1,6 +1,6 @@
 package com.doordeck.sdk.signer;
 
-import com.doordeck.sdk.dto.ImmutableMutateDoorState;
+import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.ImmutableClaims;
 import com.doordeck.sdk.jwt.Header;

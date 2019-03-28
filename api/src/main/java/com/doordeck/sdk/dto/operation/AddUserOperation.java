@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.operation;
 
+import com.doordeck.sdk.dto.Role;
 import com.doordeck.sdk.jackson.deserializer.PublicKeyDeserializer;
 import com.doordeck.sdk.jackson.serializer.PublicKeySerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

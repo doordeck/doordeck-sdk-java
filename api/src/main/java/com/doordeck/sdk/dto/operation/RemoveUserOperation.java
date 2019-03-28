@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.operation;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

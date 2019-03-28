@@ -1,4 +1,4 @@
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.device;
 
 import com.doordeck.sdk.util.DayOfWeek;
 import com.fasterxml.jackson.annotation.JsonFormat;

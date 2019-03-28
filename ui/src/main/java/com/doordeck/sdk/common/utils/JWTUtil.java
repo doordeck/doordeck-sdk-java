@@ -3,7 +3,7 @@ package com.doordeck.sdk.common.utils;
 import android.util.Base64;
 import android.util.Log;
 
-import com.doordeck.sdk.dto.Operation;
+import com.doordeck.sdk.dto.operation.Operation;
 import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.ImmutableClaims;

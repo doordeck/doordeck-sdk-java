@@ -1,5 +1,6 @@
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.operation;
 
+import com.doordeck.sdk.dto.device.UnlockBetweenWindow;
 import com.doordeck.sdk.util.OptionalUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

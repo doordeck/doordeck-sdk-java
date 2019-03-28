@@ -1,5 +1,6 @@
-package com.doordeck.sdk.dto;
+package com.doordeck.sdk.dto.operation;
 
+import com.doordeck.sdk.dto.operation.*;
 import com.doordeck.sdk.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
