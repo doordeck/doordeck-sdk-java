@@ -1,5 +1,7 @@
 package com.doordeck.sdk.dto.site;
 
+import com.doordeck.sdk.jackson.deserializer.InstantSecondDeserializer;
+import com.doordeck.sdk.jackson.serializer.InstantSecondSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -22,12 +24,19 @@ public interface Site {
     String name();
     Optional<UUID> createdBy();
     String colour();
-    double longitude();
-    double latitude();
-    int radius();
-    URI passBackground();
 
+    Optional<Double> longitude();
+    Optional<Double> latitude();
+    Optional<Integer> radius();
+
+    Optional<URI> passBackground();
+
+    @JsonSerialize(using = InstantSecondSerializer.class)
+    @JsonDeserialize(using = InstantSecondDeserializer.class)
     Instant created();
+
+    @JsonSerialize(using = InstantSecondSerializer.class)
+    @JsonDeserialize(using = InstantSecondDeserializer.class)
     Instant updated();
 
     Optional<String> googlePlaceId();

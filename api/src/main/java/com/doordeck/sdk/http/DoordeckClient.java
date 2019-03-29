@@ -1,11 +1,12 @@
 package com.doordeck.sdk.http;
 
 import com.doordeck.sdk.http.interceptor.AuthenticationInterceptor;
+import com.doordeck.sdk.http.interceptor.OriginInterceptor;
+import com.doordeck.sdk.http.interceptor.UserAgentInterceptor;
 import com.doordeck.sdk.http.service.CertificateService;
 import com.doordeck.sdk.http.service.DeviceService;
 import com.doordeck.sdk.http.service.SiteService;
 import com.doordeck.sdk.jackson.Jackson;
-import com.doordeck.sdk.http.interceptor.OriginInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
@@ -13,7 +14,6 @@ import okhttp3.*;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +54,7 @@ public class DoordeckClient {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addNetworkInterceptor(new OriginInterceptor(config.origin))
                 .addNetworkInterceptor(new AuthenticationInterceptor(config.authTokenSupplier))
-                .addNetworkInterceptor(new LoggingInterceptor())
+                .addNetworkInterceptor(new UserAgentInterceptor(config.userAgent))
                 .followRedirects(true)
                 .followSslRedirects(false)
                 .certificatePinner(new CertificatePinner.Builder()
@@ -76,27 +76,20 @@ public class DoordeckClient {
         this.siteService = retrofit.create(SiteService.class);
     }
 
-    public static class LoggingInterceptor implements Interceptor {
-        @Override public Response intercept(Interceptor.Chain chain) throws IOException {
-            Request request = chain.request();
-
-            long t1 = System.nanoTime();
-            System.out.println(String.format("Sending request %s on %s%n%s",
-                    request.url(), chain.connection(), request.headers()));
-
-            Response response = chain.proceed(request);
-
-            long t2 = System.nanoTime();
-            System.out.println(response.code());
-            System.out.println(String.format("Received response for %s in %.1fms%n%s",
-                    response.request().url(), (t2 - t1) / 1e6d, response.headers()));
-
-            return response;
-        }
-    }
-
     public DeviceService device() {
         return deviceService;
+    }
+
+    public SiteService site() {
+        return siteService;
+    }
+
+    public CertificateService certificateService() {
+        return certificateService;
+    }
+
+    public Retrofit retrofit() {
+        return retrofit;
     }
 
     public static class Builder {
