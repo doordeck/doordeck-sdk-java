@@ -48,21 +48,6 @@ public class DoordeckPreconditions {
         return value == null ? defaultValue : value;
     }
 
-    public static void checkTLS(Context context) {
-        try {
-            SSLContext.getInstance("TLSv1.2");
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        try {
-            checkGooglePlayServices(context);
-            ProviderInstaller.installIfNeeded(context.getApplicationContext());
-        } catch (GooglePlayServicesRepairableException e) {
-            e.printStackTrace();
-        } catch (GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-    }
     private static void checkGooglePlayServices(Context context){
         switch (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context)){
             case ConnectionResult.SERVICE_MISSING:

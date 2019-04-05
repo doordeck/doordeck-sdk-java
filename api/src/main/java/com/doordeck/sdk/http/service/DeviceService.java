@@ -3,7 +3,6 @@ package com.doordeck.sdk.http.service;
 import com.doordeck.sdk.dto.device.Device;
 import com.doordeck.sdk.dto.device.ShareableDevice;
 import com.doordeck.sdk.dto.device.UpdateDeviceRequest;
-import com.doordeck.sdk.dto.operation.Operation;
 import com.google.common.net.HttpHeaders;
 import retrofit2.Call;
 import retrofit2.http.*;
