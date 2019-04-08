@@ -13,16 +13,16 @@ buildscript {
 }
 
 dependencies {
-    implementation "org.immutables:value-annotations:2.7.4" // or implementation, or compileOnly
-    annotationProcessor "org.immutables:value:2.7.4"
-    testAnnotationProcessor "org.immutables:value:2.7.4"
+    implementation "org.immutables:value-annotations:2.7.5" // or implementation, or compileOnly
+    annotationProcessor "org.immutables:value:2.7.5"
+    testAnnotationProcessor "org.immutables:value:2.7.5"
 
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.8'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.8'
 
     api 'joda-time:joda-time:2.10.1'
-    implementation 'com.google.guava:guava:23.5-jre'
+    implementation 'com.google.guava:guava:24.1-jre'
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
