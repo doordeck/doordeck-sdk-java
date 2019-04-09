@@ -232,7 +232,7 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
         if (animation instanceof Animatable) {
             ((Animatable) animation).start();
         }
-        statusTV.setText(unlockingStatusText);
+        statusTV.setText(R.string.UNLOCKED);
         statusTV.setTextColor(ContextCompat.getColor(this, R.color.ddColorTextLight));
         favBtn.setAlpha(0.0f);
         favBtn.show();
