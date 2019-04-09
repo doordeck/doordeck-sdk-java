@@ -1,5 +1,6 @@
 package com.doordeck.sdk.dto.certificate;
 
+import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -25,7 +26,7 @@ public interface VerificationRequest {
     @Value.Derived
     default byte[] verificationSignature() {
         try {
-            Signature sign = Signature.getInstance("EdDSA", BouncyCastleProvider.PROVIDER_NAME);
+            Signature sign = Signature.getInstance("EdDSA", BouncyCastleSingleton.getInstance());
             sign.initSign(ephemeralKey());
             sign.update(verificationCode().getBytes(StandardCharsets.UTF_8));
             return sign.sign();

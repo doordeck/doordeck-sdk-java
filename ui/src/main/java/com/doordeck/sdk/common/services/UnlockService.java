@@ -161,8 +161,7 @@ public class UnlockService implements ThreadedService {
                 @Override
                 public byte[] getBody() throws AuthFailureError {
                         if(finalSignedJWT != null){
-                            byte[] bytes = finalSignedJWT.getBytes(StandardCharsets.UTF_8);
-                            return finalSignedJWT == null ? null : bytes;
+                            return finalSignedJWT.getBytes(StandardCharsets.UTF_8);
                         }
                         return null;
                 }

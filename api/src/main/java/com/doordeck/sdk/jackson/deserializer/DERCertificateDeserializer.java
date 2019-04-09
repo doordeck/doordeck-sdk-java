@@ -1,13 +1,12 @@
 package com.doordeck.sdk.jackson.deserializer;
 
+import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.security.NoSuchProviderException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -24,11 +23,11 @@ public class DERCertificateDeserializer extends StdDeserializer<X509Certificate>
             if (CERTIFICATE_FACTORY == null) {
                 synchronized (DERCertificateDeserializer.class) {
                     if (CERTIFICATE_FACTORY == null) {
-                        CERTIFICATE_FACTORY = CertificateFactory.getInstance("X.509", BouncyCastleProvider.PROVIDER_NAME);
+                        CERTIFICATE_FACTORY = CertificateFactory.getInstance("X.509", BouncyCastleSingleton.getInstance());
                     }
                 }
             }
-        } catch (CertificateException | NoSuchProviderException e) {
+        } catch (CertificateException e) {
             throw new IllegalStateException("Unable to setup certificate factory");
         }
     }

@@ -16,23 +16,18 @@
 
 package com.doordeck.sdk.signer;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import com.doordeck.sdk.util.BouncyCastleSingleton;
 
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.Security;
 
 public class Ed25519KeyGenerator {
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     private Ed25519KeyGenerator() { /* static class */ }
 
     public static KeyPair generate() throws GeneralSecurityException  {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Ed25519", BouncyCastleProvider.PROVIDER_NAME);
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("Ed25519", BouncyCastleSingleton.getInstance());
         return keyPairGenerator.generateKeyPair();
     }
 

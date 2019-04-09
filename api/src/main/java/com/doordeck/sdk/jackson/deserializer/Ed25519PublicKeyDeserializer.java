@@ -1,5 +1,6 @@
 package com.doordeck.sdk.jackson.deserializer;
 
+import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
@@ -27,7 +28,7 @@ public class Ed25519PublicKeyDeserializer extends StdDeserializer<PublicKey> {
 
         Helper() {
             try {
-                this.keyFactory = KeyFactory.getInstance("Ed25519");
+                this.keyFactory = KeyFactory.getInstance("Ed25519", BouncyCastleSingleton.getInstance());
             } catch (NoSuchAlgorithmException e) {
                 throw new IllegalStateException("BouncyCastle provider not loaded");
             }

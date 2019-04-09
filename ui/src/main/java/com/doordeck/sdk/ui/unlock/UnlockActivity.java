@@ -15,7 +15,10 @@ import android.os.Build;
 
 import androidx.annotation.NonNull;
 
+import butterknife.BindString;
 import butterknife.ButterKnife;
+
+import com.doordeck.sdk.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -88,10 +91,10 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
 
     @OnClick(R2.id.fav_button)
     public void onFavButtonClicked() {
-        if (theme == R2.style.ddlightTheme) {
-            PreferencesManager.getInstance().setInt(Constants.prefs.LIGHT_THEME, R2.style.ddDarkTheme);
+        if (theme == R.style.ddlightTheme) {
+            PreferencesManager.getInstance().setInt(Constants.prefs.LIGHT_THEME, R.style.ddDarkTheme);
         } else {
-            PreferencesManager.getInstance().setInt(Constants.prefs.LIGHT_THEME, R2.style.ddlightTheme);
+            PreferencesManager.getInstance().setInt(Constants.prefs.LIGHT_THEME, R.style.ddlightTheme);
         }
     }
 
@@ -146,7 +149,7 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
     @Override
     public void showNoAccessGeoFence() {
         showAccessDeniedAnimation();
-        statusTV.setText(R2.string.ACCESS_DENIED_GEOFENCE);
+        statusTV.setText(R.string.ACCESS_DENIED_GEOFENCE);
     }
 
     @Override
@@ -156,12 +159,12 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
 
     @Override
     public void setUnlocking() {
-        statusTV.setText(getText(R2.string.UNLOCKING));
+        statusTV.setText(getText(R.string.UNLOCKING));
     }
 
     @Override
     public void showGeoLoading() {
-        statusTV.setText(R2.string.CHECKING_GEOFENCE);
+        statusTV.setText(R.string.CHECKING_GEOFENCE);
     }
 
 
@@ -181,7 +184,7 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
         circleBkgIV.setScaleY(1f);
         Drawable circle = circleBkgIV.getDrawable();
         TypedValue typedValue = new TypedValue();
-        this.getTheme().resolveAttribute(R2.attr.ddColorAccent, typedValue, true);
+        this.getTheme().resolveAttribute(R.attr.ddColorAccent, typedValue, true);
         int colorAccent = typedValue.data;
         if (circle instanceof ShapeDrawable) {
             ((ShapeDrawable)circle).getPaint().setColor(colorAccent);
@@ -191,12 +194,12 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
             ((ColorDrawable)circle).setColor(colorAccent);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_unlock_success));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_unlock_success));
         }
         else{
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_unlock_success));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_unlock_success));
         }
-        statusTV.setText(R2.string.UNLOCKING);
+        statusTV.setText(R.string.UNLOCKING);
     }
 
     @Override
@@ -211,28 +214,28 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
         spinnerPB.setAlpha(0);
         Drawable circle = circleBkgIV.getDrawable();
         if (circle instanceof ShapeDrawable) {
-            ((ShapeDrawable)circle).getPaint().setColor(ContextCompat.getColor(this,R2.color.success));
+            ((ShapeDrawable)circle).getPaint().setColor(ContextCompat.getColor(this,R.color.success));
         } else if (circle instanceof GradientDrawable) {
-            ((GradientDrawable)circle).setColor(ContextCompat.getColor(this,R2.color.success));
+            ((GradientDrawable)circle).setColor(ContextCompat.getColor(this,R.color.success));
         } else if (circle instanceof ColorDrawable) {
-            ((ColorDrawable)circle).setColor(ContextCompat.getColor(this,R2.color.success));
+            ((ColorDrawable)circle).setColor(ContextCompat.getColor(this,R.color.success));
         }
         circleBkgIV.animate().scaleX(25f).scaleY(25f).setInterpolator(new FastOutSlowInInterpolator()).setDuration(500);
         arrowIV.animate().scaleX(1f).scaleY(1f).alpha(1.0f).setInterpolator(new OvershootInterpolator()).setDuration(300).setStartDelay(200);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_unlock_success));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_unlock_success));
         }
         else{
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_unlock_success));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_unlock_success));
         }
         Drawable animation = arrowIV.getDrawable();
         if (animation instanceof Animatable) {
             ((Animatable) animation).start();
         }
-        statusTV.setText(R2.string.UNLOCKED);
-        statusTV.setTextColor(ContextCompat.getColor(this, R2.color.ddColorTextLight));
+        statusTV.setText(unlockingStatusText);
+        statusTV.setTextColor(ContextCompat.getColor(this, R.color.ddColorTextLight));
         favBtn.setAlpha(0.0f);
-        favBtn.setVisibility(View.VISIBLE);
+        favBtn.show();
         favBtn.animate().alpha(1.0f).setDuration(200);
     }
 
@@ -249,17 +252,17 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
 
         Drawable circle = circleBkgIV.getDrawable();
         if (circle instanceof ShapeDrawable) {
-            ((ShapeDrawable)circle).getPaint().setColor(ContextCompat.getColor(this,R2.color.error));
+            ((ShapeDrawable)circle).getPaint().setColor(ContextCompat.getColor(this,R.color.error));
         } else if (circle instanceof GradientDrawable) {
-            ((GradientDrawable)circle).setColor(ContextCompat.getColor(this,R2.color.error));
+            ((GradientDrawable)circle).setColor(ContextCompat.getColor(this,R.color.error));
         } else if (circle instanceof ColorDrawable) {
-            ((ColorDrawable)circle).setColor(ContextCompat.getColor(this,R2.color.error));
+            ((ColorDrawable)circle).setColor(ContextCompat.getColor(this,R.color.error));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_access_denied));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_access_denied));
         }
         else{
-            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R2.drawable.ic_access_denied));
+            arrowIV.setImageDrawable(ContextCompat.getDrawable(this,R.drawable.ic_access_denied));
         }
         circleBkgIV.animate().scaleX(25f).scaleY(25f).setInterpolator(new FastOutSlowInInterpolator()).setDuration(500);
         arrowIV.animate().scaleX(1.2f).scaleY(1.2f).alpha(1.0f).setInterpolator(new OvershootInterpolator()).setDuration(duration);
@@ -267,7 +270,7 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
         if (animation instanceof Animatable) {
             ((Animatable) animation).start();
         }
-        keyTV.setText(R2.string.ACCESS_DENIED);
+        keyTV.setText(R.string.ACCESS_DENIED);
         statusTV.setTextColor(Color.WHITE);
 
     }
@@ -335,16 +338,13 @@ public class UnlockActivity extends BaseActivity implements UnlockView {
                 if(!locationPermissionShown) {
                     locationPermissionShown = true;
                     new AlertDialog.Builder(this)
-                            .setTitle(R2.string.LOCATION_PERMISSION_TITLE)
-                            .setMessage(R2.string.LOCATION_PERMISSION_TEXT)
-                            .setPositiveButton(R2.string.OK, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    //Prompt the user once explanation has been shown
-                                    ActivityCompat.requestPermissions(UnlockActivity.this,
-                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                            Constants.permission.LOCATION);
-                                }
+                            .setTitle(R.string.LOCATION_PERMISSION_TITLE)
+                            .setMessage(R.string.LOCATION_PERMISSION_TEXT)
+                            .setPositiveButton(R.string.OK, (dialogInterface, i) -> {
+                                //Prompt the user once explanation has been shown
+                                ActivityCompat.requestPermissions(UnlockActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                        Constants.permission.LOCATION);
                             })
                             .create()
                             .show();
