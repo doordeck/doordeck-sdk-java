@@ -1,0 +1,39 @@
+apply plugin: 'java-library'
+apply plugin: "org.inferred.processors"
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath "gradle.plugin.org.inferred:gradle-processors:2.2.0"
+    }
+}
+
+dependencies {
+    implementation "org.immutables:value-annotations:2.7.5" // or implementation, or compileOnly
+    annotationProcessor "org.immutables:value:2.7.5"
+    testAnnotationProcessor "org.immutables:value:2.7.5"
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.8'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.8'
+
+    implementation "com.google.guava:guava:${versions.guava}-jre"
+
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.0'
+
+    implementation "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
+    implementation deps.joda
+    
+    compileOnly deps.jsr305
+
+    testImplementation 'junit:junit:4.12'
+}
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8

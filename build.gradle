@@ -1,0 +1,38 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+    }
+
+    ext.versions = [
+            'okhttp': '3.14.0',
+            'bouncycastle': '1.61',
+            'guava': '27.1',
+            'findbugs': '3.0.2',
+            'joda': '2.10.1',
+    ]
+
+    ext.deps = [
+            'jsr305': "com.google.code.findbugs:jsr305:${versions.findbugs}",
+            'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
+            'joda': "joda-time:joda-time:${versions.joda}",
+    ]
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:3.3.2'
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
