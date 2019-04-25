@@ -16,6 +16,8 @@
 
 package com.doordeck.sdk.jwt;
 
+import com.doordeck.sdk.jackson.deserializer.DERCertificateDeserializer;
+import com.doordeck.sdk.jackson.serializer.DERCertificateSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -43,6 +45,8 @@ public abstract class Header {
     }
 
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonSerialize(contentUsing = DERCertificateSerializer.class)
+    @JsonDeserialize(contentUsing = DERCertificateDeserializer.class)
     @JsonProperty("x5c")
     public abstract List<X509Certificate> certificateChain();
 
