@@ -20,6 +20,7 @@ import com.doordeck.sdk.jwt.Claims;
 import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;
 import com.doordeck.sdk.jwt.SupportedAlgorithm;
+import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -31,10 +32,6 @@ import java.security.Security;
 import java.security.Signature;
 
 public class Ed25519Signer extends BaseSigner {
-
-    static {
-        Security.addProvider(new BouncyCastleProvider());
-    }
 
     public Ed25519Signer() {
         this(null);
@@ -51,9 +48,10 @@ public class Ed25519Signer extends BaseSigner {
 
         try {
             String serialized = serialize(header, payload);
-            Signature signer = Signature.getInstance("EdDSA", BouncyCastleProvider.PROVIDER_NAME);
+            Signature signer = Signature.getInstance("EdDSA", BouncyCastleSingleton.getInstance());
             signer.initSign(privateKey);
             signer.update(serialized.getBytes(StandardCharsets.UTF_8));
+
 
             byte[] jwsSignature = signer.sign();
             String signature = BaseEncoding.base64Url().omitPadding().encode(jwsSignature);
@@ -65,4 +63,3 @@ public class Ed25519Signer extends BaseSigner {
     }
 
 }
-

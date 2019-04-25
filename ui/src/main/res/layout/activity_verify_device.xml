@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="5dp"
+        android:id="@+id/ivClose"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/baseline_clear_black_36dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tvVerifyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="Verify your new device"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        />
+
+
+
+    <TextView
+        android:id="@+id/tvVerifyDesc"
+        android:layout_below="@+id/tvVerifyTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="@string/verify_device_desc"
+        android:layout_marginTop="40dp"
+        android:textAlignment="center"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="16dp"
+        />
+
+
+    <TextView
+        android:id="@+id/tvReSendCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="re-send code"
+        android:layout_below="@+id/tvVerifyDesc"
+        android:textAllCaps="true"
+        android:layout_marginTop="80dp"
+        android:textAlignment="center"
+        android:textColor="?attr/ddColorAccent"
+        android:textSize="18dp"
+        />
+
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_below="@+id/tvReSendCode"
+        android:layout_marginTop="60dp"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_height="45dp">
+
+        <EditText
+            android:layout_width="35dp"
+            android:layout_marginRight="10dp"
+            android:textColor="?attr/ddColorAccent"
+            android:textSize="16dp"
+            android:maxLength="1"
+            android:imeOptions="actionNext"
+            android:id="@+id/edDigit1"
+            android:inputType="number"
+            android:nextFocusRight="@id/edDigit2"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:layout_width="35dp"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:id="@+id/edDigit2"
+            android:maxLength="1"
+            android:imeOptions="actionNext"
+            android:nextFocusRight="@id/edDigit3"
+            android:inputType="number"
+            android:textColor="?attr/ddColorAccent"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:layout_height="match_parent" />
+
+        <EditText
+            android:layout_width="35dp"
+            android:textSize="16dp"
+            android:id="@+id/edDigit3"
+            android:maxLength="1"
+            android:nextFocusRight="@id/edDigit4"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:textColor="?attr/ddColorAccent"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="30dp"
+            android:text="-"
+            android:gravity="center_horizontal"
+            android:textSize="30dp"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/dark_grey"
+            android:layout_height="match_parent" />
+
+
+        <EditText
+            android:layout_width="35dp"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:id="@+id/edDigit4"
+            android:maxLength="1"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:textColor="?attr/ddColorAccent"
+            android:nextFocusRight="@id/edDigit5"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:layout_height="match_parent" />
+
+
+        <EditText
+            android:layout_width="35dp"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:maxLength="1"
+            android:id="@+id/edDigit5"
+            android:nextFocusRight="@id/edDigit6"
+            android:imeOptions="actionNext"
+            android:inputType="number"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:textColor="?attr/ddColorAccent"
+            android:layout_height="match_parent" />
+
+
+        <EditText
+            android:layout_width="35dp"
+            android:layout_marginRight="10dp"
+            android:textSize="16dp"
+            android:id="@+id/edDigit6"
+            android:imeOptions="actionDone"
+            android:maxLength="1"
+            android:inputType="number"
+            android:textColor="?attr/ddColorAccent"
+            android:gravity="center"
+            android:background="@drawable/digit_background"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+
+
+
+    <TextView
+        android:id="@+id/tvSend"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dismiss_btn_height"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/ddColorAccent"
+        android:gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:text="@string/send"
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
+
+</RelativeLayout>

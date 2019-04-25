@@ -1,0 +1,24 @@
+package com.doordeck.sdk.common.models
+
+// events sent by the SDK
+data class DDEVENT(val event: EventAction, val exception: String? = null)
+
+enum class EventAction {
+    TWO_FACTOR_AUTH_NEEDED,
+    NO_INTERNET,
+    INVALID_AUTH_TOKEN,
+    NETWORK_ERROR,
+    SDK_NETWORK_ERROR,
+    EMAIL_SENT,
+    EMAIL_FAILED_SENDING,
+    CODE_VERIFICATION_SUCCESS,
+    CODE_VERIFICATION_FAILED,
+    UNLOCK_INVALID_TILE_ID,
+    GET_CERTIFICATE_SUCCESS,
+    UNLOCK_SUCCESS,
+    UNLOCK_FAILED,
+    RESOLVE_TILE_FAILED,
+    RESOLVE_TILE_SUCCESS,
+    CLOSE_QR_CODE_VIEW,
+    CLOSE_NFC_VIEW
+}

@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.jakewharton.butterknife'
 
 android {
@@ -10,7 +12,10 @@ android {
         versionName "1.0"
 
         vectorDrawables.useSupportLibrary = true
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
     }
 
     buildTypes {
@@ -27,10 +32,6 @@ android {
                 proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             }
         }
-    }
-
-    defaultConfig {
-        buildConfigField "String", "BASE_URL_API", '"https://api.doordeck.com"'
     }
 
     compileOptions {
@@ -56,7 +57,6 @@ buildscript {
     }
 
     dependencies {
-//        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.1.0'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -65,20 +65,34 @@ buildscript {
 }
 
 dependencies {
-    implementation project(':api')
-    compileOnly deps.jsr305
+    implementation 'com.google.guava:guava:27.0.1-android'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.android.support:support-v4:28.0.0'
 
-    implementation deps.joda
-    implementation "com.google.guava:guava:${versions.guava}-android"
+    compile project(path: ':api')
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
+    //rx
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+    // scan
+    api('com.journeyapps:zxing-android-embedded:3.6.0') {
+        exclude group: 'com.android.support'
+    }
+    implementation 'com.google.zxing:core:3.3.2'
+
+    // location
     implementation 'com.google.android.gms:play-services-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'com.android.volley:volley:1.1.1'
-    implementation 'com.jakewharton:butterknife:10.1.0'
 
-    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    // kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
+    implementation 'ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0'
+
+    // keystore
+    implementation "de.adorsys.android:securestoragelibrary:${versions.secureStorage}"
+}
+repositories {
+    mavenCentral()
 }

@@ -46,7 +46,6 @@ public class LocationService {
     private FusedLocationProviderClient mFusedLocationClient;
 
     public Callback callback;
-    private String provider;
     private LocationCallback mLocationCallback;
     private LocationRequest mLocationRequest;
 
@@ -120,8 +119,8 @@ public class LocationService {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 for (Location location : locationResult.getLocations()) {
-                        callback.onGetLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy());
-                        mFusedLocationClient.removeLocationUpdates(this);
+                    callback.onGetLocation(location.getLatitude(), location.getLongitude(), location.getAccuracy());
+                    mFusedLocationClient.removeLocationUpdates(this);
                 }
             }
 
@@ -169,12 +168,7 @@ public class LocationService {
 
     private void showPlayServicesError(int errorCode) {
         GoogleApiAvailability.getInstance().showErrorDialogFragment(activity, errorCode, 10,
-            new DialogInterface.OnCancelListener() {
-            @Override
-            public void onCancel(DialogInterface dialogInterface) {
-                activity.finish();
-            }
-        });
+                dialogInterface -> activity.finish());
     }
 
     private void requestPermission(){
@@ -186,7 +180,7 @@ public class LocationService {
     }
 
     public boolean inGeofence(double latitude, double longitude, int accuracy, int radius, double lat, double lng, float acc) {
-        double distance = Helper.distance(latitude, lat, longitude, lng, 0, 0);
+        double distance = Helper.INSTANCE.distance(latitude, lat, longitude, lng, 0, 0);
         return distance < (radius + accuracy + acc);
     }
 
