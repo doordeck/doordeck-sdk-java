@@ -83,6 +83,14 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), email)
     }
 
+    override fun setPhoneNumber(phone: String) {
+        tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), phone)
+    }
+
+    override fun noMethodDefined() {
+        tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_no_method))
+    }
+
     // the code is valid, close the with and come back on the previous screen : The UnlockActivity
     override fun succeed() {
         finish()

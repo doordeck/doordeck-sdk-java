@@ -4,9 +4,10 @@ import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
 import com.doordeck.sdk.dto.operation.Operation;
 import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.jwt.*;
+import com.doordeck.sdk.jwt.ImmutableClaims;
+import com.doordeck.sdk.jwt.ImmutableHeader;
 import com.doordeck.sdk.jwt.signer.Ed25519Signer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import org.joda.time.Duration;
 import org.joda.time.Instant;
 
@@ -15,7 +16,7 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.UUID;
 
-public class JWTSignedUtils {
+public class JWTUtils {
 
     public static String getSignedJWT(List<X509Certificate> certs, PrivateKey key, UUID deviceId, UUID userId) {
 

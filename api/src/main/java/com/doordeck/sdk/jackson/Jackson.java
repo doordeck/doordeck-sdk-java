@@ -17,7 +17,11 @@
 package com.doordeck.sdk.jackson;
 
 import com.doordeck.sdk.jackson.deserializer.DurationDeserializer;
+import com.doordeck.sdk.jackson.deserializer.Ed25519PublicKeyDeserializer;
+import com.doordeck.sdk.jackson.deserializer.PrivateKeyDeserializer;
 import com.doordeck.sdk.jackson.serializer.DurationSerializer;
+import com.doordeck.sdk.jackson.serializer.PrivateKeySerializer;
+import com.doordeck.sdk.jackson.serializer.PublicKeySerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
@@ -25,17 +29,24 @@ import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import org.joda.time.Duration;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
+
 public class Jackson {
 
     private Jackson() { /* static class */ }
 
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+    public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new OptionalUpdateModule())
             .registerModule(new GuavaModule())
             .registerModule(new JodaModule())
             .registerModule(new SimpleModule()
                     .addSerializer(new DurationSerializer())
                     .addDeserializer(Duration.class, new DurationDeserializer())
+                    .addSerializer(PublicKey.class, new PublicKeySerializer())
+            .addSerializer(PrivateKey.class, new PrivateKeySerializer())
+            .addDeserializer(PublicKey.class, new Ed25519PublicKeyDeserializer())
+            .addDeserializer(PrivateKey.class, new PrivateKeyDeserializer())
             )
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 

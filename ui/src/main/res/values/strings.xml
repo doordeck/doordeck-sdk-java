@@ -26,4 +26,5 @@
     <string name="nfc_desc">Touch the NFC tile next to the door to unlock</string>
     <string name="send">Send</string>
     <string name="verify_device_desc">Enter your verification code send to %s</string>
+    <string name="verify_device_desc_no_method">Enter your verification code sent</string>
 </resources>

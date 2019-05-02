@@ -3,13 +3,11 @@ package com.doordeck.sdk.common.events
 /**
  * Callback to implement by the user in order receive the callbacks sent by the SDK
  */
-public interface DDEventCallback {
-    fun twoFactorAuthNeeded()
+interface IEventCallback {
     fun noInternet()
-    fun invalidAuthToken()
     fun networkError()
-    fun emailSent()
-    fun emailFailedSending()
+    fun verificationCodeSent()
+    fun verificationCodeFailedSending()
     fun codeVerificationSuccess()
     fun codeVerificationFailed()
     fun sdkError()
@@ -18,5 +16,5 @@ public interface DDEventCallback {
     fun resolveTileFailed()
     fun resolveTileSuccess()
     fun unlockedInvalidTileID()
-    fun getCertificateSuccess()
+    fun authentificationSuccess()
 }

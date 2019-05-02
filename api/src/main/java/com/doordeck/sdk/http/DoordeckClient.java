@@ -12,7 +12,6 @@ import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.net.HttpHeaders;
 import okhttp3.*;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
@@ -46,10 +45,8 @@ public class DoordeckClient {
 
     private static final String BEARER_PREFIX = "Bearer ";
 
-    private DoordeckClient(Builder config) {
 
-        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+    private DoordeckClient(Builder config) {
 
         Interceptor headerAuthorizationInterceptor = chain -> {
             okhttp3.Request request = chain.request();
@@ -69,7 +66,6 @@ public class DoordeckClient {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addInterceptor(headerAuthorizationInterceptor)
-                .addInterceptor(interceptor)
                 .addInterceptor(new OriginInterceptor(config.origin))
                 .addInterceptor(new UserAgentInterceptor(config.userAgent))
                 .followRedirects(true)

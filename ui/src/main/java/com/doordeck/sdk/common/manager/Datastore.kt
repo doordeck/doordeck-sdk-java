@@ -1,11 +1,6 @@
 package com.doordeck.sdk.common.manager
 
-import com.doordeck.sdk.jackson.deserializer.Ed25519PublicKeyDeserializer
-import com.doordeck.sdk.jackson.deserializer.PrivateKeyDeserializer
-import com.doordeck.sdk.jackson.serializer.PrivateKeySerializer
-import com.doordeck.sdk.jackson.serializer.PublicKeySerializer
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.module.SimpleModule
+import com.doordeck.sdk.jackson.Jackson
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import java.security.KeyPair
 import java.security.PrivateKey
@@ -14,19 +9,9 @@ import java.security.PublicKey
 
 internal class Datastore {
 
-    private val om: ObjectMapper by lazy {
-        val obj = ObjectMapper()
-        val module = SimpleModule()
-        module.addSerializer(PublicKey::class.java, PublicKeySerializer())
-        module.addSerializer(PrivateKey::class.java, PrivateKeySerializer())
-        module.addDeserializer(PublicKey::class.java, Ed25519PublicKeyDeserializer())
-        module.addDeserializer(PrivateKey::class.java, PrivateKeyDeserializer())
-        obj.registerModule(module)
-    }
-
-
     // store pub/priv key in the safe android keychain
     fun saveKeyPair(keyPair: KeyPair) {
+        val om = Jackson.sharedObjectMapper()
         SecurePreferences.setValue(PUB_KEY, om.writeValueAsString(keyPair.public))
         SecurePreferences.setValue(PRIV_KEY, om.writeValueAsString(keyPair.private))
     }
@@ -38,9 +23,14 @@ internal class Datastore {
         val privKeyStr = SecurePreferences.getStringValue(PRIV_KEY, null)
         if (pubKeyStr == null || privKeyStr == null)
             return null
+        val om = Jackson.sharedObjectMapper()
         val pubKey = om.readValue(pubKeyStr, PublicKey::class.java)
         val privKey = om.readValue(privKeyStr, PrivateKey::class.java)
         return KeyPair(pubKey, privKey)
+    }
+
+    public fun clean() {
+        SecurePreferences.clearAllValues()
     }
 
     companion object {

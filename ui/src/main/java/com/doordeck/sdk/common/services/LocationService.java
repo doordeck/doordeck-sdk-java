@@ -4,18 +4,13 @@ package com.doordeck.sdk.common.services;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.DialogInterface;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.widget.Toast;
 
 import com.doordeck.sdk.R;
-import com.doordeck.sdk.common.utils.Helper;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -30,6 +25,10 @@ import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 
 public class LocationService {
@@ -61,8 +60,8 @@ public class LocationService {
         if (checkPlayServicesAvailable()) {
 
             if (Build.VERSION.SDK_INT >= 23 &&
-                    ContextCompat.checkSelfPermission( activity, Manifest.permission.ACCESS_FINE_LOCATION ) == PackageManager.PERMISSION_GRANTED &&
-                    ContextCompat.checkSelfPermission( activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 // device has permission, set up request
                 mFusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
                 setupLocationCallback();
@@ -171,22 +170,42 @@ public class LocationService {
                 dialogInterface -> activity.finish());
     }
 
-    private void requestPermission(){
-        if(ActivityCompat.shouldShowRequestPermissionRationale(activity,Manifest.permission.ACCESS_FINE_LOCATION)){
+    private void requestPermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.ACCESS_FINE_LOCATION)) {
             Toast.makeText(activity, activity.getString(R.string.GEOFENCE_PERMISSION), Toast.LENGTH_LONG).show();
         } else {
-            ActivityCompat.requestPermissions(activity,new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GEO_LOCATION_PERMISSION);
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, GEO_LOCATION_PERMISSION);
         }
     }
 
     public boolean inGeofence(double latitude, double longitude, int accuracy, int radius, double lat, double lng, float acc) {
-        double distance = Helper.INSTANCE.distance(latitude, lat, longitude, lng, 0, 0);
+        double distance = distance(latitude, lat, longitude, lng, 0, 0);
         return distance < (radius + accuracy + acc);
+    }
+
+    private double distance(double lat1, double lat2, double lon1,
+                            double lon2, double el1, double el2) {
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        double height = el1 - el2;
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        return Math.sqrt(distance);
     }
 
 
     public interface Callback {
         void onGetLocation(double lat, double lng, float acc);
+
         void onError(String error);
     }
 }

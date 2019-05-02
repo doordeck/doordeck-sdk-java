@@ -1,6 +1,6 @@
 package com.doordeck.sdk.common.events
 
-import com.doordeck.sdk.common.manager.DoordeckSDK
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.DDEVENT
 import com.doordeck.sdk.common.models.EventAction
 import io.reactivex.Observable
@@ -46,21 +46,26 @@ internal object EventsManager {
     }
 
     private fun callCallback(error: EventAction) {
-        val callback = DoordeckSDK.callback
+        val callback = Doordeck.callback
+        val unlockCallback = Doordeck.unlockCallback
         when (error) {
-            EventAction.TWO_FACTOR_AUTH_NEEDED -> callback?.twoFactorAuthNeeded()
             EventAction.NO_INTERNET -> callback?.noInternet()
-            EventAction.INVALID_AUTH_TOKEN -> callback?.invalidAuthToken()
-            EventAction.NETWORK_ERROR -> callback?.networkError()
-            EventAction.EMAIL_SENT -> callback?.emailSent()
-            EventAction.EMAIL_FAILED_SENDING -> callback?.emailFailedSending()
+            EventAction.SDK_ERROR -> callback?.sdkError()
+            EventAction.VERIFICATION_CODE_SENT -> callback?.verificationCodeSent()
+            EventAction.VERIFICATION_CODE_FAILED_SENDING -> callback?.verificationCodeFailedSending()
             EventAction.CODE_VERIFICATION_SUCCESS -> callback?.codeVerificationSuccess()
             EventAction.CODE_VERIFICATION_FAILED -> callback?.codeVerificationFailed()
-            EventAction.SDK_NETWORK_ERROR -> callback?.sdkError()
+            EventAction.SDK_NETWORK_ERROR -> callback?.networkError()
             EventAction.UNLOCK_INVALID_TILE_ID -> callback?.unlockedInvalidTileID()
-            EventAction.GET_CERTIFICATE_SUCCESS -> callback?.getCertificateSuccess()
-            EventAction.UNLOCK_SUCCESS -> callback?.unlockSuccess()
-            EventAction.UNLOCK_FAILED -> callback?.unlockFailed()
+            EventAction.AUTHENTICATED -> callback?.authentificationSuccess()
+            EventAction.UNLOCK_SUCCESS -> {
+                callback?.unlockSuccess()
+                unlockCallback?.unlockSuccess()
+            }
+            EventAction.UNLOCK_FAILED -> {
+                callback?.unlockFailed()
+                unlockCallback?.unlockFailed()
+            }
             EventAction.RESOLVE_TILE_FAILED -> callback?.resolveTileFailed()
             EventAction.RESOLVE_TILE_SUCCESS -> callback?.resolveTileSuccess()
             EventAction.CLOSE_QR_CODE_VIEW -> {

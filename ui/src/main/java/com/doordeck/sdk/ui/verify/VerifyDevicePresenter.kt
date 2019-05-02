@@ -1,9 +1,9 @@
 package com.doordeck.sdk.ui.verify
 
 import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.manager.DoordeckSDK
+import com.doordeck.sdk.common.manager.AuthStatus
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
-import com.doordeck.sdk.common.utils.Helper
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
@@ -26,13 +26,28 @@ internal class VerifyDevicePresenter {
     private val TAG = VerifyDevicePresenter::class.java.canonicalName
     private var view: VerifyDeviceView? = null
     private var jobs: List<Job> = emptyList()
-    private val client = DoordeckSDK.client
+    private val client = Doordeck.client
+    private var method = VerificationMethod.TELEPHONE
 
     fun onStart(view: VerifyDeviceView) {
         this.view = view
-        val content = Helper.getBodyFromJson(DoordeckSDK.apiKey)
-        val email = content.getString("email")
-        view.setEmail(email)
+        checkMethodUsed(view)
+    }
+
+    private fun checkMethodUsed(view: VerifyDeviceView) {
+        Doordeck.jwtToken?.let { header ->
+            when {
+                header.phone_number != null -> {
+                    method = VerificationMethod.TELEPHONE
+                    view.setPhoneNumber(header.phone_number)
+                }
+                header.email != null -> {
+                    method = VerificationMethod.EMAIL
+                    view.setEmail(header.email)
+                }
+                else -> view.noMethodDefined()
+            }
+        }
     }
 
 
@@ -50,15 +65,15 @@ internal class VerifyDevicePresenter {
     fun onSendCode() {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
-            val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(DoordeckSDK.keys.public).build()
-            val result: Response<Void> = client.certificateService().initVerification(ephKey, VerificationMethod.EMAIL).awaitResponse()
+            val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(Doordeck.getKeys().public).build()
+            val result: Response<Void> = client.certificateService().initVerification(ephKey, method).awaitResponse()
             when (result.isSuccessful) {
                 true -> {
-                    EventsManager.sendEvent(EventAction.EMAIL_SENT)
+                    EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
                     LOG.d("onSendCode", "email sent !")
                 }
                 false -> {
-                    EventsManager.sendEvent(EventAction.EMAIL_FAILED_SENDING)
+                    EventsManager.sendEvent(EventAction.VERIFICATION_CODE_FAILED_SENDING)
                     LOG.d("onSendCode", "error : " + result.message())
                 }
             }
@@ -73,13 +88,14 @@ internal class VerifyDevicePresenter {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
             val verifyRequest = ImmutableVerificationRequest.builder()
-                    .ephemeralKey(DoordeckSDK.keys.private)
+                    .ephemeralKey(Doordeck.getKeys().private)
                     .verificationCode(code)
                     .build()
             val result: Result<CertificateChain> = client.certificateService().attemptVerification(verifyRequest).awaitResult()
             when (result) {
                 is Result.Ok -> {
-                    DoordeckSDK.certificateChain = result.value
+                    Doordeck.certificateChain = result.value
+                    Doordeck.status = AuthStatus.AUTHORIZED
                     EventsManager.sendEvent(EventAction.CODE_VERIFICATION_SUCCESS)
                     view?.succeed()
                 }

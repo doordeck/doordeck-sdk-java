@@ -1,16 +1,14 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.app.Activity
-import android.util.Log
 import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.manager.DoordeckSDK
+import com.doordeck.sdk.common.manager.AuthStatus
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.services.LocationService
 import com.doordeck.sdk.common.utils.LOG
-import com.doordeck.sdk.dto.certificate.CertificateChain
-import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
 import com.doordeck.sdk.dto.device.Device
-import com.doordeck.sdk.signer.util.JWTSignedUtils
+import com.doordeck.sdk.signer.util.JWTUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -32,7 +30,7 @@ internal class UnlockPresenter {
     private var locationService: LocationService? = null
     private var deviceToUnlock: Device? = null
     private var jobs: List<Job> = emptyList()
-    private val client = DoordeckSDK.client
+    private val client = Doordeck.client
     private var view: UnlockView? = null
 
 
@@ -63,48 +61,13 @@ internal class UnlockPresenter {
             return
         }
 
-        val certif = DoordeckSDK.certificateChain
-        certif?.let {
-            DoordeckSDK.certificateChain = it
-            resolveTile(tileId)
-        } ?:
-        getCertificate(tileId)
-    }
-
-    /**
-     * Call the server to get the certificate given the user's ephemeral key
-     * @param tileId id of the tile scanned
-     */
-    private fun getCertificate(tileId: String) {
-        jobs += GlobalScope.launch(Dispatchers.Main) {
-            val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(DoordeckSDK.keys.public).build()
-            val result: Result<CertificateChain> = client.certificateService().registerEphemeralKey(ephKey).awaitResult()
-            when (result) {
-                is Result.Ok -> {
-                    resolveTile(tileId)
-                    DoordeckSDK.certificateChain = result.value
-                    EventsManager.sendEvent(EventAction.GET_CERTIFICATE_SUCCESS)
-                }
-                is Result.Error -> {
-                    if (result.response.code() == 423) {
-                        EventsManager.sendEvent(EventAction.TWO_FACTOR_AUTH_NEEDED)
-                        view?.displayVerificationView()
-                    } else {
-                        EventsManager.sendEvent(EventAction.INVALID_AUTH_TOKEN)
-                        accessDenied()
-                    }
-                }
-                is Result.Exception -> {
-                    accessDenied()
-                    val errorMsg = result.exception.message
-                    if (errorMsg != null && errorMsg.contains("Unable to resolve host"))
-                        EventsManager.sendEvent(EventAction.NO_INTERNET, result.exception)
-                    else
-                        EventsManager.sendEvent(EventAction.SDK_NETWORK_ERROR, result.exception)
-                    LOG.e(TAG, "getCertificate:  Something broken : " + result.exception)
-                }
-            }
+        if (Doordeck.status == AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
+            view?.displayVerificationView()
+            return
         }
+
+        val certif = Doordeck.certificateChain
+        certif?.let { resolveTile(tileId) }
     }
 
     /**
@@ -158,11 +121,11 @@ internal class UnlockPresenter {
      */
     private fun unlockDevice(deviceId: UUID) {
 
-        DoordeckSDK.certificateChain?.let { chain ->
+        Doordeck.certificateChain?.let { chain ->
             jobs += GlobalScope.launch(Dispatchers.Main) {
 
-                val signedJWT = JWTSignedUtils.getSignedJWT(chain.certificateChain(),
-                        DoordeckSDK.keys.private,
+                val signedJWT = JWTUtils.getSignedJWT(chain.certificateChain(),
+                        Doordeck.getKeys().private,
                         deviceId,
                         chain.userId()
                 )
@@ -174,8 +137,8 @@ internal class UnlockPresenter {
                         view?.unlockSuccess()
                     }
                     false -> {
-                        EventsManager.sendEvent(EventAction.CODE_VERIFICATION_FAILED, result.message())
-                        Log.e("resolveTileSuccess", "Error result : " + result.message())
+                        EventsManager.sendEvent(EventAction.UNLOCK_FAILED, result.message())
+                        LOG.e(TAG, "Error result : " + result.message())
                         accessDenied()
                     }
                 }

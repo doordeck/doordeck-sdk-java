@@ -71,11 +71,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         logo_spinner.visibility = View.VISIBLE
         arrow_image.scaleX = 0f
         arrow_image.scaleY = 0f
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
-        } else {
-            arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
-        }
+        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
         unlock_status.setText(R.string.UNLOCKING)
     }
 

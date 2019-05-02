@@ -4,7 +4,7 @@ package com.doordeck.sdk.ui
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.doordeck.sdk.R
-import com.doordeck.sdk.common.manager.DoordeckSDK
+import com.doordeck.sdk.common.manager.Doordeck
 import io.reactivex.disposables.CompositeDisposable
 
 internal open class BaseActivity : AppCompatActivity() {
@@ -14,11 +14,11 @@ internal open class BaseActivity : AppCompatActivity() {
 
     // setup the theme in the activities that extends this one
     private fun getCurrentTheme(): Int {
-        val lightTheme = DoordeckSDK.lightTheme
-        return if (lightTheme) {
-            R.style.lightTheme
-        } else {
+        val darkMode = Doordeck.darkMode
+        return if (darkMode) {
             R.style.darkTheme
+        } else {
+            R.style.lightTheme
         }
     }
 

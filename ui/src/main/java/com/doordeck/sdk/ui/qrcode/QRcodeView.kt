@@ -8,13 +8,13 @@ import android.os.Build
 import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.doordeck.sdk.common.utils.Helper.isUUID
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.google.zxing.ResultPoint
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.BarcodeView
+import java.util.*
 
 /**
  * Custom view for the QRCode
@@ -63,5 +63,15 @@ internal class QRcodeView : BarcodeView {
 
             }
         })
+    }
+
+    private fun isUUID(id: String): Boolean {
+        return try {
+            UUID.fromString(id)
+            true
+        } catch (e: IllegalArgumentException) {
+            false
+        }
+
     }
 }
