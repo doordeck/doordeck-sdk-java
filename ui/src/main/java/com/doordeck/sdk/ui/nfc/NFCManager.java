@@ -12,6 +12,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 
 
+/**
+ * Check the content of the intent got once scanning with NFC
+ */
 public class NFCManager {
 
     private final static String TAG = NFCManager.class.getSimpleName();

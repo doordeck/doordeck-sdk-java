@@ -57,7 +57,6 @@ internal object EventsManager {
             EventAction.CODE_VERIFICATION_FAILED -> callback?.codeVerificationFailed()
             EventAction.SDK_NETWORK_ERROR -> callback?.networkError()
             EventAction.UNLOCK_INVALID_TILE_ID -> callback?.unlockedInvalidTileID()
-            EventAction.AUTHENTICATED -> callback?.authentificationSuccess()
             EventAction.UNLOCK_SUCCESS -> {
                 callback?.unlockSuccess()
                 unlockCallback?.unlockSuccess()
@@ -68,10 +67,6 @@ internal object EventsManager {
             }
             EventAction.RESOLVE_TILE_FAILED -> callback?.resolveTileFailed()
             EventAction.RESOLVE_TILE_SUCCESS -> callback?.resolveTileSuccess()
-            EventAction.CLOSE_QR_CODE_VIEW -> {
-            }
-            EventAction.CLOSE_NFC_VIEW -> {
-            }
         }
     }
 

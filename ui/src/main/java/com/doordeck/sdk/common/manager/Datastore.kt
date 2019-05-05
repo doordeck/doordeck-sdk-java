@@ -6,7 +6,7 @@ import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
 
-
+// tore some data locally (in shared pref and/or android keychain)
 internal class Datastore {
 
     // store pub/priv key in the safe android keychain

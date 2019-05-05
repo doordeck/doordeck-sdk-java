@@ -27,15 +27,9 @@ internal class QRcodeActivity : BaseActivity() {
 
     private fun setupListeners() {
         tvDismiss.setOnClickListener { finish() }
-
-        // listen to the CLOSE_QR_CODE_VIEW event to close the activity from outside this view
-        disposables.add(EventsManager.eventsObservable()
-                .subscribeOn(Schedulers.io())
-                .filter { it.event == EventAction.CLOSE_QR_CODE_VIEW }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ finish() }, Throwable::printStackTrace))
     }
 
+    // check if the user has grandted the camera permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

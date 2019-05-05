@@ -8,7 +8,17 @@ import retrofit2.Response
 import java.security.PublicKey
 
 
+/**
+ * Singleton responsible to get the certificate chains of the user and verify it's auth status
+ */
 object CertificateManager {
+
+    /**
+     * Call the server with a generated eph key associated to the user get it's certificate chain
+     * The user might needs to verify its device.
+     * If the server responds with a 423, the user needs to verify its device with a 2 FA
+     * @param publicKey public key of the user
+     */
     fun getCertificatesAsync(publicKey: PublicKey) {
         val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(publicKey).build()
         val request = Doordeck.client.certificateService().registerEphemeralKey(ephKey)

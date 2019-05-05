@@ -34,13 +34,6 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
     private fun setupListeners() {
         tvDismiss.setOnClickListener { finish() }
-
-        // listen to the CLOSE_NFC_VIEW event to close the activity from outside this view
-        disposables.add(EventsManager.eventsObservable()
-                .subscribeOn(Schedulers.io())
-                .filter { it.event == EventAction.CLOSE_NFC_VIEW }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ finish() }, Throwable::printStackTrace))
     }
 
 

@@ -69,8 +69,8 @@ object Doordeck {
         Preconditions.checkArgument(!TextUtils.isEmpty(apiKey), "API key needs to be provided")
         if (this.apiKey == null) {
             val jwtToken = JWTContentUtils.getContentHeaderFromJson(apiKey)
-            Preconditions.checkNotNull(jwtToken, "Api key is invalid")
-            Preconditions.checkArgument(isValidityApiKey(jwtToken!!), "Api key has expired")
+            Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
+            Preconditions.checkArgument(isValidityApiKey(jwtToken), "Api key has expired")
             this.jwtToken = jwtToken
             this.apiKey = apiKey
             this.darkMode = darkMode
@@ -98,7 +98,13 @@ object Doordeck {
         this.callback = callback
     }
 
-
+    /**
+     * Show the unlock screen given the Scan type given in parameter
+     *
+     * @param context current context
+     * @param type type of scan to use (NFC or QR) , NFC by default if not provided, optional
+     * @param callback callback of the method, optional
+     */
     fun showUnlock(context: Context, type: ScanType = ScanType.NFC, callback: UnlockCallback? = null) {
 
         if (status == AuthStatus.UNAUTHORIZED) {
@@ -120,7 +126,7 @@ object Doordeck {
 
 
     /**
-     * Cleanup the local variable
+     * Cleanup the data internally
      */
     fun logout() {
         apiKey = null
@@ -145,6 +151,10 @@ object Doordeck {
     }
 
 
+    /**
+     * Verify if the expiry date provided inside the JWT token is valid
+     * @return true if valid, false otherwise
+     */
     private fun isValidityApiKey(jwtToken: JWTHeader): Boolean {
         val currentDate = Date().time
         if (jwtToken.exp * 1000L > currentDate)

@@ -30,6 +30,7 @@ internal class QRcodeView : BarcodeView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
 
+    // check if the perm of the camera has been granted before starting scanning
     fun start() {
         val cameraPermission = Manifest.permission.CAMERA
         val permissionCheck = ContextCompat.checkSelfPermission(context, cameraPermission)
@@ -65,6 +66,7 @@ internal class QRcodeView : BarcodeView {
         })
     }
 
+    // verify if the content from in the QR code is an UUID
     private fun isUUID(id: String): Boolean {
         return try {
             UUID.fromString(id)

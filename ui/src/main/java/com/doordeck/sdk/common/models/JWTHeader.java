@@ -2,6 +2,7 @@ package com.doordeck.sdk.common.models;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
+//  JWT header
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class JWTHeader {
 

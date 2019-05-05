@@ -10,6 +10,11 @@ import java.nio.charset.StandardCharsets
 
 internal object JWTContentUtils {
 
+    /**
+     * parse the JWT and extract the value into a JWTHeader object
+     * @param JWT token of the user
+     *  @return JWTHeader is generated, without any issue
+     */
     fun getContentHeaderFromJson(jwt: String): JWTHeader? {
 
         try {

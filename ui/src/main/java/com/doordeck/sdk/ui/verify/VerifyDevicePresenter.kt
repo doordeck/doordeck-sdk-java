@@ -34,6 +34,7 @@ internal class VerifyDevicePresenter {
         checkMethodUsed(view)
     }
 
+    // given the JWtToken of the user, check with method to contact the user
     private fun checkMethodUsed(view: VerifyDeviceView) {
         Doordeck.jwtToken?.let { header ->
             when {

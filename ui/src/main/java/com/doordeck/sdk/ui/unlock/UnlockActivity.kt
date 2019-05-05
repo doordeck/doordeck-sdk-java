@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import kotlinx.android.synthetic.main.activity_unlock.*
 
+// screen responsible to display the status of the unlock process
 internal class UnlockActivity : BaseActivity(), UnlockView {
 
     private var unlockPresenter: UnlockPresenter? = null
@@ -187,7 +188,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.LOCATION_PERMISSION_TITLE)
                             .setMessage(R.string.LOCATION_PERMISSION_TEXT)
-                            .setPositiveButton(R.string.OK) { _, i ->
+                            .setPositiveButton(R.string.OK) { _, _ ->
                                 //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(this@UnlockActivity,
                                         arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),

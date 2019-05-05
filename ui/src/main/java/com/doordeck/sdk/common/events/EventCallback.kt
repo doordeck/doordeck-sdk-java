@@ -2,8 +2,8 @@ package com.doordeck.sdk.common.events
 
 /**
  * Callback to implement by the user in order receive the callbacks sent by the SDK
+ * Check the interface IEventCallback for the description of each callback
  */
-
 
 abstract class EventCallback : IEventCallback {
     override fun noInternet() {}
