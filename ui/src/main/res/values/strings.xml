@@ -2,7 +2,6 @@
 
 
     <!--buttons-->
-    <string name="DISMISS">Dismiss</string>
     <string name="OK">OK</string>
 
     <!--errors-->
@@ -19,6 +18,13 @@
     <string name="UNLOCKED">Unlocked</string>
     <string name="CHECKING_GEOFENCE">Checking geofence</string>
     <string name="ACCESS_DENIED_GEOFENCE">You are not close enough to the door to unlock it.</string>
-    <string name="NO_TOKEN">No token found. User is not logged in.</string>
-    <string name="EXPIRED_TOKEN">Your Auth Token has expired. Please contact the developers of this App.</string>
+    <string name="scan_QR">Scan QR</string>
+    <string name="touch_nfc">Touch NFC</string>
+    <string name="tile_id_not_valid">Tile ID not valid. Closing…</string>
+    <string name="nfc_not_enabled_message">Please activate NFC and press Back to return to the application!</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="nfc_desc">Touch the NFC tile next to the door to unlock</string>
+    <string name="send">Send</string>
+    <string name="verify_device_desc">Enter your verification code send to %s</string>
+    <string name="verify_device_desc_no_method">Enter your verification code sent</string>
 </resources>

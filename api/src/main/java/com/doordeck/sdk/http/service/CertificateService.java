@@ -4,6 +4,8 @@ import com.doordeck.sdk.dto.certificate.CertificateChain;
 import com.doordeck.sdk.dto.certificate.RegisterEphemeralKey;
 import com.doordeck.sdk.dto.certificate.VerificationMethod;
 import com.doordeck.sdk.dto.certificate.VerificationRequest;
+
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -15,7 +17,7 @@ public interface CertificateService {
     Call<CertificateChain> registerEphemeralKey(@Body RegisterEphemeralKey ephemeralKey);
 
     @POST("auth/certificate/verify")
-    Call<CertificateChain> initVerification(@Body RegisterEphemeralKey ephemeralKey, @Query("method") VerificationMethod method);
+    Call<Void> initVerification(@Body RegisterEphemeralKey ephemeralKey, @Query("method") VerificationMethod method);
 
     @POST("auth/certificate/check")
     Call<CertificateChain> attemptVerification(@Body VerificationRequest verificationRequest);

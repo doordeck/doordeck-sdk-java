@@ -7,5 +7,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/statusColor</item>
+
     </style>
 </resources>

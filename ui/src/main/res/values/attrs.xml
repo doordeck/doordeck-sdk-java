@@ -14,9 +14,7 @@
     <attr name="ddTextColorPrimary" format="color|reference" />
     <attr name="ddTextColorSecondary" format="color|reference" />
     <attr name="ddColorSecondary" format="color|reference" />
-
     <attr name="ic_unlock_circle" format="reference" />
     <attr name="ic_button" format="reference" />
-
 
 </resources>

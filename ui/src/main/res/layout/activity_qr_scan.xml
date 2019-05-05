@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <com.doordeck.sdk.ui.qrcode.QRcodeView
+        android:id="@+id/qr"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </com.doordeck.sdk.ui.qrcode.QRcodeView>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tvDismiss"
+        android:scaleType="center"
+        app:srcCompat="@drawable/ic_scanner_background" />
+
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_qr_tile"
+        android:id="@+id/ivTile"
+        android:layout_centerInParent="true"
+        android:paddingTop="160dp"/>
+
+    <TextView
+        android:id="@+id/tvScanTitle"
+        android:layout_width="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:paddingTop="280dp"
+        android:text="@string/scan_QR"
+        android:textAlignment="center"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="24dp"
+        android:textStyle="bold"
+
+        />
+
+
+    <TextView
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvScanTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:text="Please scan the QR tile next to the door to unlock"
+        android:textColor="?android:attr/textColorPrimary"
+        android:textSize="20dp"
+        />
+
+
+
+    <TextView
+        android:id="@+id/tvDismiss"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dismiss_btn_height"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/ddColorAccent"
+        android:gravity="center_horizontal"
+        android:paddingTop="15dp"
+        android:text="@string/dismiss"
+        android:textColor="@android:color/white"
+        android:textSize="20dp" />
+
+
+</RelativeLayout>

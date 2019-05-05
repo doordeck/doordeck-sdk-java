@@ -33,6 +33,7 @@ public interface DeviceService {
     Call<List<ShareableDevice>> getShareableDevices();
 
     @POST("device/{deviceId}/execute")
+    @Headers(HttpHeaders.CONTENT_TYPE + ": application/jwt")
     Call<Void> executeOperation(@Path("deviceId") UUID deviceId, @Body String signedOperation);
 }
 

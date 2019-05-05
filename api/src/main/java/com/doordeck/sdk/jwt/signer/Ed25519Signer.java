@@ -50,6 +50,7 @@ public class Ed25519Signer extends BaseSigner {
             signer.initSign(privateKey);
             signer.update(serialized.getBytes(StandardCharsets.UTF_8));
 
+
             byte[] jwsSignature = signer.sign();
             String signature = BaseEncoding.base64Url().omitPadding().encode(jwsSignature);
 
@@ -60,4 +61,3 @@ public class Ed25519Signer extends BaseSigner {
     }
 
 }
-

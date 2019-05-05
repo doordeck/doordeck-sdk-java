@@ -4,7 +4,9 @@ import com.doordeck.sdk.dto.operation.*;
 import com.doordeck.sdk.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.BaseEncoding;
-
+import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
+import com.doordeck.sdk.dto.operation.ImmutableAddUserOperation;
+import com.doordeck.sdk.jwt.ImmutableHeader;
 import java.security.KeyFactory;
 import java.security.PublicKey;
 import java.security.spec.X509EncodedKeySpec;
@@ -69,7 +71,7 @@ public class OperationTest {
         final MutateDoorState state = ImmutableMutateDoorState.builder()
             .locked(false)
             .build();
-        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTABLE_LOCK\",\"locked\":false}", MutateDoorState.class));
+        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTATE_LOCK\",\"locked\":false}", MutateDoorState.class));
     }
 
     @Test
@@ -77,7 +79,7 @@ public class OperationTest {
         final MutateDoorState state = ImmutableMutateDoorState.builder()
             .locked(false)
             .build();
-        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTABLE_LOCK\",\"locked\":false,\"duration\":1}", MutateDoorState.class));
+        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTATE_LOCK\",\"locked\":false,\"duration\":1}", MutateDoorState.class));
     }
 
     @Test
@@ -85,7 +87,7 @@ public class OperationTest {
         final MutateDoorState state = ImmutableMutateDoorState.builder()
             .locked(false)
             .build();
-        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTABLE_LOCK\",\"locked\":false,\"duration\":60}", MutateDoorState.class));
+        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTATE_LOCK\",\"locked\":false,\"duration\":60}", MutateDoorState.class));
     }
 
     @Test
@@ -93,7 +95,7 @@ public class OperationTest {
         final MutateDoorState state = ImmutableMutateDoorState.builder()
             .locked(false)
             .build();
-        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTABLE_LOCK\",\"locked\":false,\"duration\":61}", MutateDoorState.class));
+        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTATE_LOCK\",\"locked\":false,\"duration\":61}", MutateDoorState.class));
     }
 
     @Test
@@ -101,7 +103,7 @@ public class OperationTest {
         final MutateDoorState state = ImmutableMutateDoorState.builder()
             .locked(false)
             .build();
-        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTABLE_LOCK\",\"locked\":false,\"duration\":0.1}", MutateDoorState.class));
+        assertEquals(state, MAPPER.readValue("{\"type\":\"MUTATE_LOCK\",\"locked\":false,\"duration\":0.1}", MutateDoorState.class));
     }
 
 }
