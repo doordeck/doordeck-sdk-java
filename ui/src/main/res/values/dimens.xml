@@ -5,8 +5,8 @@
 
     <dimen name="sideMargin">32dp</dimen>
 
-    <dimen name="loading_spinner">120dp</dimen>
     <dimen name="dismiss_btn_height">60dp</dimen>
+    <dimen name="loading_spinner">150dp</dimen>
 
 
     <!--

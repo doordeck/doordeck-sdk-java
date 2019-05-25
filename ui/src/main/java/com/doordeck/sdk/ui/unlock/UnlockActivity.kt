@@ -11,6 +11,7 @@ import android.graphics.drawable.Animatable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -41,6 +42,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         unlockPresenter = UnlockPresenter()
         tvDismiss.setOnClickListener { finishActivity() }
+        resetAnimation()
     }
 
 
@@ -68,11 +70,21 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
 
     private fun resetAnimation() {
-
+        circle_back.scaleX = 0f
+        circle_back.scaleY = 0f
+//        circle.scaleX = 0f
+//        circle.scaleY = 0f
+//        circle0.scaleX = 0f
+//        circle0.scaleY = 0f
+//        circle1.scaleX = 0f
+//        circle1.scaleY = 0f
+//        circle2.scaleX = 0f
+//        circle2.scaleY = 0f
+        key_title.alpha = 0f
+        lock_image.setBackgroundDrawable(null);
+        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
         logo_spinner.visibility = View.VISIBLE
-        arrow_image.scaleX = 0f
-        arrow_image.scaleY = 0f
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
+//        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success_old))
         unlock_status.setText(R.string.UNLOCKING)
     }
 
@@ -85,18 +97,16 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private fun showUnlockAnimation() {
 
         tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        rlContent.setBackgroundColor(ContextCompat.getColor(this, R.color.success))
-        key_title.setTextColor(Color.WHITE)
-        arrow_image.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
-
+        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
+        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-        arrow_image.animate().scaleX(0.4f).scaleY(0.4f).alpha(1.0f).setInterpolator(OvershootInterpolator()).setDuration(300).startDelay = 200
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
-        val animation = arrow_image.drawable
+        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
+        val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
         unlock_status.setText(R.string.UNLOCKED)
+        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
         unlock_status.setTextColor(ContextCompat.getColor(this, R.color.ddColorTextLight))
     }
 
@@ -117,19 +127,16 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private fun showAccessDeniedAnimation() {
 
         tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        rlContent.setBackgroundColor(ContextCompat.getColor(this, R.color.error))
-        key_title.setTextColor(Color.WHITE)
-        arrow_image.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
-        val duration: Long = 600
+        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
+        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_access_denied))
-        arrow_image.animate().scaleX(0.4f).scaleY(0.4f).alpha(1.0f).setInterpolator(OvershootInterpolator()).duration = duration
-        val animation = arrow_image.drawable
+        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_fail))
+        val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
         key_title.setText(R.string.ACCESS_DENIED)
+        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
         unlock_status.setTextColor(Color.WHITE)
 
     }

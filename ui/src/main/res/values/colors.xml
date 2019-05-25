@@ -1,7 +1,7 @@
 <resources>
 
     <color name="ddColorAccentLight">#45BDD1</color>
-    <color name="ddColorAccentDark">#E5204E</color>
+    <color name="ddColorAccentDark">#118699</color>
     <color name="ddColorPrimaryLight">#FFFFFF</color>
     <color name="ddColorPrimaryDark">#041C2A</color>
     <color name="ddColorSecondaryLight">#FAFAFA</color>
@@ -14,7 +14,7 @@
     <color name="success">#4AC65C</color>
     <color name="error">#F93251</color>
     <color name="white_transp">#B7FFFFFF</color>
-    <color name="black_transp">#66000000</color>
+    <color name="black_transp">#32000000</color>
 
     <color name="grey">#E4E4E4</color>
     <color name="dark_grey">#233744</color>

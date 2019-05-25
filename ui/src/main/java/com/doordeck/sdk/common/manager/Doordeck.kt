@@ -65,7 +65,7 @@ object Doordeck {
      * the SDK.
      * @return Doordeck the current instance of the SDK
      */
-    fun initialize(apiKey: String, darkMode: Boolean = true): Doordeck {
+    fun initialize(apiKey: String, darkMode: Boolean = false): Doordeck {
         Preconditions.checkArgument(!TextUtils.isEmpty(apiKey), "API key needs to be provided")
         if (this.apiKey == null) {
             val jwtToken = JWTContentUtils.getContentHeaderFromJson(apiKey)
