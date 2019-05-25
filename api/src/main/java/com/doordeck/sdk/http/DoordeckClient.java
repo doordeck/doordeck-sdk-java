@@ -77,7 +77,7 @@ public class DoordeckClient {
 
         this.retrofit = new Retrofit.Builder()
                 .client(okHttp)
-                .baseUrl(java.util.Optional.ofNullable(config.baseUrl).orElse(DEFAULT_BASE_URL).toString())
+                .baseUrl(Optional.fromNullable(config.baseUrl).or(DEFAULT_BASE_URL).toString())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(
                         JacksonConverterFactory.create(Optional

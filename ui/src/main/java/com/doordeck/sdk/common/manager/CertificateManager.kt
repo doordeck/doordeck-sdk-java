@@ -1,7 +1,9 @@
 package com.doordeck.sdk.common.manager
 
+import android.content.Context
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
+import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,21 +21,29 @@ object CertificateManager {
      * If the server responds with a 423, the user needs to verify its device with a 2 FA
      * @param publicKey public key of the user
      */
-    fun getCertificatesAsync(publicKey: PublicKey) {
+    fun getCertificatesAsync(publicKey: PublicKey, ctx: Context) {
         val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(publicKey).build()
-        val request = Doordeck.client.certificateService().registerEphemeralKey(ephKey)
+        val request = Doordeck.client!!.certificateService().registerEphemeralKey(ephKey)
         request.enqueue(object : Callback<CertificateChain> {
             override fun onResponse(call: Call<CertificateChain>, response: Response<CertificateChain>) {
                 Doordeck.certificateChain = response.body()
-                if (response.code() == 423)
+                if (response.body() != null) Doordeck.storeCertificates(Doordeck.certificateChain!!)
+                if (response.code() == 423) {
                     Doordeck.status = AuthStatus.TWO_FACTOR_AUTH_NEEDED
-                else
+                    VerifyDeviceActivity.start(ctx)
+                } else {
                     Doordeck.status = AuthStatus.AUTHORIZED
+                    Doordeck.storeLaststatus(Doordeck.status)
+                    Doordeck.certificateLoaded = true
+                }
             }
 
             override fun onFailure(call: Call<CertificateChain>, t: Throwable) {
                 Doordeck.status = AuthStatus.UNAUTHORIZED
+                Doordeck.storeLaststatus(Doordeck.status)
+                Doordeck.certificateLoaded = true
             }
         })
     }
+
 }

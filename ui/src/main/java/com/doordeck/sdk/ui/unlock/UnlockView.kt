@@ -22,4 +22,6 @@ internal interface UnlockView {
     fun notValidTileId()
 
     fun displayVerificationView()
+
+    fun noUserLoggedIn()
 }

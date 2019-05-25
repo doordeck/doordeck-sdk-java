@@ -8,16 +8,23 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
+import com.doordeck.sdk.common.manager.Doordeck
+import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -32,6 +39,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var unlockPresenter: UnlockPresenter? = null
     private var locationPermissionShown = false
     private var googlePermissionShown = false
+    private var canceledVerify = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +49,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         unlockPresenter = UnlockPresenter()
         tvDismiss.setOnClickListener { finishActivity() }
+
     }
 
 
@@ -68,11 +77,19 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
 
     private fun resetAnimation() {
+        circle_back.scaleX = 0f
+        circle_back.scaleY = 0f
 
+        key_title.alpha = 0f
+
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        val animation = lock_image.drawable
+        if (animation is Animatable) {
+            (animation as Animatable).stop()
+        }
+        lock_image.setImageDrawable(null)
+        lock_image.setImageDrawable(animated)
         logo_spinner.visibility = View.VISIBLE
-        arrow_image.scaleX = 0f
-        arrow_image.scaleY = 0f
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
         unlock_status.setText(R.string.UNLOCKING)
     }
 
@@ -85,18 +102,17 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private fun showUnlockAnimation() {
 
         tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        rlContent.setBackgroundColor(ContextCompat.getColor(this, R.color.success))
-        key_title.setTextColor(Color.WHITE)
-        arrow_image.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
-
+        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
+        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-        arrow_image.animate().scaleX(0.4f).scaleY(0.4f).alpha(1.0f).setInterpolator(OvershootInterpolator()).setDuration(300).startDelay = 200
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
-        val animation = arrow_image.drawable
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        lock_image.setImageDrawable(animated)
+        val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
         unlock_status.setText(R.string.UNLOCKED)
+        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
         unlock_status.setTextColor(ContextCompat.getColor(this, R.color.ddColorTextLight))
     }
 
@@ -110,26 +126,34 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         finish()
     }
 
+    override fun noUserLoggedIn() {
+        showAccessDeniedAnimation()
+        unlock_status.text = getString(R.string.no_user_logged_in)
+    }
+
     override fun displayVerificationView() {
-        VerifyDeviceActivity.start(this)
+        if (!canceledVerify) {
+            canceledVerify = true
+            VerifyDeviceActivity.start(this)
+        } else {
+            finish()
+        }
     }
 
     private fun showAccessDeniedAnimation() {
 
         tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        rlContent.setBackgroundColor(ContextCompat.getColor(this, R.color.error))
-        key_title.setTextColor(Color.WHITE)
-        arrow_image.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
-        val duration: Long = 600
+        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
+        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-
-        arrow_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_access_denied))
-        arrow_image.animate().scaleX(0.4f).scaleY(0.4f).alpha(1.0f).setInterpolator(OvershootInterpolator()).duration = duration
-        val animation = arrow_image.drawable
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_fail)
+        lock_image.setImageDrawable(animated)
+        val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
         key_title.setText(R.string.ACCESS_DENIED)
+        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
         unlock_status.setTextColor(Color.WHITE)
 
     }
@@ -221,8 +245,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     public override fun onResume() {
         super.onResume()
-        unlockPresenter?.init(intent.extras?.getString(TILE_ID))
         resetAnimation()
+        if(!Doordeck.hasUserLoggedIn(this)) {
+            noUserLoggedIn()
+            return
+        }
+        if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
+        else if (intent.extras?.getString(DEVICE) != null)  {
+            val om = Jackson.sharedObjectMapper()
+            val deviceToUnlock = om.readValue(intent.extras?.getString(DEVICE), Device::class.java)
+            unlockPresenter?.init(deviceToUnlock)
+        }
+
     }
 
     public override fun onStop() {
@@ -244,10 +278,20 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
 
         private const val TILE_ID = "tile_id"
+        private const val DEVICE = "DEVICE"
+
 
         fun start(context: Context, id: String) {
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(starter)
+        }
+        fun start(context: Context, device: Device) {
+            val starter = Intent(context, UnlockActivity::class.java)
+            val om = Jackson.sharedObjectMapper()
+            starter.putExtra(DEVICE, om.writeValueAsString(device))
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }

@@ -67,15 +67,17 @@ internal class VerifyDevicePresenter {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
             val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(Doordeck.getKeys().public).build()
-            val result: Response<Void> = client.certificateService().initVerification(ephKey, method).awaitResponse()
+            val result: Response<Void> = client!!.certificateService().initVerification(ephKey, method).awaitResponse()
             when (result.isSuccessful) {
                 true -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
                     LOG.d("onSendCode", "email sent !")
+                    view?.verifyCodeSuccess()
                 }
                 false -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_FAILED_SENDING)
                     LOG.d("onSendCode", "error : " + result.message())
+                    view?.verifyCodeFail()
                 }
             }
         }
@@ -92,17 +94,19 @@ internal class VerifyDevicePresenter {
                     .ephemeralKey(Doordeck.getKeys().private)
                     .verificationCode(code)
                     .build()
-            val result: Result<CertificateChain> = client.certificateService().attemptVerification(verifyRequest).awaitResult()
+            val result: Result<CertificateChain> = client!!.certificateService().attemptVerification(verifyRequest).awaitResult()
             when (result) {
                 is Result.Ok -> {
                     Doordeck.certificateChain = result.value
                     Doordeck.status = AuthStatus.AUTHORIZED
+                    Doordeck.storeLaststatus(Doordeck.status)
                     EventsManager.sendEvent(EventAction.CODE_VERIFICATION_SUCCESS)
                     view?.succeed()
                 }
                 is Result.Error -> {
                     EventsManager.sendEvent(EventAction.CODE_VERIFICATION_FAILED, result.exception)
                     LOG.e(TAG, "verifyCode error : " + result.exception)
+                    view?.fail()
                 }
                 is Result.Exception -> {
                     EventsManager.sendEvent(EventAction.SDK_NETWORK_ERROR, result.exception)

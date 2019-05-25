@@ -15,13 +15,12 @@
         <activity
             android:name=".ui.unlock.UnlockActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/lightTheme" />
+            android:theme="@style/ddLightTheme" />
         <activity
             android:name=".ui.qrcode.QRcodeActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.nfc.NFCActivity"
-
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
