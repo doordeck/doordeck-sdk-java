@@ -18,19 +18,18 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 
-    buildTypes {
-        buildTypes {
-            debug {
-                buildConfigField "String", "BASE_URL_API", '"https://api.dev.doordeck.com"'
 
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
-            release {
-                buildConfigField "String", "BASE_URL_API", '"https://api.doordeck.com"'
-                minifyEnabled false
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+    buildTypes {
+        debug {
+            buildConfigField "String", "BASE_URL_API", '"https://api.dev.doordeck.com"'
+
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        release {
+            buildConfigField "String", "BASE_URL_API", '"https://api.doordeck.com"'
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 
@@ -71,7 +70,7 @@ dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
 
     // doordeck api
-    compile(project(path: ':api')) {
+    api(project(path: ':api')) {
         exclude group: 'com.google.guava'
     }
 

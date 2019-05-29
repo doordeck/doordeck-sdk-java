@@ -25,6 +25,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
+
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 }
@@ -32,6 +33,7 @@ buildscript {
 allprojects {
    // group = GROUP
    // version = VERSION_NAME
+    group = 'com.github.doordeck'
 
     repositories {
         google()
