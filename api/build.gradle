@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-//apply plugin: 'maven'
+apply plugin: 'maven'
 apply plugin: "org.inferred.processors"
 
 buildscript {
@@ -34,7 +34,7 @@ dependencies {
     
     compileOnly deps.jsr305
 
-    testImplementation 'junit:junit:4.12'
+//    testImplementation 'junit:junit:4.12'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
