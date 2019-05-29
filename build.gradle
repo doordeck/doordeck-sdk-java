@@ -1,4 +1,5 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+//apply plugin: 'maven'
 
 buildscript {
     repositories {
@@ -25,7 +26,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:3.3.2'
-
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }
 }
@@ -38,6 +39,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
@@ -54,6 +56,6 @@ allprojects {
 //    libraryDescription = 'Android sdk for Doordeck'
 //}
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-}
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}
