@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -18,6 +19,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
@@ -82,7 +85,8 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 //        circle2.scaleY = 0f
         key_title.alpha = 0f
         lock_image.setBackgroundDrawable(null);
-        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        lock_image.setImageDrawable(animated)
         logo_spinner.visibility = View.VISIBLE
 //        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success_old))
         unlock_status.setText(R.string.UNLOCKING)
@@ -100,7 +104,8 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         circle_back.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
         circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success))
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        lock_image.setImageDrawable(animated)
         val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
@@ -130,7 +135,8 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         circle_back.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
         circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
         logo_spinner.alpha = 0f
-        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_fail))
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_fail)
+        lock_image.setImageDrawable(animated)
         val animation = lock_image.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()

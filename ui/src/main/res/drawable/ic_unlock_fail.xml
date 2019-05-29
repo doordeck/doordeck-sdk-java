@@ -202,19 +202,40 @@
     </target>
     <target android:name="path_4">
         <aapt:attr name="android:animation">
-            <objectAnimator
-                android:propertyName="fillAlpha"
-                android:startOffset="270"
-                android:duration="184"
-                android:valueFrom="1"
-                android:valueTo="0.1"
-                android:valueType="floatType"
-                android:interpolator="@android:anim/accelerate_interpolator"/>
+            <set>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="270"
+                    android:duration="184"
+                    android:valueFrom="1"
+                    android:valueTo="0.1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:anim/accelerate_interpolator"/>
+            </set>
         </aapt:attr>
     </target>
     <target android:name="path_7">
         <aapt:attr name="android:animation">
             <set>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:duration="1"
+                    android:valueFrom="#000000"
+                    android:valueTo="#000000"
+                    android:valueType="colorType" />
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType" />
                 <objectAnimator
                     android:propertyName="fillColor"
                     android:startOffset="159"
@@ -237,6 +258,20 @@
     <target android:name="group_8">
         <aapt:attr name="android:animation">
             <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="199"
+                    android:valueFrom="1"
+                    android:valueTo="0.2"
+                    android:valueType="floatType"
+                   />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="0.2"
+                    android:valueType="floatType"
+                    />
                 <objectAnimator
                     android:propertyName="scaleX"
                     android:startOffset="312"
@@ -270,6 +305,21 @@
                 <objectAnimator
                     android:propertyName="scaleX"
                     android:startOffset="219"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="1"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:startOffset="219"
                     android:duration="100"
                     android:valueFrom="1"
                     android:valueTo="0.6"
@@ -289,6 +339,20 @@
     <target android:name="group_4">
         <aapt:attr name="android:animation">
             <set>
+                <objectAnimator
+                    android:propertyName="scaleX"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="0.6"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="0.6"
+                    android:valueType="floatType"
+                    />
                 <objectAnimator
                     android:propertyName="scaleX"
                     android:startOffset="407"
@@ -313,6 +377,20 @@
             <set>
                 <objectAnimator
                     android:propertyName="scaleX"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="0.6"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="scaleY"
+                    android:duration="1"
+                    android:valueFrom="1"
+                    android:valueTo="0.6"
+                    android:valueType="floatType"
+                    />
+                <objectAnimator
+                    android:propertyName="scaleX"
                     android:startOffset="454"
                     android:duration="243"
                     android:valueFrom="0.6"
@@ -332,18 +410,36 @@
     </target>
     <target android:name="path_2">
         <aapt:attr name="android:animation">
-            <objectAnimator
-                android:propertyName="fillAlpha"
-                android:startOffset="407"
-                android:duration="100"
-                android:valueFrom="0"
-                android:valueTo="0.1"
-                android:valueType="floatType"
-                android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            <set>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1"
+                    android:valueFrom="0"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:startOffset="407"
+                    android:duration="100"
+                    android:valueFrom="0"
+                    android:valueTo="0.1"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
+
         </aapt:attr>
     </target>
     <target android:name="path_1">
         <aapt:attr name="android:animation">
+            <set>
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:duration="1"
+                android:valueFrom="0"
+                android:valueTo="0"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="503"
@@ -352,11 +448,26 @@
                 android:valueTo="0.1"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
         </aapt:attr>
     </target>
     <target android:name="path_9">
         <aapt:attr name="android:animation">
             <set>
+                <objectAnimator
+                    android:propertyName="fillAlpha"
+                    android:duration="1"
+                    android:valueFrom="0"
+                    android:valueTo="0"
+                    android:valueType="floatType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
+                <objectAnimator
+                    android:propertyName="fillColor"
+                    android:duration="1"
+                    android:valueFrom="#f93251"
+                    android:valueTo="#f93251"
+                    android:valueType="colorType"
+                    android:interpolator="@android:interpolator/fast_out_slow_in"/>
                 <objectAnimator
                     android:propertyName="fillAlpha"
                     android:startOffset="270"
@@ -390,6 +501,14 @@
     </target>
     <target android:name="path_10">
         <aapt:attr name="android:animation">
+            <set>
+            <objectAnimator
+                android:propertyName="fillAlpha"
+                android:duration="1"
+                android:valueFrom="0"
+                android:valueTo="0"
+                android:valueType="floatType"
+                android:interpolator="@android:interpolator/fast_out_slow_in"/>
             <objectAnimator
                 android:propertyName="fillAlpha"
                 android:startOffset="1301"
@@ -398,6 +517,7 @@
                 android:valueTo="1"
                 android:valueType="floatType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
+            </set>
         </aapt:attr>
     </target>
 </animated-vector>
