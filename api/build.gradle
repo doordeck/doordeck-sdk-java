@@ -1,6 +1,8 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
 apply plugin: "org.inferred.processors"
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.doordeck'
 
 buildscript {
     repositories {
@@ -22,14 +24,14 @@ dependencies {
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.8'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.8'
 
-    implementation "com.google.guava:guava:${versions.guava}-jre"
+    implementation "com.google.guava:guava:27.1-jre"
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
     implementation 'com.squareup.okhttp3:okhttp:3.14.0'
 
-    implementation "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
+    implementation "org.bouncycastle:bcprov-jdk15on:1.61"
     implementation deps.joda
     
     compileOnly deps.jsr305
