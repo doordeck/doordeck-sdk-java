@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: "org.inferred.processors"
 
 buildscript {
