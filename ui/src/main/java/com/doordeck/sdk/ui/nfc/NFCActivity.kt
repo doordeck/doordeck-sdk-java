@@ -80,6 +80,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
     override fun unlockFromTileId(tileId: String) {
         intent.action = ""
         UnlockActivity.start(this, tileId)
+        finish()
     }
 
     override fun onError(message: String) {
