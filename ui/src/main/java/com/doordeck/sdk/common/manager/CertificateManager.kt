@@ -21,10 +21,11 @@ object CertificateManager {
      */
     fun getCertificatesAsync(publicKey: PublicKey) {
         val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(publicKey).build()
-        val request = Doordeck.client.certificateService().registerEphemeralKey(ephKey)
+        val request = Doordeck.client!!.certificateService().registerEphemeralKey(ephKey)
         request.enqueue(object : Callback<CertificateChain> {
             override fun onResponse(call: Call<CertificateChain>, response: Response<CertificateChain>) {
                 Doordeck.certificateChain = response.body()
+                Doordeck.storeCertificates(Doordeck.certificateChain!!)
                 if (response.code() == 423)
                     Doordeck.status = AuthStatus.TWO_FACTOR_AUTH_NEEDED
                 else
@@ -36,4 +37,5 @@ object CertificateManager {
             }
         })
     }
+
 }

@@ -67,7 +67,7 @@ internal class VerifyDevicePresenter {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
             val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(Doordeck.getKeys().public).build()
-            val result: Response<Void> = client.certificateService().initVerification(ephKey, method).awaitResponse()
+            val result: Response<Void> = client!!.certificateService().initVerification(ephKey, method).awaitResponse()
             when (result.isSuccessful) {
                 true -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
@@ -92,7 +92,7 @@ internal class VerifyDevicePresenter {
                     .ephemeralKey(Doordeck.getKeys().private)
                     .verificationCode(code)
                     .build()
-            val result: Result<CertificateChain> = client.certificateService().attemptVerification(verifyRequest).awaitResult()
+            val result: Result<CertificateChain> = client!!.certificateService().attemptVerification(verifyRequest).awaitResult()
             when (result) {
                 is Result.Ok -> {
                     Doordeck.certificateChain = result.value

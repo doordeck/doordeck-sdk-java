@@ -1,5 +1,7 @@
 package com.doordeck.sdk.common.manager
 
+import com.doordeck.sdk.common.utils.SecurePreferencesHelper
+import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.jackson.Jackson
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import java.security.KeyPair
@@ -29,6 +31,34 @@ internal class Datastore {
         return KeyPair(pubKey, privKey)
     }
 
+    // store certificates in the safe android keychain
+    fun saveCertificates (certificateChain: CertificateChain) {
+        val om = Jackson.sharedObjectMapper()
+        SecurePreferencesHelper.setLongStringValue(CERTS, om.writeValueAsString(certificateChain))
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getSavedCertificates(): CertificateChain? {
+        val certificateChainStr = SecurePreferencesHelper.getLongStringValue(CERTS)
+        if (certificateChainStr == null) return null
+        val om = Jackson.sharedObjectMapper()
+        val certificateChain = om.readValue(certificateChainStr, CertificateChain::class.java)
+        return certificateChain
+    }
+
+    // store certificates in the safe android keychain
+    fun saveAuthToken (authToken: String) {
+        SecurePreferencesHelper.setLongStringValue(TOKEN, authToken)
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getAuthToken(): String? {
+        return SecurePreferencesHelper.getLongStringValue(TOKEN)
+    }
+
+
     public fun clean() {
         SecurePreferences.clearAllValues()
     }
@@ -36,6 +66,10 @@ internal class Datastore {
     companion object {
         private const val PUB_KEY = "pub_key"
         private const val PRIV_KEY = "priv_key"
+        private const val CERTS = "certs"
+        private const val TOKEN = "autToken"
     }
+
+
 
 }

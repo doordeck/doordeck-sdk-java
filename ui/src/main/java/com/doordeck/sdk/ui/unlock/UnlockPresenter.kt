@@ -1,6 +1,7 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.app.Activity
+import android.util.Log
 import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
@@ -8,6 +9,7 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.services.LocationService
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.util.JWTUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -30,13 +32,18 @@ internal class UnlockPresenter {
     private var locationService: LocationService? = null
     private var deviceToUnlock: Device? = null
     private var jobs: List<Job> = emptyList()
-    private val client = Doordeck.client
+    private var client: DoordeckClient? = null
     private var view: UnlockView? = null
 
 
     fun onStart(view: UnlockView) {
         this.view = view
         this.locationService = LocationService(view as Activity)
+        if (Doordeck.client == null) {
+            Doordeck.lateInitialize()
+            this.client = Doordeck.client
+        }
+
     }
 
     /**
@@ -66,7 +73,10 @@ internal class UnlockPresenter {
             return
         }
 
-        val certif = Doordeck.certificateChain
+        var certif = Doordeck.certificateChain
+//        if (certif == null) {
+//           certif = Doordeck.getStoredCertificateChain()
+//        }
         certif?.let { resolveTile(tileId) }
     }
 
@@ -76,7 +86,7 @@ internal class UnlockPresenter {
      */
     private fun resolveTile(tileId: String) {
         jobs += GlobalScope.launch(Dispatchers.Main) {
-            val result: Result<Device> = client.device().resolveTile(UUID.fromString(tileId)).awaitResult()
+            val result: Result<Device> = client!!.device().resolveTile(UUID.fromString(tileId)).awaitResult()
             when (result) {
                 is Result.Ok -> resolveTileSuccess(result.value)
                 is Result.Error -> {
@@ -130,7 +140,7 @@ internal class UnlockPresenter {
                         chain.userId()
                 )
 
-                val result: Response<Void> = client.device().executeOperation(deviceId, signedJWT).awaitResponse()
+                val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
                 when (result.isSuccessful) {
                     true -> {
                         EventsManager.sendEvent(EventAction.UNLOCK_SUCCESS)

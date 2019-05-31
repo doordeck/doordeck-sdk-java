@@ -41,7 +41,7 @@ object Doordeck {
     internal var status: AuthStatus = AuthStatus.UNAUTHORIZED
 
     // HTTP client
-    internal lateinit var client: DoordeckClient
+    internal var client: DoordeckClient? = null
     // pub/priv key
     private var keys: KeyPair? = null
     // Android keychain
@@ -76,12 +76,36 @@ object Doordeck {
             this.darkMode = darkMode
             createHttpClient()
             generateKeys()
+            storeToken(apiKey)
             keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
         } else
             Log.d(LOG_SDK, "Doordeck already initialized")
         return this
     }
 
+
+    /**
+     * Initialize the Doordeck SDK and get the Api key from the manifest file.
+     * That's the first method to call, preferable in your Application or MainActivity, before using
+     * the SDK.
+     * @return Doordeck the current instance of the SDK
+     */
+    internal fun lateInitialize(): Doordeck {
+        val apiKey = getStoredAuthToken()
+        if (apiKey !== null) {
+            val jwtToken = JWTContentUtils.getContentHeaderFromJson(apiKey)
+            Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
+            Preconditions.checkArgument(isValidityApiKey(jwtToken), "Api key has expired")
+            this.jwtToken = jwtToken
+            this.apiKey = apiKey
+            this.darkMode = false
+            createHttpClient()
+            generateKeys()
+            certificateChain = getStoredCertificateChain()
+        } else
+            Log.d(LOG_SDK, "Doordeck already initialized")
+        return this
+    }
 
     /**
      * Observable to subscribe to, to be able to listen to the events sent by the SDK
@@ -142,7 +166,7 @@ object Doordeck {
      * Create the network HTTP client
      */
 
-    private fun createHttpClient() {
+    internal fun createHttpClient() {
         this.client = DoordeckClient.Builder()
                 .baseUrl(URI.create(BuildConfig.BASE_URL_API))
                 .userAgent(USER_AGENT_PREFIX + BuildConfig.VERSION_NAME)
@@ -180,5 +204,33 @@ object Doordeck {
             }
         } else
             this.keys = keys
+    }
+
+    /**
+     * Store certificates them in the keychains
+     */
+    internal fun storeCertificates(certificateChain: CertificateChain) {
+        datastore.saveCertificates(certificateChain)
+    }
+
+    /**
+     * get stored certificates from keychains
+     */
+    internal fun getStoredCertificateChain(): CertificateChain? {
+        return datastore.getSavedCertificates()
+    }
+
+    /**
+     * Store certificates them in the keychains
+     */
+    internal fun storeToken(authToken: String) {
+        datastore.saveAuthToken(authToken)
+    }
+
+    /**
+     * get stored certificates from keychains
+     */
+    internal fun getStoredAuthToken(): String? {
+        return datastore.getAuthToken()
     }
 }

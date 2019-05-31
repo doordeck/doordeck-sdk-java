@@ -36,6 +36,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var unlockPresenter: UnlockPresenter? = null
     private var locationPermissionShown = false
     private var googlePermissionShown = false
+    private var canceledVerify = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         unlockPresenter = UnlockPresenter()
         tvDismiss.setOnClickListener { finishActivity() }
-        resetAnimation()
+
     }
 
 
@@ -126,7 +127,12 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     }
 
     override fun displayVerificationView() {
-        VerifyDeviceActivity.start(this)
+        if (!canceledVerify) {
+            canceledVerify = true
+            VerifyDeviceActivity.start(this)
+        } else {
+            finish()
+        }
     }
 
     private fun showAccessDeniedAnimation() {
