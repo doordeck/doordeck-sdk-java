@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.doordeck.sdk.R
 import com.doordeck.sdk.common.events.EventsManager
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity

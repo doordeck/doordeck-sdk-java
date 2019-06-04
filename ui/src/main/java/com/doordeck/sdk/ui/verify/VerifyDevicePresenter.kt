@@ -97,6 +97,7 @@ internal class VerifyDevicePresenter {
                 is Result.Ok -> {
                     Doordeck.certificateChain = result.value
                     Doordeck.status = AuthStatus.AUTHORIZED
+                    Doordeck.storeLaststatus(Doordeck.status)
                     EventsManager.sendEvent(EventAction.CODE_VERIFICATION_SUCCESS)
                     view?.succeed()
                 }

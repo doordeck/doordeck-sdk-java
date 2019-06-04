@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Doordeck.initialize(getString(R.string.doordeck_api_key))
+//        Doordeck.updateToken(getString(R.string.doordeck_api_key))
 
         nfc.setOnClickListener { Doordeck.showUnlock(this) }
         qrcode.setOnClickListener { unlockWithQRCode() }

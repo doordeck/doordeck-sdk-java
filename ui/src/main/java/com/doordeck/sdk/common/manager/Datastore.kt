@@ -34,13 +34,13 @@ internal class Datastore {
     // store certificates in the safe android keychain
     fun saveCertificates (certificateChain: CertificateChain) {
         val om = Jackson.sharedObjectMapper()
-        SecurePreferencesHelper.setLongStringValue(CERTS, om.writeValueAsString(certificateChain))
+        Doordeck.sharedPreference?.save(CERTS, om.writeValueAsString(certificateChain))
     }
 
 
     // retrieve certificates in the safe android keychain
     fun getSavedCertificates(): CertificateChain? {
-        val certificateChainStr = SecurePreferencesHelper.getLongStringValue(CERTS)
+        val certificateChainStr = Doordeck.sharedPreference?.getValueString(CERTS)
         if (certificateChainStr == null) return null
         val om = Jackson.sharedObjectMapper()
         val certificateChain = om.readValue(certificateChainStr, CertificateChain::class.java)
@@ -58,16 +58,34 @@ internal class Datastore {
         return SecurePreferencesHelper.getLongStringValue(TOKEN)
     }
 
+    // store certificates in the safe android keychain
+    fun saveStatus (status: AuthStatus) {
+        val om = Jackson.sharedObjectMapper()
+        Doordeck.sharedPreference?.save(TOKEN, om.writeValueAsString(status))
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getStoredStatus(): AuthStatus? {
+        val status = Doordeck.sharedPreference?.getValueString(TOKEN)
+        if (status == null) return null
+        val om = Jackson.sharedObjectMapper()
+        return om.readValue(status, AuthStatus::class.java)
+    }
+
 
     public fun clean() {
         SecurePreferences.clearAllValues()
     }
+
+
 
     companion object {
         private const val PUB_KEY = "pub_key"
         private const val PRIV_KEY = "priv_key"
         private const val CERTS = "certs"
         private const val TOKEN = "autToken"
+        private const val STATUS = "status"
     }
 
 

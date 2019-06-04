@@ -25,15 +25,19 @@ object CertificateManager {
         request.enqueue(object : Callback<CertificateChain> {
             override fun onResponse(call: Call<CertificateChain>, response: Response<CertificateChain>) {
                 Doordeck.certificateChain = response.body()
-                Doordeck.storeCertificates(Doordeck.certificateChain!!)
+                if (response.body() != null) Doordeck.storeCertificates(Doordeck.certificateChain!!)
                 if (response.code() == 423)
                     Doordeck.status = AuthStatus.TWO_FACTOR_AUTH_NEEDED
                 else
                     Doordeck.status = AuthStatus.AUTHORIZED
+                Doordeck.storeLaststatus(Doordeck.status)
+                Doordeck.certificateLoaded = true
             }
 
             override fun onFailure(call: Call<CertificateChain>, t: Throwable) {
                 Doordeck.status = AuthStatus.UNAUTHORIZED
+                Doordeck.storeLaststatus(Doordeck.status)
+                Doordeck.certificateLoaded = true
             }
         })
     }
