@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:id="@+id/rlContent"
     android:fitsSystemWindows="true"
-
+    android:background="?attr/ddColorPrimary"
     android:layout_height="match_parent">
 
     <ImageView
@@ -48,7 +48,7 @@
         android:layout_marginTop="130dp"
         android:text="@string/RETRIEVING_KEY"
         android:textAlignment="center"
-        android:textColor="@color/ddColorTextLight"
+        android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold" />
 
@@ -64,7 +64,7 @@
         android:text="@string/UNLOCKING"
         android:layout_marginTop="100dp"
         android:textAlignment="center"
-        android:textColor="@color/ddColorPrimaryDark"
+        android:textColor="?attr/ddTextColorPrimary"
         android:textSize="18sp" />
 
     <TextView

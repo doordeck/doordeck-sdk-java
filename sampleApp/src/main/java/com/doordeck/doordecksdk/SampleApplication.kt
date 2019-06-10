@@ -35,7 +35,7 @@ class SampleApplication: Application() {
         // example: SharedPreferences etc...
         val context: Context = SampleApplication.applicationContext()
         Timer("SettingUp", false).schedule(2000) {
-            Doordeck.initialize(context, getString(R.string.doordeck_api_key), false)
+            Doordeck.initialize(context, getString(R.string.doordeck_api_key), true)
         }
 
     }

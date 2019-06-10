@@ -140,7 +140,10 @@ object Doordeck {
                         keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                         var lastStatus = getLastStatus()
                         if (lastStatus != null) Doordeck.status = lastStatus
-                    } else certificateLoaded = true
+                    } else {
+                        status = AuthStatus.AUTHORIZED
+                        certificateLoaded = true
+                    }
                 }
             }
         } else

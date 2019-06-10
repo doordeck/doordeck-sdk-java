@@ -8,6 +8,7 @@
     <color name="ddColorSecondaryDark">#00283D</color>
 
     <color name="ddColorTextLight">#ffffff</color>
+    <color name="ddColorTextDark">#041C2A</color>
 
     <color name="statusColor">#00ffffff</color>
 

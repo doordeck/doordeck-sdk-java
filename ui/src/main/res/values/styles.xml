@@ -14,13 +14,17 @@
         <item name="ddColorAccent">@color/ddColorAccentLight</item>
         <item name="ddColorPrimary">@color/ddColorPrimaryLight</item>
         <item name="ddColorSecondary">@color/ddColorSecondaryLight</item>
+        <item name="ddTextColorPrimary">@color/ddColorTextDark</item>
+        <item name="ddTextColorSecondary">@color/ddColorTextLight</item>
     </style>
 
     <style name="darkTheme" parent="@style/SDKTheme" >
         <!-- Customize your theme here. -->
-        <item name="ddColorAccent">@color/ddColorAccentDark</item>
+        <item name="ddColorAccent">@color/ddColorAccentLight</item>
         <item name="ddColorPrimary">@color/ddColorPrimaryDark</item>
         <item name="ddColorSecondary">@color/ddColorSecondaryDark</item>
+        <item name="ddTextColorPrimary">@color/ddColorTextLight</item>
+        <item name="ddTextColorSecondary">@color/ddColorTextDark</item>
     </style>
 
 </resources>
