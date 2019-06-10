@@ -71,6 +71,24 @@ internal class UnlockPresenter {
 
     }
 
+    /**
+     * Initialize the presenter with the device
+     * @param device of the pressed button
+     */
+    fun init(device: Device?) {
+
+        // wait for certificate to be loaded if nescesarry
+        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
+        {
+            Doordeck.onCertLoaded = { oldValue, newValue ->
+                if(newValue == true) initUnlock(device)
+            }
+        } else {
+            initUnlock(device)
+        }
+
+    }
+
     private fun initUnlock(tileId: String?) {
 
         if (Doordeck.client != null) {
@@ -89,10 +107,30 @@ internal class UnlockPresenter {
         }
 
         var certif = Doordeck.certificateChain
-//        if (certif == null) {
-//           certif = Doordeck.getStoredCertificateChain()
-//        }
+
         certif?.let { resolveTile(tileId) }
+    }
+
+    private fun initUnlock(device: Device?) {
+
+        if (Doordeck.client != null) {
+            this.client = Doordeck.client
+        }
+
+        if (device == null) {
+            EventsManager.sendEvent(EventAction.RESOLVE_TILE_FAILED)
+            view?.notValidTileId()
+            return
+        }
+
+        if (Doordeck.status == AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
+            view?.displayVerificationView()
+            return
+        }
+
+        var certif = Doordeck.certificateChain
+
+        certif?.let { resolveTileSuccess(device) }
     }
 
 

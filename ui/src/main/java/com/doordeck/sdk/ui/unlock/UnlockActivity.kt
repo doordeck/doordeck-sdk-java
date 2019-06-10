@@ -22,6 +22,8 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
+import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -240,7 +242,12 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     public override fun onResume() {
         super.onResume()
-        unlockPresenter?.init(intent.extras?.getString(TILE_ID))
+        if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
+        else if (intent.extras?.getString(DEVICE) != null)  {
+            val om = Jackson.sharedObjectMapper()
+            val deviceToUnlock = om.readValue(intent.extras?.getString(DEVICE), Device::class.java)
+            unlockPresenter?.init(deviceToUnlock)
+        }
         resetAnimation()
     }
 
@@ -263,10 +270,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
 
         private const val TILE_ID = "tile_id"
+        private const val DEVICE = "DEVICE"
+
 
         fun start(context: Context, id: String) {
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
+            context.startActivity(starter)
+        }
+        fun start(context: Context, device: Device) {
+            val starter = Intent(context, UnlockActivity::class.java)
+            val om = Jackson.sharedObjectMapper()
+            starter.putExtra(DEVICE, om.writeValueAsString(device))
             context.startActivity(starter)
         }
     }

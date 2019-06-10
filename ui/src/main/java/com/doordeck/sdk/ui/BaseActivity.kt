@@ -12,9 +12,9 @@ internal open class BaseActivity : AppCompatActivity() {
     private fun getCurrentTheme(): Int {
         val darkMode = Doordeck.darkMode
         return if (darkMode) {
-            R.style.darkTheme
+            R.style.ddDarkTheme
         } else {
-            R.style.lightTheme
+            R.style.ddLightTheme
         }
     }
 

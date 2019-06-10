@@ -9,7 +9,7 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="lightTheme" parent="@style/SDKTheme" >
+    <style name="ddLightTheme" parent="@style/SDKTheme" >
         <!-- Customize your theme here. -->
         <item name="ddColorAccent">@color/ddColorAccentLight</item>
         <item name="ddColorPrimary">@color/ddColorPrimaryLight</item>
@@ -18,7 +18,7 @@
         <item name="ddTextColorSecondary">@color/ddColorTextLight</item>
     </style>
 
-    <style name="darkTheme" parent="@style/SDKTheme" >
+    <style name="ddDarkTheme" parent="@style/SDKTheme" >
         <!-- Customize your theme here. -->
         <item name="ddColorAccent">@color/ddColorAccentLight</item>
         <item name="ddColorPrimary">@color/ddColorPrimaryDark</item>

@@ -13,6 +13,7 @@ import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.certificate.CertificateChain
+import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.Ed25519KeyGenerator
 import com.doordeck.sdk.ui.nfc.NFCActivity
@@ -60,7 +61,7 @@ object Doordeck {
         return keys!!
     }
 
-    internal var tileId: String? = null
+    private var deviceToUnlock: Device? = null
 
     internal var sharedPreference: SharedPreference? = null
 
@@ -174,43 +175,6 @@ object Doordeck {
     }
 
 
-
-    /**
-     * Initialize the Doordeck SDK and get the Api key from the manifest file.
-     * That's the first method to call, preferable in your Application or MainActivity, before using
-     * the SDK.
-     * @return Doordeck the current instance of the SDK
-     */
-    internal fun nfcUnlock(ctx: Context, tileId: String): Doordeck {
-        val mRequestStartTime = System.currentTimeMillis()
-        val apiKey = getStoredAuthToken()
-        var totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-        Log.v("authKeyTime = ", totalRequestTime.toString())
-        if (apiKey !== null) {
-            val jwtToken = JWTContentUtils.getContentHeaderFromJson(apiKey)
-            Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
-            Preconditions.checkArgument(isValidityApiKey(jwtToken), "Api key has expired")
-            this.jwtToken = jwtToken
-            this.apiKey = apiKey
-            this.darkMode = false
-            this.tileId = tileId
-            createHttpClient()
-            generateKeys()
-            totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-            Log.v("pubprivKey = ", totalRequestTime.toString())
-            certificateChain = getStoredCertificateChain()
-//            if (certificateChain == null) {
-//                Doordeck.status = AuthStatus.TWO_FACTOR_AUTH_NEEDED
-//                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
-//            }
-            totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-            Log.v("certKeyTime = ", totalRequestTime.toString())
-            showUnlock(ctx, ScanType.UNLOCK)
-        } else
-            Log.d(LOG_SDK, "Doordeck already initialized")
-        return this
-    }
-
     /**
      * Observable to subscribe to, to be able to listen to the events sent by the SDK
      * @return Observable of events
@@ -224,6 +188,13 @@ object Doordeck {
      */
     fun withEventsCallback(callback: IEventCallback) {
         this.callback = callback
+    }
+
+
+
+    fun unlock(ctx: Context, device: Device, callback: UnlockCallback? = null){
+        this.deviceToUnlock = device
+        showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 
     /**
@@ -245,7 +216,7 @@ object Doordeck {
                 when (type) {
                     ScanType.QR -> QRcodeActivity.start(context)
                     ScanType.NFC -> NFCActivity.start(context)
-                    ScanType.UNLOCK -> UnlockActivity.start(context, Doordeck.tileId!!)
+                    ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
                 }
                 this.unlockCallback = callback
             } else
