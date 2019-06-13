@@ -76,6 +76,7 @@ internal class Datastore {
 
     public fun clean() {
         SecurePreferences.clearAllValues()
+        Doordeck.sharedPreference?.clearSharedPreference()
     }
 
 

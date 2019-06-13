@@ -232,7 +232,7 @@ object Doordeck {
         apiKey = null
         datastore.clean()
         keys = null
-        generateKeys()
+
     }
 
 

@@ -7,9 +7,9 @@
 
     <ImageView
         android:layout_width="36dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:layout_marginRight="15dp"
-        android:padding="0dp"
+        android:padding="4dp"
         android:id="@+id/ivClose"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
@@ -49,8 +49,9 @@
         android:id="@+id/tvReSendCode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:layout_centerHorizontal="true"
-        android:text="re-send code"
+        android:text="@string/resend_code"
         android:layout_below="@+id/tvVerifyDesc"
         android:textAllCaps="true"
         android:layout_marginTop="80dp"
@@ -58,6 +59,37 @@
         android:textColor="?attr/ddColorAccent"
         android:textSize="18dp"
         />
+
+    <LinearLayout
+        android:id="@+id/tvReSendCodeSent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:layout_below="@+id/tvReSendCode"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_until_code"
+            android:textAlignment="center"
+            android:textColor="?attr/ddTextColorPrimary"
+            android:textSize="14dp"
+            />
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="60"
+            android:layout_marginLeft="4dp"
+            android:textAllCaps="true"
+            android:textAlignment="center"
+            android:textColor="?attr/ddTextColorPrimary"
+            android:textSize="14sp"
+            />
+    </LinearLayout>
+
 
 
 
@@ -78,6 +110,7 @@
             android:imeOptions="actionNext"
             android:id="@+id/edDigit1"
             android:inputType="number"
+            android:windowSoftInputMode="stateVisible"
             android:nextFocusRight="@id/edDigit2"
             android:gravity="center"
             android:background="@drawable/digit_background"
@@ -115,7 +148,6 @@
             android:text="-"
             android:gravity="center_horizontal"
             android:textSize="30dp"
-            android:layout_marginRight="5dp"
             android:textColor="@color/dark_grey"
             android:layout_height="match_parent" />
 

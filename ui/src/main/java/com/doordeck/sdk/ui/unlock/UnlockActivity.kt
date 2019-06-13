@@ -78,20 +78,13 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private fun resetAnimation() {
         circle_back.scaleX = 0f
         circle_back.scaleY = 0f
-//        circle.scaleX = 0f
-//        circle.scaleY = 0f
-//        circle0.scaleX = 0f
-//        circle0.scaleY = 0f
-//        circle1.scaleX = 0f
-//        circle1.scaleY = 0f
-//        circle2.scaleX = 0f
-//        circle2.scaleY = 0f
+
         key_title.alpha = 0f
-        lock_image.setBackgroundDrawable(null);
+        lock_image.setImageDrawable(null)
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
         lock_image.setImageDrawable(animated)
+        lock_image.clearAnimation()
         logo_spinner.visibility = View.VISIBLE
-//        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success_old))
         unlock_status.setText(R.string.UNLOCKING)
     }
 

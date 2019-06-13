@@ -72,10 +72,12 @@ internal class VerifyDevicePresenter {
                 true -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
                     LOG.d("onSendCode", "email sent !")
+                    view?.verifyCodeSuccess()
                 }
                 false -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_FAILED_SENDING)
                     LOG.d("onSendCode", "error : " + result.message())
+                    view?.verifyCodeFail()
                 }
             }
         }
@@ -104,6 +106,7 @@ internal class VerifyDevicePresenter {
                 is Result.Error -> {
                     EventsManager.sendEvent(EventAction.CODE_VERIFICATION_FAILED, result.exception)
                     LOG.e(TAG, "verifyCode error : " + result.exception)
+                    view?.fail()
                 }
                 is Result.Exception -> {
                     EventsManager.sendEvent(EventAction.SDK_NETWORK_ERROR, result.exception)
