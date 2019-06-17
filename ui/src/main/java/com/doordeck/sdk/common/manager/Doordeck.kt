@@ -170,6 +170,7 @@ object Doordeck {
         this.darkMode = darkMode
         generateKeys()
         storeToken(authToken)
+        if (client == null) createHttpClient()
         keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
         return this
     }
@@ -229,9 +230,10 @@ object Doordeck {
      * Cleanup the data internally
      */
     fun logout() {
-        apiKey = null
-        datastore.clean()
-        keys = null
+        this.apiKey = null
+        this.certificateChain = null
+        this.datastore.clean()
+        this.keys = null
 
     }
 
