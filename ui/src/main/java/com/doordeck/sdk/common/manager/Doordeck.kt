@@ -1,5 +1,6 @@
 package com.doordeck.sdk.common.manager
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -54,113 +55,88 @@ object Doordeck {
     internal var callback: IEventCallback? = null
     // certificates associated to the current user
     internal var certificateChain: CertificateChain? = null
-
+    // unlock callback
     internal var unlockCallback: UnlockCallback? = null
-
+    // get
     internal fun getKeys(): KeyPair {
         return keys!!
     }
-
+    // device to unlock
     private var deviceToUnlock: Device? = null
 
+    // Shared Preferences
+    @SuppressLint("StaticFieldLeak")
     internal var sharedPreference: SharedPreference? = null
-
+    // Observable to catch async certificate loading
     internal var certificateLoaded: Boolean by observable(false) { _, oldValue, newValue ->
         onCertLoaded?.invoke(oldValue, newValue)
     }
-
+    // Check if certificates are loaded
     var onCertLoaded : ((Boolean, Boolean) -> Unit)? = null
 
 
 
     // public //
 
+
     /**
-     * Initialize the Doordeck SDK and get the Api key from the manifest file.
-     * That's the first method to call in your Application, before using
-     * the SDK.
+     * Initialize the Doordeck SDK with your valid auth token
+     * This is the first method to call from the your Android Application class. The reason for this being in the Application class is
+     * for the SDK to be able to initialize and unlock from NFC touch, even when the parent app is not running in the background yet.
+     *
+     * @param ctx Your application context! Warning, providing non-application context might break the app or cause memory leaks.
+     * @param authToken (Nullable) A valid auth token. Make sure you refresh the auth token if needed before initializing the SDK.
+     * If you don't have an auth token yet because the user is logged out, initiate the sdk with authToken = null and set the auth token after logging in with updateToken method.
+     * @param darkmode (Optional) set dark or light theme of the sdk.
      * @return Doordeck the current instance of the SDK
      */
-    fun initialize(ctx: Context, darkMode: Boolean = false): Doordeck {
-        if (this.sharedPreference == null) {
-            this.sharedPreference = SharedPreference(ctx)
-        }
-        if (this.apiKey == null) {
-            this.apiKey = getStoredAuthToken()
-            if (this.apiKey != null) {
-                val jwtToken = this.apiKey?.let { JWTContentUtils.getContentHeaderFromJson(it) }
+    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false): Doordeck {
+        Preconditions.checkNotNull(ctx!!, "Context can't be null")
+        if (authToken != null) {
+            if (this.apiKey == null) {
+                val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
                 Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
                 Preconditions.checkArgument(isValidityApiKey(jwtToken), "Api key has expired")
                 this.jwtToken = jwtToken
+                this.apiKey = authToken
+                this.darkMode = darkMode
+                this.sharedPreference = SharedPreference(ctx)
                 createHttpClient()
                 generateKeys()
-                if (certificateChain == null) {
-                    certificateChain = getStoredCertificateChain()
+                if (getStoredAuthToken() != authToken) {
+                    storeToken(authToken)
+                    keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                } else {
                     if (certificateChain == null) {
-                        var lastStatus = getLastStatus()
-                        if (lastStatus != null) Doordeck.status = lastStatus
+                        certificateChain = getStoredCertificateChain()
+                        if (certificateChain == null) {
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            var lastStatus = getLastStatus()
+                            if (lastStatus != null) Doordeck.status = lastStatus
+                        } else {
+                            status = AuthStatus.AUTHORIZED
+                            certificateLoaded = true
+                        }
                     }
                 }
-            }
+            } else Log.d(LOG_SDK, "Doordeck already initialized")
+        } else {
+            this.darkMode = darkMode
+            this.sharedPreference = SharedPreference(ctx)
+            createHttpClient()
         }
         return this
     }
 
     /**
-     * Initialize the Doordeck SDK and get the Api key from the manifest file.
-     * That's the first method to call, preferable in your Application or MainActivity, before using
-     * the SDK.
-     * @return Doordeck the current instance of the SDK
-     */
-    fun initialize(ctx: Context, authToken: String, darkMode: Boolean = false): Doordeck {
-        Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "authToken needs to be provided")
-        if (this.apiKey == null) {
-            val mRequestStartTime = System.currentTimeMillis()
-            val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
-            Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
-            Preconditions.checkArgument(isValidityApiKey(jwtToken), "Api key has expired")
-            var totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-            Log.v("jwtTokenTime = ", totalRequestTime.toString())
-            this.jwtToken = jwtToken
-            this.apiKey = authToken
-            this.darkMode = darkMode
-            this.sharedPreference = SharedPreference(ctx)
-            createHttpClient()
-            generateKeys()
-            totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-            Log.v("generateKeysTime = ", totalRequestTime.toString())
-            if(getStoredAuthToken() != authToken) {
-                storeToken(authToken)
-                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
-            } else {
-                if (certificateChain == null) {
-                    certificateChain = getStoredCertificateChain()
-                    totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-                    Log.v("getCertificateChain = ", totalRequestTime.toString())
-                    if (certificateChain == null) {
-                        keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
-                        var lastStatus = getLastStatus()
-                        if (lastStatus != null) Doordeck.status = lastStatus
-                    } else {
-                        status = AuthStatus.AUTHORIZED
-                        certificateLoaded = true
-                    }
-                }
-            }
-        } else
-            Log.d(LOG_SDK, "Doordeck already initialized")
-        return this
-    }
-
-    // public //
-
-    /**
-     * Initialize the Doordeck SDK and get the Api key from the manifest file.
-     * That's the first method to call, preferable in your Application or MainActivity, before using
-     * the SDK.
+     * Update your authToken
+     * Call this method after logging in to update the token.
+     *
+     * @param authToken new valid auth token
      * @return Doordeck the current instance of the SDK
      */
     fun updateToken(authToken: String): Doordeck {
+        Preconditions.checkNotNull(sharedPreference!!, "Doordeck not initiated. Make sure to call initialize first.")
         Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "Token needs to be provided")
         val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
         Preconditions.checkNotNull(jwtToken!!, "Api key is invalid")
@@ -170,7 +146,7 @@ object Doordeck {
         this.darkMode = darkMode
         generateKeys()
         storeToken(authToken)
-        if (client == null) createHttpClient()
+        createHttpClient()
         keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
         return this
     }
@@ -192,7 +168,14 @@ object Doordeck {
     }
 
 
-
+    /**
+     * Unlock method for unlocking via button unlock
+     *
+     * @param ctx current context
+     * @param device a valid device.
+     * @param callback (optional) callback function for catching async response after unlock.
+     * @return Doordeck the current instance of the SDK
+     */
     fun unlock(ctx: Context, device: Device, callback: UnlockCallback? = null){
         this.deviceToUnlock = device
         showUnlock(ctx, ScanType.UNLOCK, callback)
@@ -228,13 +211,13 @@ object Doordeck {
 
     /**
      * Cleanup the data internally
+     * Call when you log out a user.
      */
     fun logout() {
         this.apiKey = null
         this.certificateChain = null
         this.datastore.clean()
         this.keys = null
-
     }
 
 
