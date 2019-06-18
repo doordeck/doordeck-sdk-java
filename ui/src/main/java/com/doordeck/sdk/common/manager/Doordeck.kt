@@ -131,11 +131,9 @@ object Doordeck {
     /**
      * Update your authToken
      * Call this method after logging in to update the token.
-     *
      * @param authToken new valid auth token
-     * @return Doordeck the current instance of the SDK
      */
-    fun updateToken(authToken: String): Doordeck {
+    fun updateToken(authToken: String) {
         Preconditions.checkNotNull(sharedPreference!!, "Doordeck not initiated. Make sure to call initialize first.")
         Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "Token needs to be provided")
         val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
@@ -148,7 +146,14 @@ object Doordeck {
         storeToken(authToken)
         createHttpClient()
         keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
-        return this
+    }
+
+    /**
+     * Update the theme
+     * @param DarkMode set dark or light theme
+     */
+    fun setDarkMode(DarkMode: Boolean) {
+        this.darkMode = darkMode
     }
 
 

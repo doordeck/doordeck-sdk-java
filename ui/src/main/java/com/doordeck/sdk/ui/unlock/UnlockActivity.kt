@@ -121,6 +121,11 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         finish()
     }
 
+    override fun noUserLoggedIn() {
+        showAccessDeniedAnimation()
+        unlock_status.text = getString(R.string.no_user_logged_in)
+    }
+
     override fun displayVerificationView() {
         if (!canceledVerify) {
             canceledVerify = true
@@ -235,13 +240,14 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     public override fun onResume() {
         super.onResume()
+        resetAnimation()
         if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
         else if (intent.extras?.getString(DEVICE) != null)  {
             val om = Jackson.sharedObjectMapper()
             val deviceToUnlock = om.readValue(intent.extras?.getString(DEVICE), Device::class.java)
             unlockPresenter?.init(deviceToUnlock)
         }
-        resetAnimation()
+
     }
 
     public override fun onStop() {

@@ -59,6 +59,10 @@ internal class UnlockPresenter {
      */
     fun init(tileId: String?) {
 
+        if(Doordeck.jwtToken == null) {
+            view?.noUserLoggedIn()
+            return
+        }
         // wait for certificate to be loaded if nescesarry
         if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
         {
@@ -77,6 +81,10 @@ internal class UnlockPresenter {
      */
     fun init(device: Device?) {
 
+        if(Doordeck.jwtToken == null) {
+            view?.noUserLoggedIn()
+            return
+        }
         // wait for certificate to be loaded if nescesarry
         if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
         {
