@@ -114,8 +114,19 @@ object Doordeck {
                             var lastStatus = getLastStatus()
                             if (lastStatus != null) Doordeck.status = lastStatus
                         } else {
+                            if (checkIfValidCertificate(certificateChain!!)) {
+                                status = AuthStatus.AUTHORIZED
+                                certificateLoaded = true
+                            } else {
+                                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            }
+                        }
+                    } else {
+                        if (checkIfValidCertificate(certificateChain!!)) {
                             status = AuthStatus.AUTHORIZED
                             certificateLoaded = true
+                        } else {
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                         }
                     }
                 }
@@ -126,6 +137,10 @@ object Doordeck {
             createHttpClient()
         }
         return this
+    }
+
+    private fun checkIfValidCertificate(certificateChain: CertificateChain): Boolean {
+        return certificateChain.isValid() && certificateChain.userId().toString() == this.jwtToken!!.sub
     }
 
     /**
@@ -150,9 +165,9 @@ object Doordeck {
 
     /**
      * Update the theme
-     * @param DarkMode set dark or light theme
+     * @param darkMode set dark or light theme
      */
-    fun setDarkMode(DarkMode: Boolean) {
+    fun setDarkMode(darkMode: Boolean) {
         this.darkMode = darkMode
     }
 
