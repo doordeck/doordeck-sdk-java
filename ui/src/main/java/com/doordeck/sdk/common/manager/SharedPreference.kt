@@ -45,7 +45,7 @@ class SharedPreference(val context: Context) {
         return sharedPref.getInt(KEY_NAME, 0)
     }
 
-    fun getValueBoolien(KEY_NAME: String, defaultValue: Boolean): Boolean {
+    fun getValueBoolean(KEY_NAME: String, defaultValue: Boolean): Boolean {
 
         return sharedPref.getBoolean(KEY_NAME, defaultValue)
 

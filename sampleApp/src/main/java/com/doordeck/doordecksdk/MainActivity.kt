@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        Doordeck.initialize(applicationContext, getString(R.string.doordeck_api_key), true);
 //        Doordeck.updateToken(getString(R.string.doordeck_api_key))
 
         nfc.setOnClickListener { Doordeck.showUnlock(this) }

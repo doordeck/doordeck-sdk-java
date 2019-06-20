@@ -215,6 +215,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         @JvmStatic
         fun start(context: Context) {
             val starter = Intent(context, VerifyDeviceActivity::class.java)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }

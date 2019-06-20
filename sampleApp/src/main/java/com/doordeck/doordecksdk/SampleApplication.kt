@@ -30,13 +30,7 @@ class SampleApplication: Application() {
     override fun onCreate() {
         super.onCreate()
         // initialize for any
-
-        // Use ApplicationContext.
-        // example: SharedPreferences etc...
-        val context: Context = SampleApplication.applicationContext()
-        Timer("SettingUp", false).schedule(2000) {
-            Doordeck.initialize(context, null, true)
-        }
+        
 
     }
 }

@@ -79,6 +79,13 @@ internal class Datastore {
         Doordeck.sharedPreference?.clearSharedPreference()
     }
 
+    fun saveTheme(darkMode: Boolean) {
+        Doordeck.sharedPreference?.save(DARKMODE, darkMode)
+    }
+
+    fun getSavedTheme(): Boolean? {
+        return Doordeck.sharedPreference?.getValueBoolean(DARKMODE, false)
+    }
 
 
     companion object {
@@ -86,6 +93,7 @@ internal class Datastore {
         private const val PRIV_KEY = "priv_key"
         private const val CERTS = "certs"
         private const val TOKEN = "autToken"
+        private const val DARKMODE = "darkMode"
         private const val STATUS = "status"
     }
 

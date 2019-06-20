@@ -78,7 +78,6 @@ object Doordeck {
 
     // public //
 
-
     /**
      * Initialize the Doordeck SDK with your valid auth token
      * This is the first method to call from the your Android Application class. The reason for this being in the Application class is
@@ -103,14 +102,15 @@ object Doordeck {
                 this.sharedPreference = SharedPreference(ctx)
                 createHttpClient()
                 generateKeys()
+                this.storeTheme(darkMode)
                 if (getStoredAuthToken() != authToken) {
                     storeToken(authToken)
-                    keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                    keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
                 } else {
                     if (certificateChain == null) {
                         certificateChain = getStoredCertificateChain()
                         if (certificateChain == null) {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
                             var lastStatus = getLastStatus()
                             if (lastStatus != null) Doordeck.status = lastStatus
                         } else {
@@ -118,7 +118,7 @@ object Doordeck {
                                 status = AuthStatus.AUTHORIZED
                                 certificateLoaded = true
                             } else {
-                                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                                keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
                             }
                         }
                     } else {
@@ -126,7 +126,7 @@ object Doordeck {
                             status = AuthStatus.AUTHORIZED
                             certificateLoaded = true
                         } else {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
                         }
                     }
                 }
@@ -135,6 +135,7 @@ object Doordeck {
             this.darkMode = darkMode
             this.sharedPreference = SharedPreference(ctx)
             createHttpClient()
+            this.storeTheme(darkMode)
         }
         return this
     }
@@ -148,7 +149,7 @@ object Doordeck {
      * Call this method after logging in to update the token.
      * @param authToken new valid auth token
      */
-    fun updateToken(authToken: String) {
+    fun updateToken(authToken: String, ctx: Context) {
         Preconditions.checkNotNull(sharedPreference!!, "Doordeck not initiated. Make sure to call initialize first.")
         Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "Token needs to be provided")
         val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
@@ -159,8 +160,9 @@ object Doordeck {
         this.darkMode = darkMode
         generateKeys()
         storeToken(authToken)
+        storeTheme(darkMode)
         createHttpClient()
-        keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+        keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
     }
 
     /**
@@ -169,6 +171,7 @@ object Doordeck {
      */
     fun setDarkMode(darkMode: Boolean) {
         this.darkMode = darkMode
+        this.storeTheme(darkMode)
     }
 
 
@@ -242,6 +245,19 @@ object Doordeck {
 
 
     // private //
+
+
+    internal fun hasUserLoggedIn (ctx: Context): Boolean {
+        if (this.apiKey != null) return true
+        else {
+            val token = getStoredAuthToken()
+            if (token !== null) {
+                this.sharedPreference = SharedPreference(ctx)
+                initialize(ctx, token, getSavedTheme())
+                return true
+            } else return false
+        }
+    }
 
     /**
      * Create the network HTTP client
@@ -327,6 +343,22 @@ object Doordeck {
      */
     internal fun getLastStatus(): AuthStatus? {
         return datastore.getStoredStatus()
+    }
+
+    /**
+     * Store certificates them in the keychains
+     */
+    internal fun storeTheme(darkMode: Boolean) {
+        datastore.saveTheme(darkMode)
+    }
+
+    /**
+     * get stored certificates from keychains
+     */
+    internal fun getSavedTheme(): Boolean {
+        val darkMode = datastore.getSavedTheme()
+        if (darkMode != null) return darkMode
+        else return false
     }
 
 

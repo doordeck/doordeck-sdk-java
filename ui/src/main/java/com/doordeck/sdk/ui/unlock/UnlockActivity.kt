@@ -22,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
@@ -80,10 +81,14 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         circle_back.scaleY = 0f
 
         key_title.alpha = 0f
-        lock_image.setImageDrawable(null)
+
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        val animation = lock_image.drawable
+        if (animation is Animatable) {
+            (animation as Animatable).stop()
+        }
+        lock_image.setImageDrawable(null)
         lock_image.setImageDrawable(animated)
-        lock_image.clearAnimation()
         logo_spinner.visibility = View.VISIBLE
         unlock_status.setText(R.string.UNLOCKING)
     }
@@ -241,6 +246,10 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     public override fun onResume() {
         super.onResume()
         resetAnimation()
+        if(!Doordeck.hasUserLoggedIn(this)) {
+            noUserLoggedIn()
+            return
+        }
         if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
         else if (intent.extras?.getString(DEVICE) != null)  {
             val om = Jackson.sharedObjectMapper()
