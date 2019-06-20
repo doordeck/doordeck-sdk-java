@@ -275,12 +275,14 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         fun start(context: Context, id: String) {
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
         fun start(context: Context, device: Device) {
             val starter = Intent(context, UnlockActivity::class.java)
             val om = Jackson.sharedObjectMapper()
             starter.putExtra(DEVICE, om.writeValueAsString(device))
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }
