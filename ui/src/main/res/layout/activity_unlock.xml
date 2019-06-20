@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:id="@+id/rlContent"
     android:fitsSystemWindows="true"
-
+    android:background="?attr/ddColorPrimary"
     android:layout_height="match_parent">
 
     <ImageView
@@ -48,23 +48,25 @@
         android:layout_marginTop="130dp"
         android:text="@string/RETRIEVING_KEY"
         android:textAlignment="center"
-        android:textColor="@color/ddColorTextLight"
+        android:textColor="@android:color/white"
         android:textSize="28sp"
         android:textStyle="bold" />
 
     <TextView
         android:id="@+id/unlock_status"
         android:layout_width="wrap_content"
-        android:layout_height="26dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/sideMargin"
+        android:paddingEnd="@dimen/sideMargin"
         android:layout_below="@+id/key_title"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/sideMargin"
         android:alpha="0.5"
         android:gravity="center"
-        android:text="@string/UNLOCKING"
+        android:text="@string/no_user_logged_in"
         android:layout_marginTop="100dp"
         android:textAlignment="center"
-        android:textColor="@color/ddColorPrimaryDark"
+
         android:textSize="18sp" />
 
     <TextView

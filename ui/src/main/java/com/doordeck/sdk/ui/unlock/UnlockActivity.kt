@@ -22,6 +22,9 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
+import com.doordeck.sdk.common.manager.Doordeck
+import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -36,6 +39,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var unlockPresenter: UnlockPresenter? = null
     private var locationPermissionShown = false
     private var googlePermissionShown = false
+    private var canceledVerify = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +49,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         unlockPresenter = UnlockPresenter()
         tvDismiss.setOnClickListener { finishActivity() }
-        resetAnimation()
+
     }
 
 
@@ -75,20 +79,17 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private fun resetAnimation() {
         circle_back.scaleX = 0f
         circle_back.scaleY = 0f
-//        circle.scaleX = 0f
-//        circle.scaleY = 0f
-//        circle0.scaleX = 0f
-//        circle0.scaleY = 0f
-//        circle1.scaleX = 0f
-//        circle1.scaleY = 0f
-//        circle2.scaleX = 0f
-//        circle2.scaleY = 0f
+
         key_title.alpha = 0f
-        lock_image.setBackgroundDrawable(null);
+
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
+        val animation = lock_image.drawable
+        if (animation is Animatable) {
+            (animation as Animatable).stop()
+        }
+        lock_image.setImageDrawable(null)
         lock_image.setImageDrawable(animated)
         logo_spinner.visibility = View.VISIBLE
-//        lock_image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_unlock_success_old))
         unlock_status.setText(R.string.UNLOCKING)
     }
 
@@ -125,8 +126,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         finish()
     }
 
+    override fun noUserLoggedIn() {
+        showAccessDeniedAnimation()
+        unlock_status.text = getString(R.string.no_user_logged_in)
+    }
+
     override fun displayVerificationView() {
-        VerifyDeviceActivity.start(this)
+        if (!canceledVerify) {
+            canceledVerify = true
+            VerifyDeviceActivity.start(this)
+        } else {
+            finish()
+        }
     }
 
     private fun showAccessDeniedAnimation() {
@@ -234,8 +245,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     public override fun onResume() {
         super.onResume()
-        unlockPresenter?.init(intent.extras?.getString(TILE_ID))
         resetAnimation()
+        if(!Doordeck.hasUserLoggedIn(this)) {
+            noUserLoggedIn()
+            return
+        }
+        if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
+        else if (intent.extras?.getString(DEVICE) != null)  {
+            val om = Jackson.sharedObjectMapper()
+            val deviceToUnlock = om.readValue(intent.extras?.getString(DEVICE), Device::class.java)
+            unlockPresenter?.init(deviceToUnlock)
+        }
+
     }
 
     public override fun onStop() {
@@ -257,10 +278,20 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
 
         private const val TILE_ID = "tile_id"
+        private const val DEVICE = "DEVICE"
+
 
         fun start(context: Context, id: String) {
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(starter)
+        }
+        fun start(context: Context, device: Device) {
+            val starter = Intent(context, UnlockActivity::class.java)
+            val om = Jackson.sharedObjectMapper()
+            starter.putExtra(DEVICE, om.writeValueAsString(device))
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }

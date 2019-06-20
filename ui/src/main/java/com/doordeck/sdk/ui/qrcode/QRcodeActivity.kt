@@ -61,6 +61,7 @@ internal class QRcodeActivity : BaseActivity() {
         @JvmStatic
         fun start(context: Context) {
             val starter = Intent(context, QRcodeActivity::class.java)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }

@@ -1,6 +1,7 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.app.Activity
+import android.util.Log
 import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
@@ -8,6 +9,7 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.services.LocationService
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.util.JWTUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -30,13 +32,15 @@ internal class UnlockPresenter {
     private var locationService: LocationService? = null
     private var deviceToUnlock: Device? = null
     private var jobs: List<Job> = emptyList()
-    private val client = Doordeck.client
+    private var client: DoordeckClient? = null
     private var view: UnlockView? = null
 
+    private var mRequestStartTime: Long = 0
 
     fun onStart(view: UnlockView) {
         this.view = view
         this.locationService = LocationService(view as Activity)
+
     }
 
     /**
@@ -55,6 +59,43 @@ internal class UnlockPresenter {
      */
     fun init(tileId: String?) {
 
+
+        // wait for certificate to be loaded if nescesarry
+        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
+        {
+            Doordeck.onCertLoaded = { oldValue, newValue ->
+                if(newValue == true) initUnlock(tileId)
+            }
+        } else {
+            initUnlock(tileId)
+        }
+
+    }
+
+    /**
+     * Initialize the presenter with the device
+     * @param device of the pressed button
+     */
+    fun init(device: Device?) {
+
+        // wait for certificate to be loaded if nescesarry
+        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
+        {
+            Doordeck.onCertLoaded = { oldValue, newValue ->
+                if(newValue == true) initUnlock(device)
+            }
+        } else {
+            initUnlock(device)
+        }
+
+    }
+
+    private fun initUnlock(tileId: String?) {
+
+        if (Doordeck.client != null) {
+            this.client = Doordeck.client
+        }
+
         if (tileId == null) {
             EventsManager.sendEvent(EventAction.UNLOCK_INVALID_TILE_ID)
             view?.notValidTileId()
@@ -66,17 +107,46 @@ internal class UnlockPresenter {
             return
         }
 
-        val certif = Doordeck.certificateChain
+        var certif = Doordeck.certificateChain
+
         certif?.let { resolveTile(tileId) }
     }
+
+    private fun initUnlock(device: Device?) {
+
+        if (Doordeck.client != null) {
+            this.client = Doordeck.client
+        }
+
+        if (device == null) {
+            EventsManager.sendEvent(EventAction.RESOLVE_TILE_FAILED)
+            view?.notValidTileId()
+            return
+        }
+
+        if (Doordeck.status == AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
+            view?.displayVerificationView()
+            return
+        }
+
+        var certif = Doordeck.certificateChain
+
+        certif?.let { resolveTileSuccess(device) }
+    }
+
+
 
     /**
      * Call the server to get the detail of the device given the tileId
      * @param tileId id of the tile scanned
      */
     private fun resolveTile(tileId: String) {
+        Log.v("TILEREQUESTINIT = ", "now")
+        mRequestStartTime = System.currentTimeMillis()
         jobs += GlobalScope.launch(Dispatchers.Main) {
-            val result: Result<Device> = client.device().resolveTile(UUID.fromString(tileId)).awaitResult()
+            totalRequestTime = System.currentTimeMillis() - mRequestStartTime
+            Log.v("TILEREQUESTSTART = ", totalRequestTime.toString())
+            val result: Result<Device> = client!!.device().resolveTile(UUID.fromString(tileId)).awaitResult()
             when (result) {
                 is Result.Ok -> resolveTileSuccess(result.value)
                 is Result.Error -> {
@@ -92,7 +162,11 @@ internal class UnlockPresenter {
         }
     }
 
+    private var totalRequestTime: Long = 0
+
     private fun resolveTileSuccess(device: Device) {
+        totalRequestTime = System.currentTimeMillis() - mRequestStartTime
+        Log.v("TILEREQUEST = ", totalRequestTime.toString())
         EventsManager.sendEvent(EventAction.RESOLVE_TILE_SUCCESS)
         this.deviceToUnlock = device
         view?.updateLockName(device.name())
@@ -120,7 +194,7 @@ internal class UnlockPresenter {
      * @param deviceId UUID of the device to open
      */
     private fun unlockDevice(deviceId: UUID) {
-
+        mRequestStartTime = System.currentTimeMillis()
         Doordeck.certificateChain?.let { chain ->
             jobs += GlobalScope.launch(Dispatchers.Main) {
 
@@ -130,9 +204,11 @@ internal class UnlockPresenter {
                         chain.userId()
                 )
 
-                val result: Response<Void> = client.device().executeOperation(deviceId, signedJWT).awaitResponse()
+                val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
                 when (result.isSuccessful) {
                     true -> {
+                        totalRequestTime = System.currentTimeMillis() - mRequestStartTime
+                        Log.v("UNLOCKTIME = ", totalRequestTime.toString())
                         EventsManager.sendEvent(EventAction.UNLOCK_SUCCESS)
                         view?.unlockSuccess()
                     }

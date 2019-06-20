@@ -1,5 +1,7 @@
 package com.doordeck.sdk.common.manager
 
+import com.doordeck.sdk.common.utils.SecurePreferencesHelper
+import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.jackson.Jackson
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 import java.security.KeyPair
@@ -29,13 +31,72 @@ internal class Datastore {
         return KeyPair(pubKey, privKey)
     }
 
+    // store certificates in the safe android keychain
+    fun saveCertificates (certificateChain: CertificateChain) {
+        val om = Jackson.sharedObjectMapper()
+        Doordeck.sharedPreference?.save(CERTS, om.writeValueAsString(certificateChain))
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getSavedCertificates(): CertificateChain? {
+        val certificateChainStr = Doordeck.sharedPreference?.getValueString(CERTS)
+        if (certificateChainStr == null) return null
+        val om = Jackson.sharedObjectMapper()
+        val certificateChain = om.readValue(certificateChainStr, CertificateChain::class.java)
+        return certificateChain
+    }
+
+    // store certificates in the safe android keychain
+    fun saveAuthToken (authToken: String) {
+        SecurePreferencesHelper.setLongStringValue(TOKEN, authToken)
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getAuthToken(): String? {
+        return SecurePreferencesHelper.getLongStringValue(TOKEN)
+    }
+
+    // store certificates in the safe android keychain
+    fun saveStatus (status: AuthStatus) {
+        val om = Jackson.sharedObjectMapper()
+        Doordeck.sharedPreference?.save(TOKEN, om.writeValueAsString(status))
+    }
+
+
+    // retrieve certificates in the safe android keychain
+    fun getStoredStatus(): AuthStatus? {
+        val status = Doordeck.sharedPreference?.getValueString(TOKEN)
+        if (status == null) return null
+        val om = Jackson.sharedObjectMapper()
+        return om.readValue(status, AuthStatus::class.java)
+    }
+
+
     public fun clean() {
         SecurePreferences.clearAllValues()
+        Doordeck.sharedPreference?.clearSharedPreference()
     }
+
+    fun saveTheme(darkMode: Boolean) {
+        Doordeck.sharedPreference?.save(DARKMODE, darkMode)
+    }
+
+    fun getSavedTheme(): Boolean? {
+        return Doordeck.sharedPreference?.getValueBoolean(DARKMODE, false)
+    }
+
 
     companion object {
         private const val PUB_KEY = "pub_key"
         private const val PRIV_KEY = "priv_key"
+        private const val CERTS = "certs"
+        private const val TOKEN = "autToken"
+        private const val DARKMODE = "darkMode"
+        private const val STATUS = "status"
     }
+
+
 
 }

@@ -10,6 +10,7 @@ import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.manager.ScanType
+import com.doordeck.sdk.dto.device.Device
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -23,8 +24,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Doordeck.initialize(getString(R.string.doordeck_api_key))
+        Doordeck.initialize(applicationContext, getString(R.string.doordeck_api_key), true);
+//        Doordeck.updateToken(getString(R.string.doordeck_api_key))
 
         nfc.setOnClickListener { Doordeck.showUnlock(this) }
         qrcode.setOnClickListener { unlockWithQRCode() }
@@ -33,6 +34,7 @@ class MainActivity : AppCompatActivity() {
         listenForEventsRx()
         listenForAllEventsCallback()
         listenForFewEventsCallback()
+
     }
 
     private fun unlockWithQRCode() {

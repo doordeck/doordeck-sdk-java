@@ -31,8 +31,6 @@ buildscript {
 }
 
 allprojects {
-    group = GROUP
-    version = VERSION_NAME
 
     repositories {
         google()
@@ -40,6 +38,19 @@ allprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
+//ext {
+//    sdk = 28
+//    minSdk = 21
+//    supportVersion = "28.0.0"
+//
+//    github = 'https://github.com/doordeck/doordeck-sdk-java'
+//
+//    libraryGroup = 'com.github.doordeck'
+//    libraryName = 'doordeck-sdk-java'
+//    libraryVersion = "0.0.1"
+//    libraryDescription = 'Android sdk for Doordeck'
+//}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

@@ -25,8 +25,8 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "BASE_URL_API", '"https://api.dev.doordeck.com"'
 
+            buildConfigField "String", "BASE_URL_API", '"https://api.staging.doordeck.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

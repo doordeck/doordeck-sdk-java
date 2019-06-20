@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.widget.Toast
 import com.doordeck.sdk.R
 import com.doordeck.sdk.common.events.EventsManager
+import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
@@ -80,6 +81,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
     override fun unlockFromTileId(tileId: String) {
         intent.action = ""
         UnlockActivity.start(this, tileId)
+        finish()
     }
 
     override fun onError(message: String) {
@@ -91,6 +93,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
         @JvmStatic
         fun start(context: Context) {
             val starter = Intent(context, NFCActivity::class.java)
+            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }

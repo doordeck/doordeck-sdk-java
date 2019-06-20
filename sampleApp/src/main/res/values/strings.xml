@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">DoordeckSdk</string>
     <string name="doordeck_api_key">YOUR_API_KEY_HERE</string>
+
 </resources>

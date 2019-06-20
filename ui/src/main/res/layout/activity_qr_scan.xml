@@ -16,45 +16,51 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/tvDismiss"
-        android:scaleType="center"
+        android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_scanner_background" />
 
 
     <ImageView
         android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:src="@drawable/ic_qr_tile"
         android:id="@+id/ivTile"
-        android:layout_centerInParent="true"
-        android:paddingTop="160dp"/>
+        android:layout_marginBottom="@dimen/sideMargin"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/tvScanTitle"
+        />
 
     <TextView
         android:id="@+id/tvScanTitle"
-        android:layout_width="wrap_content"
-        android:layout_centerHorizontal="true"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:paddingTop="280dp"
+        android:layout_above="@id/tvScanSub"
+        android:paddingBottom="16dp"
         android:text="@string/scan_QR"
-        android:textAlignment="center"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="24dp"
+        android:textColor="?attr/ddTextColorPrimary"
+        android:textSize="24sp"
         android:textStyle="bold"
-
+        android:textAlignment="center"
+        android:paddingLeft="@dimen/sideMargin"
+        android:paddingRight="@dimen/sideMargin"
         />
 
 
     <TextView
-        android:layout_width="240dp"
+        android:id="@+id/tvScanSub"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tvScanTitle"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:gravity="center_horizontal"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="60dp"
+        android:gravity="bottom"
+        android:paddingLeft="@dimen/sideMargin"
+        android:paddingRight="@dimen/sideMargin"
+        android:paddingBottom="48dp"
         android:text="Please scan the QR tile next to the door to unlock"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textSize="20dp"
-        />
+        android:textAlignment="center"
+        android:textColor="?attr/ddTextColorPrimary"
+        android:textSize="16sp" />
 
 
 
