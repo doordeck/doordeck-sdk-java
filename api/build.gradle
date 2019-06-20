@@ -1,5 +1,4 @@
 apply plugin: 'java-library'
-//apply plugin: 'maven'
 apply plugin: "org.inferred.processors"
 apply plugin: 'com.github.dcendents.android-maven'
 

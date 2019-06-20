@@ -31,9 +31,6 @@ buildscript {
 }
 
 allprojects {
-   // group = GROUP
-   // version = VERSION_NAME
-//    group = 'com.doordeck.sdk'
 
     repositories {
         google()
