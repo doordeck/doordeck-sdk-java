@@ -1,7 +1,6 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.app.Activity
-import android.util.Log
 import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
@@ -34,8 +33,6 @@ internal class UnlockPresenter {
     private var jobs: List<Job> = emptyList()
     private var client: DoordeckClient? = null
     private var view: UnlockView? = null
-
-    private var mRequestStartTime: Long = 0
 
     fun onStart(view: UnlockView) {
         this.view = view
@@ -141,11 +138,7 @@ internal class UnlockPresenter {
      * @param tileId id of the tile scanned
      */
     private fun resolveTile(tileId: String) {
-        Log.v("TILEREQUESTINIT = ", "now")
-        mRequestStartTime = System.currentTimeMillis()
         jobs += GlobalScope.launch(Dispatchers.Main) {
-            totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-            Log.v("TILEREQUESTSTART = ", totalRequestTime.toString())
             val result: Result<Device> = client!!.device().resolveTile(UUID.fromString(tileId)).awaitResult()
             when (result) {
                 is Result.Ok -> resolveTileSuccess(result.value)
@@ -162,11 +155,7 @@ internal class UnlockPresenter {
         }
     }
 
-    private var totalRequestTime: Long = 0
-
     private fun resolveTileSuccess(device: Device) {
-        totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-        Log.v("TILEREQUEST = ", totalRequestTime.toString())
         EventsManager.sendEvent(EventAction.RESOLVE_TILE_SUCCESS)
         this.deviceToUnlock = device
         view?.updateLockName(device.name())
@@ -194,10 +183,8 @@ internal class UnlockPresenter {
      * @param deviceId UUID of the device to open
      */
     private fun unlockDevice(deviceId: UUID) {
-        mRequestStartTime = System.currentTimeMillis()
         Doordeck.certificateChain?.let { chain ->
             jobs += GlobalScope.launch(Dispatchers.Main) {
-
                 val signedJWT = JWTUtils.getSignedJWT(chain.certificateChain(),
                         Doordeck.getKeys().private,
                         deviceId,
@@ -207,8 +194,6 @@ internal class UnlockPresenter {
                 val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
                 when (result.isSuccessful) {
                     true -> {
-                        totalRequestTime = System.currentTimeMillis() - mRequestStartTime
-                        Log.v("UNLOCKTIME = ", totalRequestTime.toString())
                         EventsManager.sendEvent(EventAction.UNLOCK_SUCCESS)
                         view?.unlockSuccess()
                     }

@@ -277,7 +277,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         }
 
-        private const val TILE_ID = "tile_id"
+        private const val TILE_ID = "TILE_ID"
         private const val DEVICE = "DEVICE"
 
 
