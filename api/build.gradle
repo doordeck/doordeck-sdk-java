@@ -35,6 +35,8 @@ dependencies {
     implementation deps.joda
     
     compileOnly deps.jsr305
+
+    testImplementation 'junit:junit:4.12'
 }
 
 sourceCompatibility = JavaVersion.VERSION_1_8
