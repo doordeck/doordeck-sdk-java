@@ -17,10 +17,7 @@ import kotlinx.android.synthetic.main.activity_verify_device.*
 // screen responsible to send a new verification code and validate the user
 internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
-
-
     private lateinit var presenter: VerifyDevicePresenter
-    private var firstVerify: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -160,15 +157,11 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_no_method))
     }
     override fun verifyCodeSuccess() {
-//       if (!this.firstVerify){
            showVerifySend()
-//       } else firstVerify = false
     }
 
     override fun verifyCodeFail() {
-//        if (!this.firstVerify){
         showError(getString(R.string.code_not_send), getString(R.string.code_not_send_message))
-//        } else firstVerify = false
     }
 
     private fun showVerifySend () {

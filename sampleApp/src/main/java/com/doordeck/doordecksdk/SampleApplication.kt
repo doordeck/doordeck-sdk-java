@@ -9,12 +9,6 @@ import kotlin.concurrent.schedule
 class SampleApplication: Application() {
 
 
-//    override fun onCreate() {
-//        super.onCreate()
-//        Doordeck.initialize(SampleApplication().applicationContext, false)
-//
-//    }
-
     init {
         instance = this
     }
