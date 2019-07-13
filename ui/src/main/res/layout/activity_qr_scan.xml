@@ -32,15 +32,16 @@
 
     <TextView
         android:id="@+id/tvScanTitle"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/tvScanSub"
         android:paddingBottom="16dp"
+        android:layout_centerHorizontal="true"
         android:text="@string/scan_QR"
+        android:gravity="center_horizontal"
         android:textColor="?attr/ddTextColorPrimary"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textAlignment="center"
         android:paddingLeft="@dimen/sideMargin"
         android:paddingRight="@dimen/sideMargin"
         />
@@ -48,17 +49,17 @@
 
     <TextView
         android:id="@+id/tvScanSub"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="60dp"
-        android:gravity="bottom"
+        android:gravity="center_horizontal"
         android:paddingLeft="@dimen/sideMargin"
         android:paddingRight="@dimen/sideMargin"
+        android:layout_centerHorizontal="true"
         android:paddingBottom="48dp"
         android:text="Please scan the QR tile next to the door to unlock"
-        android:textAlignment="center"
         android:textColor="?attr/ddTextColorPrimary"
         android:textSize="16sp" />
 
