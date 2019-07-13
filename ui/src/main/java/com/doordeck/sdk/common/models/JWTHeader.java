@@ -14,6 +14,7 @@ public class JWTHeader {
     private String session;
     private String name;
     private String iss;
+    private String aud;
     private boolean refresh;
     private int iat;
     private String sid;
@@ -23,7 +24,7 @@ public class JWTHeader {
 
     }
 
-    public JWTHeader(String phone_number, String email, int exp, String sub, String email_verified, String session, String name, String iss, boolean refresh, int iat, String sid) {
+    public JWTHeader(String phone_number, String email, int exp, String sub, String email_verified, String session, String name, String iss, boolean refresh, int iat, String sid, String aud) {
         this.phone_number = phone_number;
         this.email = email;
         this.exp = exp;
@@ -35,6 +36,7 @@ public class JWTHeader {
         this.refresh = refresh;
         this.iat = iat;
         this.sid = sid;
+        this.aud = aud;
     }
 
     public String getPhone_number() {
@@ -124,4 +126,8 @@ public class JWTHeader {
     public void setSid(String sid) {
         this.sid = sid;
     }
+
+    public String getAud() { return aud; }
+
+    public void setAud(String aud) { this.aud = aud; }
 }
