@@ -9,6 +9,7 @@ import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
 import com.doordeck.sdk.dto.certificate.ImmutableVerificationRequest
 import com.doordeck.sdk.dto.certificate.VerificationMethod
+import com.google.common.base.Optional
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -38,13 +39,13 @@ internal class VerifyDevicePresenter {
     private fun checkMethodUsed(view: VerifyDeviceView) {
         Doordeck.jwtToken?.let { header ->
             when {
-                header.phone_number != null -> {
+                header.telephone().isPresent -> {
                     method = VerificationMethod.TELEPHONE
-                    view.setPhoneNumber(header.phone_number)
+                    view.setPhoneNumber(header.telephone().get())
                 }
-                header.email != null -> {
+                header.email().isPresent -> {
                     method = VerificationMethod.EMAIL
-                    view.setEmail(header.email)
+                    view.setEmail(header.email().get())
                 }
                 else -> view.noMethodDefined()
             }

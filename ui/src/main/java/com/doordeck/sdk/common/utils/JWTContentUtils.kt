@@ -22,17 +22,15 @@ internal object JWTContentUtils {
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
         return null
     }
 
     fun splitString(jwt: String): String {
         try {
-            return jwt.split("\\.".toRegex()).toTypedArray()[1]
-        } catch (e: ArrayIndexOutOfBoundsException) {
-            e.printStackTrace()
+            return jwt.substring(jwt.indexOf(".") + 1, jwt.lastIndexOf("."))
+        } catch (e: StringIndexOutOfBoundsException) {
+            throw IllegalArgumentException("Incorrect JWT")
         }
-        return ""
     }
 
     @Throws(UnsupportedEncodingException::class)
