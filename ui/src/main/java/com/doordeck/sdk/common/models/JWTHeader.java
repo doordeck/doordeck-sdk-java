@@ -1,5 +1,6 @@
 package com.doordeck.sdk.common.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -9,7 +10,6 @@ import com.google.common.base.Optional;
 import org.immutables.value.Value;
 
 import java.net.URI;
-import java.sql.Time;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -18,12 +18,13 @@ import java.util.TimeZone;
 @JsonSerialize(as = ImmutableJWTHeader.class)
 @JsonDeserialize(as = ImmutableJWTHeader.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown=true)
 public interface JWTHeader {
 
     String sub();
     String iss();
-    String session();
-    Boolean refresh();
+    Optional<String> session();
+    Optional<Boolean> refresh();
     int exp();
     int iat();
 

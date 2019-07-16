@@ -6,6 +6,7 @@ internal interface VerifyDeviceView  {
     fun fail()
     fun setEmail(email: String)
     fun setPhoneNumber(phone : String)
+    fun setPhoneNumberWhatsapp(phone : String)
     fun noMethodDefined()
     fun verifyCodeSuccess()
     fun verifyCodeFail()

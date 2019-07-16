@@ -32,26 +32,7 @@ internal class VerifyDevicePresenter {
 
     fun onStart(view: VerifyDeviceView) {
         this.view = view
-        checkMethodUsed(view)
     }
-
-    // given the JWtToken of the user, check with method to contact the user
-    private fun checkMethodUsed(view: VerifyDeviceView) {
-        Doordeck.jwtToken?.let { header ->
-            when {
-                header.telephone().isPresent -> {
-                    method = VerificationMethod.TELEPHONE
-                    view.setPhoneNumber(header.telephone().get())
-                }
-                header.email().isPresent -> {
-                    method = VerificationMethod.EMAIL
-                    view.setEmail(header.email().get())
-                }
-                else -> view.noMethodDefined()
-            }
-        }
-    }
-
 
     /**
      * clean memory
@@ -68,11 +49,35 @@ internal class VerifyDevicePresenter {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
             val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(Doordeck.getKeys().public).build()
-            val result: Response<Void> = client!!.certificateService().initVerification(ephKey, method).awaitResponse()
+            val result: Response<Map<String, String>> = client!!.certificateService().initVerification(ephKey).awaitResponse()
             when (result.isSuccessful) {
                 true -> {
+                    val usedMethod = result.body()?.get("method");
+                    if (usedMethod !== null) {
+                        Doordeck.jwtToken?.let { header ->
+                            when (usedMethod) {
+                                VerificationMethod.SMS.toString() -> {
+                                    method = VerificationMethod.SMS
+                                    view?.setPhoneNumber(header.telephone().get())
+                                }
+                                VerificationMethod.EMAIL.toString() -> {
+                                    method = VerificationMethod.EMAIL
+                                    view?.setEmail(header.email().get())
+                                }
+                                VerificationMethod.TELEPHONE.toString() -> {
+                                    method = VerificationMethod.TELEPHONE
+                                    view?.setPhoneNumber(header.telephone().get())
+                                }
+                                VerificationMethod.WHATSAPP.toString() -> {
+                                    method = VerificationMethod.WHATSAPP
+                                    view?.setPhoneNumberWhatsapp(header.telephone().get())
+                                }
+                                else -> view?.noMethodDefined()
+                            }
+                        }
+                    } else view?.noMethodDefined()
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
-                    LOG.d("onSendCode", "email sent !")
+                    LOG.d("onSendCode", usedMethod + "sent !")
                     view?.verifyCodeSuccess()
                 }
                 false -> {
