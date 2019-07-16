@@ -1,11 +1,6 @@
 package com.doordeck.sdk.util;
 
-import com.google.common.base.Preconditions;
-import com.google.common.base.Splitter;
-
 import org.junit.Test;
-
-import static com.google.common.base.Strings.lenientFormat;
 
 public class JWTSplitTest {
 
