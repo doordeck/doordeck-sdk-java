@@ -37,9 +37,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        android:paddingLeft="@dimen/sideMargin"
+        android:paddingRight="@dimen/sideMargin"
         android:text="@string/verify_device_desc"
         android:layout_marginTop="40dp"
-        android:textAlignment="center"
         android:textColor="?attr/ddTextColorPrimary"
         android:textSize="16dp"
         />

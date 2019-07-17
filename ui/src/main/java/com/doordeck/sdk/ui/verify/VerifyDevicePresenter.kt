@@ -1,6 +1,7 @@
 package com.doordeck.sdk.ui.verify
 
 import com.doordeck.sdk.common.events.EventsManager
+import com.doordeck.sdk.common.events.EventsManager.sendEvent
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
@@ -9,6 +10,7 @@ import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
 import com.doordeck.sdk.dto.certificate.ImmutableVerificationRequest
 import com.doordeck.sdk.dto.certificate.VerificationMethod
+import com.google.common.base.Optional
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
@@ -31,26 +33,7 @@ internal class VerifyDevicePresenter {
 
     fun onStart(view: VerifyDeviceView) {
         this.view = view
-        checkMethodUsed(view)
     }
-
-    // given the JWtToken of the user, check with method to contact the user
-    private fun checkMethodUsed(view: VerifyDeviceView) {
-        Doordeck.jwtToken?.let { header ->
-            when {
-                header.phone_number != null -> {
-                    method = VerificationMethod.TELEPHONE
-                    view.setPhoneNumber(header.phone_number)
-                }
-                header.email != null -> {
-                    method = VerificationMethod.EMAIL
-                    view.setEmail(header.email)
-                }
-                else -> view.noMethodDefined()
-            }
-        }
-    }
-
 
     /**
      * clean memory
@@ -67,11 +50,34 @@ internal class VerifyDevicePresenter {
         jobs += GlobalScope.launch(Dispatchers.Main) {
 
             val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(Doordeck.getKeys().public).build()
-            val result: Response<Void> = client!!.certificateService().initVerification(ephKey, method).awaitResponse()
+            val result: Response<Map<String, String>> = client!!.certificateService().initVerification(ephKey).awaitResponse()
             when (result.isSuccessful) {
                 true -> {
+                    val usedMethod = result.body()?.get("method");
+                    Doordeck.jwtToken?.let { header ->
+                        when (usedMethod?.let { VerificationMethod.valueOf(it) }) {
+                            VerificationMethod.SMS -> {
+                                method = VerificationMethod.SMS
+                                view?.setPhoneNumber(header.telephone().get())
+                            }
+                            VerificationMethod.EMAIL -> {
+                                method = VerificationMethod.EMAIL
+                                view?.setEmail(header.email().get())
+                            }
+                            VerificationMethod.TELEPHONE -> {
+                                method = VerificationMethod.TELEPHONE
+                                view?.setPhoneNumber(header.telephone().get())
+                            }
+                            VerificationMethod.WHATSAPP -> {
+                                method = VerificationMethod.WHATSAPP
+                                view?.setPhoneNumberWhatsapp(header.telephone().get())
+                            }
+                            else -> view?.noMethodDefined()
+
+                        }
+                    }
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_SENT)
-                    LOG.d("onSendCode", "email sent !")
+                    LOG.d("onSendCode", usedMethod + "sent !")
                     view?.verifyCodeSuccess()
                 }
                 false -> {

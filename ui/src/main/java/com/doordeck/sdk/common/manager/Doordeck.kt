@@ -141,7 +141,7 @@ object Doordeck {
     }
 
     private fun checkIfValidCertificate(certificateChain: CertificateChain): Boolean {
-        return certificateChain.isValid() && certificateChain.userId().toString() == this.jwtToken!!.sub
+        return certificateChain.isValid() && certificateChain.userId().toString() == this.jwtToken!!.sub()
     }
 
     /**
@@ -278,7 +278,7 @@ object Doordeck {
      */
     private fun isValidityApiKey(jwtToken: JWTHeader): Boolean {
         val currentDate = Date().time
-        if (jwtToken.exp * 1000L > currentDate)
+        if (jwtToken.exp() * 1000L > currentDate)
             return true
         return false
     }

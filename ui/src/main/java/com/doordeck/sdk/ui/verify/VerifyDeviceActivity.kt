@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import com.doordeck.sdk.R
 import com.doordeck.sdk.ui.BaseActivity
@@ -22,6 +24,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verify_device)
+        tvVerifyDesc.visibility = GONE;
         presenter = VerifyDevicePresenter()
         presenter.onSendCode()
         setupListeners()
@@ -146,14 +149,22 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     }
 
     override fun setEmail(email: String) {
+        tvVerifyDesc.visibility = VISIBLE;
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), email)
     }
 
     override fun setPhoneNumber(phone: String) {
+        tvVerifyDesc.visibility = VISIBLE;
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), phone)
     }
 
+    override fun setPhoneNumberWhatsapp(phone: String) {
+        tvVerifyDesc.visibility = VISIBLE;
+        tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_whatsapp), phone)
+    }
+
     override fun noMethodDefined() {
+        tvVerifyDesc.visibility = VISIBLE;
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_no_method))
     }
     override fun verifyCodeSuccess() {
