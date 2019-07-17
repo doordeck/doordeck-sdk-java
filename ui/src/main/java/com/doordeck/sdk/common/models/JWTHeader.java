@@ -9,10 +9,6 @@ import com.google.common.base.Optional;
 
 import org.immutables.value.Value;
 
-import java.net.URI;
-import java.util.Locale;
-import java.util.TimeZone;
-
 //  JWT header
 @Value.Immutable
 @JsonSerialize(as = ImmutableJWTHeader.class)
@@ -23,8 +19,6 @@ public interface JWTHeader {
 
     String sub();
     String iss();
-    Optional<String> session();
-    Optional<Boolean> refresh();
     int exp();
     int iat();
 
@@ -43,11 +37,6 @@ public interface JWTHeader {
     @JsonProperty("telephone_verified")
     Optional<Boolean> telephoneVerified();
 
-    Optional<Locale> locale();
-
-    @JsonProperty("zoneinfo")
-    Optional<TimeZone> zoneInfo();
-
     Optional<String> name();
 
     @JsonProperty("given_name")
@@ -58,7 +47,5 @@ public interface JWTHeader {
 
     @JsonProperty("middle_name")
     Optional<String> middleName();
-
-    Optional<URI> picture();
 
 }
