@@ -252,9 +252,12 @@ object Doordeck {
         else {
             val token = getStoredAuthToken()
             if (token !== null) {
-                this.sharedPreference = SharedPreference(ctx)
-                initialize(ctx, token, getSavedTheme())
-                return true
+                try {
+                    initialize(ctx, token, getSavedTheme())
+                    return true
+                } catch (e: IllegalArgumentException) {
+                    return false
+                }
             } else return false
         }
     }
