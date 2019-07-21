@@ -20,9 +20,9 @@ dependencies {
     annotationProcessor "org.immutables:value:2.7.5"
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.8'
+    implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${versions.jackson}"
 
     implementation "com.google.guava:guava:27.1-jre"
 

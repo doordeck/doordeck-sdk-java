@@ -14,7 +14,8 @@ buildscript {
             'guava': '27.1',
             'findbugs': '3.0.2',
             'joda': '2.10.1',
-            'secureStorage' : '1.0.3'
+            'secureStorage' : '1.0.3',
+            'jackson': '2.9.9'
     ]
 
     ext.deps = [
