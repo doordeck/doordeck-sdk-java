@@ -7,6 +7,7 @@ import android.util.Log
 import com.doordeck.sdk.BuildConfig
 import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.events.IEventCallback
+import com.doordeck.sdk.common.events.ShareCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.models.DDEVENT
 import com.doordeck.sdk.common.models.EventAction
@@ -15,13 +16,21 @@ import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.dto.operation.Operation
 import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.Ed25519KeyGenerator
+import com.doordeck.sdk.signer.util.JWTUtils
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.google.common.base.Preconditions
 import io.reactivex.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import retrofit2.Response
+import ru.gildor.coroutines.retrofit.awaitResponse
 import java.net.URI
 import java.security.GeneralSecurityException
 import java.security.KeyPair
@@ -74,6 +83,7 @@ object Doordeck {
     // Check if certificates are loaded
     var onCertLoaded : ((Boolean, Boolean) -> Unit)? = null
 
+    private var jobs: List<Job> = emptyList()
 
 
     // public //
@@ -228,6 +238,44 @@ object Doordeck {
                 this.unlockCallback = callback
             } else
                 callback?.invalidAuthToken()
+        }
+    }
+
+    /**
+     * Show the unlock screen given the Scan type given in parameter
+     *
+     * @param context current context
+     * @param type type of scan to use (NFC or QR) , NFC by default if not provided, optional
+     * @param callback callback of the method, optional
+     */
+    fun share(operation: Operation, deviceId: UUID, callback: ShareCallback? = null) {
+
+        if (status == AuthStatus.UNAUTHORIZED) {
+            callback?.notAuthenticated()
+            return
+        }
+        jwtToken?.let { header ->
+            if (isValidityApiKey(header) && apiKey != null) {
+                certificateChain?.let { chain ->
+                    jobs += GlobalScope.launch(Dispatchers.Main) {
+                        val signedJWT = JWTUtils.getSignedJWT(chain.certificateChain(),
+                                Doordeck.getKeys().private,
+                                deviceId,
+                                chain.userId(),
+                                operation
+                        )
+                        val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
+                        when (result.isSuccessful) {
+                            true -> {
+                                callback?.shareSuccess()
+                            }
+                            false -> {
+                                callback?.shareFailed()
+                            }
+                        }
+                    }
+                }
+            } else callback?.invalidAuthToken()
         }
     }
 
