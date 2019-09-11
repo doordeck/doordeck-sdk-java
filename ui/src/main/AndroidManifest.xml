@@ -15,13 +15,16 @@
         <activity
             android:name=".ui.unlock.UnlockActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/ddLightTheme" />
+            android:theme="@style/ddLightTheme"
+            android:excludeFromRecents="true"/>
         <activity
             android:name=".ui.qrcode.QRcodeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"/>
         <activity
             android:name=".ui.nfc.NFCActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -30,6 +33,7 @@
         </activity>
         <activity android:name=".ui.verify.VerifyDeviceActivity"
             android:screenOrientation="portrait"
+            android:excludeFromRecents="true"
             />
 
         <meta-data
