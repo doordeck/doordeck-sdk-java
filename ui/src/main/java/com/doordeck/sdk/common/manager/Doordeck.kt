@@ -13,10 +13,13 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
+import com.doordeck.sdk.dto.Role
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.dto.operation.Operation
 import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.Ed25519KeyGenerator
+import com.doordeck.sdk.signer.util.JWTUtils
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
@@ -25,6 +28,8 @@ import io.reactivex.Observable
 import java.net.URI
 import java.security.GeneralSecurityException
 import java.security.KeyPair
+import java.security.PublicKey
+import java.time.Instant
 import java.util.*
 import kotlin.properties.Delegates.observable
 
@@ -229,6 +234,23 @@ object Doordeck {
             } else
                 callback?.invalidAuthToken()
         }
+    }
+
+    /**
+     * getSigned JWT
+     *
+     * @param deviceId
+     * @param operation operation of the signed key
+     */
+    fun getSignedJWT(deviceId: UUID, operation: Operation): String {
+        Doordeck.certificateChain?.let { chain ->
+            return JWTUtils.getSignedJWT(chain.certificateChain(),
+                    Doordeck.getKeys().private,
+                    deviceId,
+                    chain.userId(),
+                    operation
+            )
+        } ?: return ""
     }
 
 

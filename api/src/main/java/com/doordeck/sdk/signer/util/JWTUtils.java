@@ -1,6 +1,5 @@
 package com.doordeck.sdk.signer.util;
 
-import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
 import com.doordeck.sdk.dto.operation.Operation;
 import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.jwt.*;
@@ -18,19 +17,18 @@ import java.util.UUID;
 
 public class JWTUtils {
 
-    public static String getSignedJWT(List<X509Certificate> certs, PrivateKey key, UUID deviceId, UUID userId) {
+    public static String getSignedJWT(List<X509Certificate> certs, PrivateKey key, UUID deviceId, UUID userId, Operation operation) {
 
         ObjectMapper objectMapper = Jackson.sharedObjectMapper();
         Ed25519Signer signer = new Ed25519Signer(objectMapper);
 
-        Operation unlock = ImmutableMutateDoorState.builder().locked(false).build();
         Instant now = Instant.now();
         Claims claims = ImmutableClaims.builder()
                 .deviceId(deviceId)
                 .userId(userId)
                 .notBefore(now)
                 .expiresAt(now.plus(Duration.standardSeconds(60)))
-                .operation(unlock)
+                .operation(operation)
                 .build();
 
         Header header = ImmutableHeader.builder()
