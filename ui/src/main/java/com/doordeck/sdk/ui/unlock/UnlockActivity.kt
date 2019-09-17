@@ -259,6 +259,13 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     }
 
+    public override fun onPause() {
+        super.onPause()
+        unlockPresenter?.onStop()
+        unlockPresenter = null
+        finish()
+    }
+
     public override fun onStop() {
         super.onStop()
         unlockPresenter?.onStop()

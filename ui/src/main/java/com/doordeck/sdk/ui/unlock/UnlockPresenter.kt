@@ -19,6 +19,7 @@ import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResponse
 import ru.gildor.coroutines.retrofit.awaitResult
 import java.util.*
+import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState
 
 
 // logic related to the view responsible to unlock the device
@@ -188,7 +189,8 @@ internal class UnlockPresenter {
                 val signedJWT = JWTUtils.getSignedJWT(chain.certificateChain(),
                         Doordeck.getKeys().private,
                         deviceId,
-                        chain.userId()
+                        chain.userId(),
+                        ImmutableMutateDoorState.builder().locked(false).build()
                 )
 
                 val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
