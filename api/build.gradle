@@ -26,9 +26,9 @@ dependencies {
 
     implementation "com.google.guava:guava:27.1-jre"
 
-    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
+    implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-jackson:${versions.retrofit}"
+    implementation "com.squareup.retrofit2:converter-scalars:${versions.retrofit}"
     implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
 
     implementation "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
