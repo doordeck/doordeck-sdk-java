@@ -20,18 +20,18 @@ dependencies {
     annotationProcessor "org.immutables:value:2.7.5"
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-joda:2.9.8'
-    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-guava:2.9.8'
+    implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${versions.jackson}"
 
     implementation "com.google.guava:guava:27.1-jre"
 
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
     implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.14.0'
+    implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
 
-    implementation "org.bouncycastle:bcprov-jdk15on:1.61"
+    implementation "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
     implementation deps.joda
     
     compileOnly deps.jsr305
