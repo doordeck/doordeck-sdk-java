@@ -13,7 +13,6 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
-import com.doordeck.sdk.dto.Role
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.operation.Operation
@@ -28,8 +27,6 @@ import io.reactivex.Observable
 import java.net.URI
 import java.security.GeneralSecurityException
 import java.security.KeyPair
-import java.security.PublicKey
-import java.time.Instant
 import java.util.*
 import kotlin.properties.Delegates.observable
 
@@ -78,6 +75,9 @@ object Doordeck {
     }
     // Check if certificates are loaded
     var onCertLoaded : ((Boolean, Boolean) -> Unit)? = null
+
+    // Sdk Mode
+    private var sdkMode: Boolean = false
 
 
 
@@ -230,11 +230,12 @@ object Doordeck {
 
         jwtToken?.let { header ->
             if (isValidityApiKey(header) && apiKey != null) {
-
-                when (type) {
-                    ScanType.QR -> QRcodeActivity.start(context)
-                    ScanType.NFC -> NFCActivity.start(context)
-                    ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
+                if (!sdkMode) {
+                    when (type) {
+                        ScanType.QR -> QRcodeActivity.start(context)
+                        ScanType.NFC -> NFCActivity.start(context)
+                        ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
+                    }
                 }
                 this.unlockCallback = callback
             } else
