@@ -94,7 +94,7 @@ object Doordeck {
      * @param darkmode (Optional) set dark or light theme of the sdk.
      * @return Doordeck the current instance of the SDK
      */
-    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false): Doordeck {
+    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false, callback: UnlockCallback? = null): Doordeck {
         Preconditions.checkNotNull(ctx!!, "Context can't be null")
         if (authToken != null) {
             if (this.apiKey == null) {
@@ -110,12 +110,12 @@ object Doordeck {
                 this.storeTheme(darkMode)
                 if (getStoredAuthToken() != authToken) {
                     storeToken(authToken)
-                    keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                    keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                 } else {
                     if (certificateChain == null) {
                         certificateChain = getStoredCertificateChain()
                         if (certificateChain == null) {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                             var lastStatus = getLastStatus()
                             if (lastStatus != null) Doordeck.status = lastStatus
                         } else {
@@ -123,7 +123,7 @@ object Doordeck {
                                 status = AuthStatus.AUTHORIZED
                                 certificateLoaded = true
                             } else {
-                                keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                             }
                         }
                     } else {
@@ -131,7 +131,7 @@ object Doordeck {
                             status = AuthStatus.AUTHORIZED
                             certificateLoaded = true
                         } else {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                         }
                     }
                 }
@@ -167,7 +167,7 @@ object Doordeck {
         storeToken(authToken)
         storeTheme(darkMode)
         createHttpClient()
-        keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+        keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
     }
 
     /**
@@ -222,6 +222,12 @@ object Doordeck {
             callback?.notAuthenticated()
             return
         }
+
+        if (status == AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
+            callback?.verificationNeeded()
+            return
+        }
+
         jwtToken?.let { header ->
             if (isValidityApiKey(header) && apiKey != null) {
 
