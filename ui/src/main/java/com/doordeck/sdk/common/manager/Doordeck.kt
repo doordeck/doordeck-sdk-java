@@ -94,7 +94,7 @@ object Doordeck {
      * @param darkmode (Optional) set dark or light theme of the sdk.
      * @return Doordeck the current instance of the SDK
      */
-    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false, callback: UnlockCallback? = null): Doordeck {
+    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false): Doordeck {
         Preconditions.checkNotNull(ctx!!, "Context can't be null")
         if (authToken != null) {
             if (this.apiKey == null) {
