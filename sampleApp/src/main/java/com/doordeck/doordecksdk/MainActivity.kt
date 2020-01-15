@@ -56,6 +56,10 @@ class MainActivity : AppCompatActivity() {
             override fun unlockFailed() {
                 Toast.makeText(applicationContext, "Unlock Failed", LENGTH_SHORT).show()
             }
+
+            override fun verificationNeeded() {
+                Toast.makeText(applicationContext, "2fa needed", LENGTH_SHORT).show()
+            }
         })
     }
 

@@ -1,9 +1,8 @@
 package com.doordeck.sdk.common.manager
 
-import android.content.Context
+import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
-import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -21,7 +20,7 @@ object CertificateManager {
      * If the server responds with a 423, the user needs to verify its device with a 2 FA
      * @param publicKey public key of the user
      */
-    fun getCertificatesAsync(publicKey: PublicKey, ctx: Context) {
+    fun getCertificatesAsync(publicKey: PublicKey, callback: UnlockCallback? = null) {
         val ephKey = ImmutableRegisterEphemeralKey.builder().ephemeralKey(publicKey).build()
         val request = Doordeck.client!!.certificateService().registerEphemeralKey(ephKey)
         request.enqueue(object : Callback<CertificateChain> {
@@ -30,7 +29,7 @@ object CertificateManager {
                 if (response.body() != null) Doordeck.storeCertificates(Doordeck.certificateChain!!)
                 if (response.code() == 423) {
                     Doordeck.status = AuthStatus.TWO_FACTOR_AUTH_NEEDED
-                    VerifyDeviceActivity.start(ctx)
+                    callback?.verificationNeeded()
                 } else {
                     Doordeck.status = AuthStatus.AUTHORIZED
                     Doordeck.storeLaststatus(Doordeck.status)

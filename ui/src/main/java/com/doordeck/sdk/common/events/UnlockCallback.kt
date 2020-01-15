@@ -8,6 +8,7 @@ interface UnlockCallback
     fun unlockSuccess()
     fun unlockFailed()
     fun invalidAuthToken()
+    fun verificationNeeded()
     fun notAuthenticated()
 }
 

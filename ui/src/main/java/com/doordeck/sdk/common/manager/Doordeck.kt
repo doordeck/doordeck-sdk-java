@@ -13,7 +13,6 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
-import com.doordeck.sdk.dto.Role
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.operation.Operation
@@ -28,8 +27,6 @@ import io.reactivex.Observable
 import java.net.URI
 import java.security.GeneralSecurityException
 import java.security.KeyPair
-import java.security.PublicKey
-import java.time.Instant
 import java.util.*
 import kotlin.properties.Delegates.observable
 
@@ -79,6 +76,9 @@ object Doordeck {
     // Check if certificates are loaded
     var onCertLoaded : ((Boolean, Boolean) -> Unit)? = null
 
+    // Sdk Mode
+    private var sdkMode: Boolean = false
+
 
 
     // public //
@@ -110,12 +110,12 @@ object Doordeck {
                 this.storeTheme(darkMode)
                 if (getStoredAuthToken() != authToken) {
                     storeToken(authToken)
-                    keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                    keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                 } else {
                     if (certificateChain == null) {
                         certificateChain = getStoredCertificateChain()
                         if (certificateChain == null) {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                             var lastStatus = getLastStatus()
                             if (lastStatus != null) Doordeck.status = lastStatus
                         } else {
@@ -123,7 +123,7 @@ object Doordeck {
                                 status = AuthStatus.AUTHORIZED
                                 certificateLoaded = true
                             } else {
-                                keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                             }
                         }
                     } else {
@@ -131,7 +131,7 @@ object Doordeck {
                             status = AuthStatus.AUTHORIZED
                             certificateLoaded = true
                         } else {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
                         }
                     }
                 }
@@ -167,7 +167,7 @@ object Doordeck {
         storeToken(authToken)
         storeTheme(darkMode)
         createHttpClient()
-        keys?.public?.let { CertificateManager.getCertificatesAsync(it, ctx) }
+        keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
     }
 
     /**
@@ -222,13 +222,20 @@ object Doordeck {
             callback?.notAuthenticated()
             return
         }
+
+        if (status == AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
+            callback?.verificationNeeded()
+            return
+        }
+
         jwtToken?.let { header ->
             if (isValidityApiKey(header) && apiKey != null) {
-
-                when (type) {
-                    ScanType.QR -> QRcodeActivity.start(context)
-                    ScanType.NFC -> NFCActivity.start(context)
-                    ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
+                if (!sdkMode) {
+                    when (type) {
+                        ScanType.QR -> QRcodeActivity.start(context)
+                        ScanType.NFC -> NFCActivity.start(context)
+                        ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
+                    }
                 }
                 this.unlockCallback = callback
             } else
