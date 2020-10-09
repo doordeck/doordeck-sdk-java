@@ -18,7 +18,7 @@ import retrofit2.http.Path;
 
 public interface DeviceService {
 
-    @GET("device/{tileId}")
+    @GET("tile/{tileId}")
     @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v2+json, application/json") // Prefer newer endpoint
     Call<Device> resolveTile(@Path("tileId") UUID tileId);
 
