@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
-import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -19,7 +17,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.vectordrawable.graphics.drawable.Animatable2Compat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
 import com.doordeck.sdk.common.manager.Doordeck
@@ -32,6 +29,12 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import kotlinx.android.synthetic.main.activity_unlock.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
+import kotlin.math.max
 
 // screen responsible to display the status of the unlock process
 internal class UnlockActivity : BaseActivity(), UnlockView {
@@ -93,6 +96,37 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         unlock_status.setText(R.string.UNLOCKING)
     }
 
+    private fun showDelayTimer(delay: Double) {
+        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success_blank)
+        val animation = lock_image.drawable
+        if (animation is Animatable) {
+            (animation as Animatable).stop()
+        }
+        lock_image.setImageDrawable(null)
+        lock_image.setImageDrawable(animated)
+
+        unlock_status?.text = getString(R.string.Please_Wait)
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val tickSeconds = 1
+            val totalSeconds = max(TimeUnit.SECONDS.toSeconds(delay.toLong()), tickSeconds.toLong())
+            for (second in totalSeconds downTo tickSeconds) {
+                delay_lock_time_text?.text = second.toString()
+                delay(1000)
+            }
+
+            delay_lock_time_text?.text = null
+
+            // Finish with the timer and show the unlock
+            showUnlockAnimation()
+            unlockPresenter?.setFinishTimer()
+        }
+    }
+
+    override fun unlockSuccessWithDelay(delayOfDevice: Double) {
+        showDelayTimer(delayOfDevice)
+    }
+
     override fun unlockSuccess() {
         showUnlockAnimation()
         unlockPresenter?.setFinishTimer()
@@ -113,7 +147,6 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
         unlock_status.setText(R.string.UNLOCKED)
         key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
-        unlock_status.setTextColor(ContextCompat.getColor(this, R.color.ddColorTextLight))
     }
 
     override fun showAccessDenied() {
@@ -154,7 +187,6 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
         key_title.setText(R.string.ACCESS_DENIED)
         key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
-        unlock_status.setTextColor(Color.WHITE)
 
     }
 

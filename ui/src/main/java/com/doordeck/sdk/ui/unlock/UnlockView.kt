@@ -9,6 +9,14 @@ internal interface UnlockView {
 
     fun unlockSuccess()
 
+    /**
+     * @param delayOfDevice is used when
+     * a device has been unlocked successfully,
+     * it could bring a delay and this is communicating
+     * to the view that it'll take a bit
+     */
+    fun unlockSuccessWithDelay(delayOfDevice: Double)
+
     fun updateLockName(name: String)
 
     fun setUnlocking()

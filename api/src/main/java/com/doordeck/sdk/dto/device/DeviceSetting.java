@@ -34,4 +34,7 @@ public interface DeviceSetting {
         return ImmutableDeviceUsageRequirements.builder().build();
     }
 
+    @Value.Default
+    default double delay() { return 0d; }
+
 }

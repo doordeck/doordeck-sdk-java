@@ -4,15 +4,21 @@ import com.doordeck.sdk.dto.device.Device;
 import com.doordeck.sdk.dto.device.ShareableDevice;
 import com.doordeck.sdk.dto.device.UpdateDeviceRequest;
 import com.google.common.net.HttpHeaders;
-import retrofit2.Call;
-import retrofit2.http.*;
 
 import java.util.List;
 import java.util.UUID;
 
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
+import retrofit2.http.PUT;
+import retrofit2.http.Path;
+
 public interface DeviceService {
 
-    @GET("tile/{tileId}")
+    @GET("device/{tileId}")
     @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v2+json, application/json") // Prefer newer endpoint
     Call<Device> resolveTile(@Path("tileId") UUID tileId);
 
