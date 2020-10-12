@@ -62,9 +62,11 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
                 edDigit4.requestFocus()
         }
         edDigit3.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-            if (edDigit3.text.length == 1){
-                edDigit3.text.clear();
-            } else edDigit2.requestFocus()
+            if (keyCode == KeyEvent.KEYCODE_DEL) {
+                if (edDigit3.text.length == 1) {
+                    edDigit3.text.clear()
+                } else edDigit2.requestFocus()
+            }
             false
         })
 
