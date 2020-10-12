@@ -8,18 +8,15 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.services.LocationService
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.device.Device
+import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState
 import com.doordeck.sdk.http.DoordeckClient
 import com.doordeck.sdk.signer.util.JWTUtils
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import retrofit2.Response
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResponse
 import ru.gildor.coroutines.retrofit.awaitResult
 import java.util.*
-import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState
 
 
 // logic related to the view responsible to unlock the device
@@ -59,10 +56,9 @@ internal class UnlockPresenter {
 
 
         // wait for certificate to be loaded if nescesarry
-        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
-        {
+        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
             Doordeck.onCertLoaded = { oldValue, newValue ->
-                if(newValue == true) initUnlock(tileId)
+                if (newValue == true) initUnlock(tileId)
             }
         } else {
             initUnlock(tileId)
@@ -77,10 +73,9 @@ internal class UnlockPresenter {
     fun init(device: Device?) {
 
         // wait for certificate to be loaded if nescesarry
-        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED)
-        {
+        if (Doordeck.certificateChain == null && Doordeck.status != AuthStatus.TWO_FACTOR_AUTH_NEEDED) {
             Doordeck.onCertLoaded = { oldValue, newValue ->
-                if(newValue == true) initUnlock(device)
+                if (newValue == true) initUnlock(device)
             }
         } else {
             initUnlock(device)
@@ -133,7 +128,6 @@ internal class UnlockPresenter {
     }
 
 
-
     /**
      * Call the server to get the detail of the device given the tileId
      * @param tileId id of the tile scanned
@@ -167,7 +161,10 @@ internal class UnlockPresenter {
             view?.showGeoLoading()
             view?.checkGoogleApiPermissions()
         } else {
-            unlockDevice(device.deviceId())
+            unlockDevice(
+                    deviceId = device.deviceId(),
+                    delayOfDevice = device.settings().delay()
+            )
         }
     }
 
@@ -182,8 +179,9 @@ internal class UnlockPresenter {
     /**
      * Call the server unlock the device
      * @param deviceId UUID of the device to open
+     * @param delayOfDevice is the delay that the Device has shown it'll take to load
      */
-    private fun unlockDevice(deviceId: UUID) {
+    private fun unlockDevice(deviceId: UUID, delayOfDevice: Double = 0.0) {
         Doordeck.certificateChain?.let { chain ->
             jobs += GlobalScope.launch(Dispatchers.Main) {
                 val signedJWT = JWTUtils.getSignedJWT(chain.certificateChain(),
@@ -196,8 +194,16 @@ internal class UnlockPresenter {
                 val result: Response<Void> = client!!.device().executeOperation(deviceId, signedJWT).awaitResponse()
                 when (result.isSuccessful) {
                     true -> {
-                        EventsManager.sendEvent(EventAction.UNLOCK_SUCCESS)
-                        view?.unlockSuccess()
+                        if (delayOfDevice > 0.0) {
+                            view?.unlockSuccessWithDelay(delayOfDevice)
+                        } else {
+                            view?.unlockSuccess()
+                        }
+
+                        GlobalScope.launch(Dispatchers.Main) {
+                            delay((delayOfDevice * 1000).toLong())
+                            EventsManager.sendEvent(EventAction.UNLOCK_SUCCESS)
+                        }
                     }
                     false -> {
                         EventsManager.sendEvent(EventAction.UNLOCK_FAILED, result.message())

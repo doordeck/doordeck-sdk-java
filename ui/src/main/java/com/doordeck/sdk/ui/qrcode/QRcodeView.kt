@@ -3,6 +3,7 @@ package com.doordeck.sdk.ui.qrcode
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.util.AttributeSet
@@ -11,15 +12,16 @@ import androidx.core.content.ContextCompat
 import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.google.zxing.ResultPoint
+import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
-import com.journeyapps.barcodescanner.BarcodeView
+import com.journeyapps.barcodescanner.CompoundBarcodeView
 import java.util.*
 
 /**
  * Custom view for the QRCode
  */
-internal class QRcodeView : BarcodeView {
+internal class QRcodeView : CompoundBarcodeView {
 
     private val TAG = QRcodeView::class.java.simpleName
 
@@ -39,13 +41,17 @@ internal class QRcodeView : BarcodeView {
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
                 ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.CAMERA), QRcodeActivity.CAMERA)
-
         }
+
     }
 
     // start scanning once we permission are granted
     private fun startScanning() {
         resume()
+        initializeFromIntent(
+                Intent()
+                        .putExtra(Intents.Scan.SCAN_TYPE, Intents.Scan.MIXED_SCAN)
+        )
         decodeSingle(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult) {
                 val scan = result.toString()
