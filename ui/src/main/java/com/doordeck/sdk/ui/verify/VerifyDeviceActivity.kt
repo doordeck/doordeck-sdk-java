@@ -1,6 +1,5 @@
 package com.doordeck.sdk.ui.verify
 
-
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
@@ -9,8 +8,6 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.inputmethod.InputMethodManager
 import com.doordeck.sdk.R
 import com.doordeck.sdk.ui.BaseActivity
@@ -24,7 +21,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_verify_device)
-        tvVerifyDesc.visibility = GONE;
+        tvVerifyDesc.visibility = View.GONE
         presenter = VerifyDevicePresenter()
         presenter.onSendCode()
         setupListeners()
@@ -48,74 +45,74 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
             if (it.length == 1)
                 edDigit3.requestFocus()
         }
-        edDigit2.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        edDigit2.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
                 //Perform Code
-                if (edDigit2.text.length == 1){
-                    edDigit2.text.clear();
+                if (edDigit2.text.length == 1) {
+                    edDigit2.text.clear()
                 } else edDigit1.requestFocus()
             }
             false
-        })
+        }
         edDigit3.onTextChanged {
             if (it.length == 1)
                 edDigit4.requestFocus()
         }
-        edDigit3.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        edDigit3.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
                 if (edDigit3.text.length == 1) {
                     edDigit3.text.clear()
                 } else edDigit2.requestFocus()
             }
             false
-        })
+        }
 
         edDigit4.onTextChanged {
             if (it.length == 1)
                 edDigit5.requestFocus()
         }
-        edDigit4.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        edDigit4.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
-                if (edDigit4.text.length == 1){
-                    edDigit4.text.clear();
+                if (edDigit4.text.length == 1) {
+                    edDigit4.text.clear()
                 } else edDigit3.requestFocus()
             }
             false
-        })
+        }
 
 
         edDigit5.onTextChanged {
             if (it.length == 1)
                 edDigit6.requestFocus()
         }
-        edDigit5.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        edDigit5.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
-                if (edDigit5.text.length == 1){
-                    edDigit5.text.clear();
+                if (edDigit5.text.length == 1) {
+                    edDigit5.text.clear()
                 } else edDigit4.requestFocus()
             }
             false
-        })
+        }
 
         edDigit6.onTextChanged {
             if (it.length == 1)
                 hideKeyboard()
         }
-        edDigit6.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+        edDigit6.setOnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_DEL) {
-                if (edDigit6.text.length == 1){
-                    edDigit6.text.clear();
+                if (edDigit6.text.length == 1) {
+                    edDigit6.text.clear()
                 } else edDigit5.requestFocus()
             }
             false
-        })
+        }
 
         showKeyboard()
         edDigit1.requestFocus()
     }
 
-    private fun setCountdownTimer () {
-        val timer = object: CountDownTimer(60000, 1000) {
+    private fun setCountdownTimer() {
+        val timer = object : CountDownTimer(60000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 tvTimer.text = (millisUntilFinished / 1000).toString()
             }
@@ -134,7 +131,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
     private fun showKeyboard() {
         val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        edDigit1.postDelayed(Runnable {
+        edDigit1.postDelayed({
             edDigit1.requestFocus()
             imm.showSoftInput(edDigit1, 0)
         }, 100)
@@ -151,48 +148,55 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     }
 
     override fun setEmail(email: String) {
-        tvVerifyDesc.visibility = VISIBLE;
+        tvVerifyDesc.visibility = View.VISIBLE
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), email)
     }
 
     override fun setPhoneNumber(phone: String) {
-        tvVerifyDesc.visibility = VISIBLE;
+        tvVerifyDesc.visibility = View.VISIBLE
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc), phone)
     }
 
     override fun setPhoneNumberWhatsapp(phone: String) {
-        tvVerifyDesc.visibility = VISIBLE;
+        tvVerifyDesc.visibility = View.VISIBLE
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_whatsapp), phone)
     }
 
     override fun noMethodDefined() {
-        tvVerifyDesc.visibility = VISIBLE;
+        tvVerifyDesc.visibility = View.VISIBLE
         tvVerifyDesc.text = String.format(resources.getString(R.string.verify_device_desc_no_method))
     }
+
     override fun verifyCodeSuccess() {
-           showVerifySend()
+        showVerifySend()
     }
 
     override fun verifyCodeFail() {
         showError(getString(R.string.code_not_send), getString(R.string.code_not_send_message))
     }
 
-    private fun showVerifySend () {
+    private fun showVerifySend() {
         tvReSendCode.setOnClickListener { }
         tvReSendCode.text = getString(R.string.code_send)
         tvReSendCodeSent.visibility = View.VISIBLE
         setCountdownTimer()
     }
-    private fun hideVerifySend () {
+
+    private fun hideVerifySend() {
         tvReSendCode.setOnClickListener { presenter.onSendCode() }
         tvReSendCode.text = getString(R.string.resend_code)
         tvReSendCodeSent.visibility = View.GONE
     }
 
     private fun showError(title: String, message: String) {
-        AlertDialog.Builder(this).setTitle(title).setMessage(message).setPositiveButton(getString(R.string.OK)){dialog, which ->
-            dialog.dismiss()
-        }.show()
+        AlertDialog
+                .Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.OK)) { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .show()
     }
 
     // the code is valid, close the with and come back on the previous screen : The UnlockActivity
