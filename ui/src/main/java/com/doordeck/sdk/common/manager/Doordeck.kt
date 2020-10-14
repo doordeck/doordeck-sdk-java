@@ -22,6 +22,7 @@ import com.doordeck.sdk.signer.util.JWTUtils
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.common.base.Preconditions
 import io.reactivex.Observable
 import java.net.URI
@@ -270,6 +271,13 @@ object Doordeck {
         this.certificateChain = null
         this.datastore.clean()
         this.keys = null
+    }
+
+    /**
+     * Shows the verification screen
+     */
+    fun showVerificationScreen(context: Context) {
+        VerifyDeviceActivity.start(context)
     }
 
 
