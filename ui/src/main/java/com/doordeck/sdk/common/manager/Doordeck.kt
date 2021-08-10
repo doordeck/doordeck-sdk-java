@@ -95,7 +95,12 @@ object Doordeck {
      * @param darkmode (Optional) set dark or light theme of the sdk.
      * @return Doordeck the current instance of the SDK
      */
-    fun initialize(ctx: Context, authToken: String? = null, darkMode: Boolean = false): Doordeck {
+    fun initialize(
+            ctx: Context,
+            authToken: String? = null,
+            darkMode: Boolean = false,
+            unlockCallback: UnlockCallback? = null
+    ): Doordeck {
         Preconditions.checkNotNull(ctx!!, "Context can't be null")
         if (authToken != null) {
             if (this.apiKey == null) {
@@ -111,12 +116,12 @@ object Doordeck {
                 this.storeTheme(darkMode)
                 if (getStoredAuthToken() != authToken) {
                     storeToken(authToken)
-                    keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                    keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
                 } else {
                     if (certificateChain == null) {
                         certificateChain = getStoredCertificateChain()
                         if (certificateChain == null) {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
                             var lastStatus = getLastStatus()
                             if (lastStatus != null) Doordeck.status = lastStatus
                         } else {
@@ -124,7 +129,7 @@ object Doordeck {
                                 status = AuthStatus.AUTHORIZED
                                 certificateLoaded = true
                             } else {
-                                keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                                keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
                             }
                         }
                     } else {
@@ -132,7 +137,7 @@ object Doordeck {
                             status = AuthStatus.AUTHORIZED
                             certificateLoaded = true
                         } else {
-                            keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+                            keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
                         }
                     }
                 }
@@ -155,7 +160,7 @@ object Doordeck {
      * Call this method after logging in to update the token.
      * @param authToken new valid auth token
      */
-    fun updateToken(authToken: String, ctx: Context) {
+    fun updateToken(authToken: String, ctx: Context, unlockCallback: UnlockCallback? = null) {
         Preconditions.checkNotNull(sharedPreference!!, "Doordeck not initiated. Make sure to call initialize first.")
         Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "Token needs to be provided")
         val jwtToken = JWTContentUtils.getContentHeaderFromJson(authToken)
@@ -168,7 +173,7 @@ object Doordeck {
         storeToken(authToken)
         storeTheme(darkMode)
         createHttpClient()
-        keys?.public?.let { CertificateManager.getCertificatesAsync(it) }
+        keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
     }
 
     /**
