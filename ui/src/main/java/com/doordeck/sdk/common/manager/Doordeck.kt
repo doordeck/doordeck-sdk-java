@@ -272,6 +272,12 @@ object Doordeck {
         } ?: return ""
     }
 
+    /**
+     * Shows the verify screen.
+     */
+    fun showVerifyScreen(context: Context) {
+        VerifyDeviceActivity.start(context)
+    }
 
     /**
      * Cleanup the data internally

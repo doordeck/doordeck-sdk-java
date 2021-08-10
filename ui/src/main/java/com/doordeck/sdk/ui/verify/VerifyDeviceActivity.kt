@@ -14,7 +14,7 @@ import com.doordeck.sdk.ui.BaseActivity
 import kotlinx.android.synthetic.main.activity_verify_device.*
 
 // screen responsible to send a new verification code and validate the user
-class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
+internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
     private lateinit var presenter: VerifyDevicePresenter
 
