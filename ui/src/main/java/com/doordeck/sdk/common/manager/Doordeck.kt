@@ -93,8 +93,10 @@ object Doordeck {
      * @param authToken (Nullable) A valid auth token. Make sure you refresh the auth token if needed before initializing the SDK.
      * If you don't have an auth token yet because the user is logged out, initiate the sdk with authToken = null and set the auth token after logging in with updateToken method.
      * @param darkmode (Optional) set dark or light theme of the sdk.
+     * @param unlockCallback provides a callback mainly for Auth purposes
      * @return Doordeck the current instance of the SDK
      */
+    @JvmOverloads
     fun initialize(
             ctx: Context,
             authToken: String? = null,
@@ -159,7 +161,9 @@ object Doordeck {
      * Update your authToken
      * Call this method after logging in to update the token.
      * @param authToken new valid auth token
+     * @param unlockCallback provides a callback mainly for Auth purposes
      */
+    @JvmOverloads
     fun updateToken(authToken: String, ctx: Context, unlockCallback: UnlockCallback? = null) {
         Preconditions.checkNotNull(sharedPreference!!, "Doordeck not initiated. Make sure to call initialize first.")
         Preconditions.checkArgument(!TextUtils.isEmpty(authToken), "Token needs to be provided")
@@ -210,6 +214,7 @@ object Doordeck {
      * @param callback (optional) callback function for catching async response after unlock.
      * @return Doordeck the current instance of the SDK
      */
+    @JvmOverloads
     fun unlock(ctx: Context, device: Device, callback: UnlockCallback? = null){
         this.deviceToUnlock = device
         showUnlock(ctx, ScanType.UNLOCK, callback)
@@ -222,6 +227,7 @@ object Doordeck {
      * @param type type of scan to use (NFC or QR) , NFC by default if not provided, optional
      * @param callback callback of the method, optional
      */
+    @JvmOverloads
     fun showUnlock(context: Context, type: ScanType = ScanType.NFC, callback: UnlockCallback? = null) {
 
         if (status == AuthStatus.UNAUTHORIZED) {
