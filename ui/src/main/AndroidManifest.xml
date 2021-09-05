@@ -25,6 +25,10 @@
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"/>
         <activity
+            android:name=".ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity"
+            android:screenOrientation="portrait"
+            android:excludeFromRecents="true"/>
+        <activity
             android:name=".ui.nfc.NFCActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true">

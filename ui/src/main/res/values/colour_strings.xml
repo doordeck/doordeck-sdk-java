@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="lock_colours">
+        <item>#57355D</item>
+        <item>#1F5468</item>
+        <item>#314772</item>
+        <item>#24BD9A</item>
+        <item>#55678C</item>
+        <item>#FF483F</item>
+        <item>#38A3E0</item>
+        <item>#FF9442</item>
+        <item>#4FB961</item>
+        <item>#C74BD1</item>
+        <item>#E85479</item>
+        <item>#6641FF</item>
+    </string-array>
+</resources>

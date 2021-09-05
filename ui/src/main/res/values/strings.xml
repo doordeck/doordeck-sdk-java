@@ -37,5 +37,6 @@
     <string name="wrong_code_message">Please check if you have entered all digits correctly from the latest invite code we have sent you.</string>
     <string name="verify_device_desc_whatsapp">Enter your verification code send via WhatsApp to %s</string>
     <string name="Please_Wait">Please wait.</string>
+    <string name="locks_to_unlock_list_title">Pick a lock</string>
 
 </resources>

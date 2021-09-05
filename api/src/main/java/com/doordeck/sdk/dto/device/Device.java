@@ -13,6 +13,8 @@ import org.joda.time.Instant;
 
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 @Value.Immutable
 @JsonSerialize(as = ImmutableDevice.class)
 @JsonDeserialize(as = ImmutableDevice.class)
@@ -23,6 +25,9 @@ public interface Device {
     UUID deviceId();
 
     String name();
+
+    @Nullable
+    String colour();
 
     boolean favourite();
 
