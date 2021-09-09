@@ -1,13 +1,14 @@
 package com.doordeck.sdk.http.service;
 
 import com.doordeck.sdk.dto.device.Device;
+import com.doordeck.sdk.dto.device.MultiDeviceResponse;
 import com.doordeck.sdk.dto.device.ShareableDevice;
-import com.doordeck.sdk.dto.device.UpdateDeviceRequest;
 import com.google.common.net.HttpHeaders;
 
 import java.util.List;
 import java.util.UUID;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -19,18 +20,19 @@ import retrofit2.http.Path;
 public interface DeviceService {
 
     @GET("tile/{tileId}")
-    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v2+json, application/json") // Prefer newer endpoint
-    Call<Device> resolveTile(@Path("tileId") UUID tileId);
+    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v3+json, application/json") // Prefer newer endpoint
+    Call<MultiDeviceResponse> resolveTile(@Path("tileId") UUID tileId);
 
     @GET("device/{deviceId}")
-    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v2+json") // Only accept v2
+    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v3+json, application/json")
     Call<Device> getDevice(@Path("deviceId") UUID deviceId);
 
     @GET("site/{siteId}/device")
     Call<List<Device>> getSiteDevices(@Path("siteId") UUID siteId);
 
     @PUT("device/{deviceId}")
-    Call<Void> updateDevice(@Path("deviceId") UUID deviceId, @Body UpdateDeviceRequest updateDeviceRequest);
+    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v3+json, application/json") // Prefer newer endpoint
+    Call<Void> updateDevice(@Path("deviceId") UUID deviceId, @Body RequestBody updateDeviceRequest);
 
     @GET("device/favourite")
     Call<List<Device>> getPinnedDevices();

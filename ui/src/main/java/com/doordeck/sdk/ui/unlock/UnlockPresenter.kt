@@ -10,12 +10,14 @@ import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState
 import com.doordeck.sdk.http.DoordeckClient
+import com.doordeck.sdk.common.repo.DeviceRepository
+import com.doordeck.sdk.common.repo.DeviceRepositoryImpl
 import com.doordeck.sdk.signer.util.JWTUtils
+import com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity
 import kotlinx.coroutines.*
 import retrofit2.Response
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResponse
-import ru.gildor.coroutines.retrofit.awaitResult
 import java.util.*
 
 
@@ -30,6 +32,7 @@ internal class UnlockPresenter {
     private var deviceToUnlock: Device? = null
     private var jobs: List<Job> = emptyList()
     private var client: DoordeckClient? = null
+    private var deviceRepository: DeviceRepository? = null
     private var view: UnlockView? = null
 
     fun onStart(view: UnlockView) {
@@ -87,6 +90,7 @@ internal class UnlockPresenter {
 
         if (Doordeck.client != null) {
             this.client = Doordeck.client
+            this.deviceRepository = DeviceRepositoryImpl(client!!.device())
         }
 
         if (tileId == null) {
@@ -134,9 +138,8 @@ internal class UnlockPresenter {
      */
     private fun resolveTile(tileId: String) {
         jobs += GlobalScope.launch(Dispatchers.Main) {
-            val result: Result<Device> = client!!.device().resolveTile(UUID.fromString(tileId)).awaitResult()
-            when (result) {
-                is Result.Ok -> resolveTileSuccess(result.value)
+            when(val result = deviceRepository?.getDevicesAvailable(tileId, view?.getDefaultLockColours() ?: arrayOf())) {
+                is Result.Ok -> proceedWithDevices(result.value)
                 is Result.Error -> {
                     accessDenied()
                     EventsManager.sendEvent(EventAction.RESOLVE_TILE_FAILED, result.exception)
@@ -146,7 +149,19 @@ internal class UnlockPresenter {
                     EventsManager.sendEvent(EventAction.SDK_NETWORK_ERROR, result.exception)
                     LOG.e(TAG, "resolveTile Something broken : " + result.exception)
                 }
+                null -> {
+                    EventsManager.sendEvent(EventAction.RESOLVE_TILE_FAILED, "instance is null, development problem")
+                    LOG.e(TAG, "instance is null")
+                }
             }
+        }
+    }
+
+    private fun proceedWithDevices(devices: List<Device>) {
+        when {
+            devices.isEmpty() -> accessDenied()
+            devices.size == 1 -> resolveTileSuccess(devices.first())
+            else -> view?.goToDevices(devices)
         }
     }
 
