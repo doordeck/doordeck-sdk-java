@@ -71,7 +71,7 @@ public class DoordeckClient {
                 .followRedirects(true)
                 .followSslRedirects(false)
                 .certificatePinner(new CertificatePinner.Builder()
-                        .add("*", TRUSTED_CERTIFICATES)
+                        .add("*.doordeck.com", TRUSTED_CERTIFICATES)
                         .build())
                 .build();
 
