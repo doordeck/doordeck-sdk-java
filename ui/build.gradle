@@ -2,7 +2,6 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.jakewharton.butterknife'
-apply plugin: 'com.github.dcendents.android-maven'
 
 
 group='com.github.doordeck'
@@ -12,8 +11,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 1
-        versionName "1.1"
+        versionName "1.2"
 
         vectorDrawables.useSupportLibrary = true
     }
@@ -25,11 +23,13 @@ android {
 
     buildTypes {
         debug {
+            buildConfigField "String", "VERSION_NAME", '"1.2"'
             buildConfigField "String", "BASE_URL_API", '"https://api.dev.doordeck.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
+            buildConfigField "String", "VERSION_NAME", '"1.2"'
             buildConfigField "String", "BASE_URL_API", '"https://api.doordeck.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
