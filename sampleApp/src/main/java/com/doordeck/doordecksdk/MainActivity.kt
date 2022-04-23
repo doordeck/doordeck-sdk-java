@@ -10,7 +10,6 @@ import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.manager.ScanType
-import com.doordeck.sdk.dto.device.Device
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
