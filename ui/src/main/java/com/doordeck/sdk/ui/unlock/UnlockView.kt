@@ -1,5 +1,7 @@
 package com.doordeck.sdk.ui.unlock
 
+import com.doordeck.sdk.dto.device.Device
+
 // interface used between the presenter and the activity to make sure
 // the presenter does not know about the activity
 internal interface UnlockView {
@@ -32,4 +34,8 @@ internal interface UnlockView {
     fun displayVerificationView()
 
     fun noUserLoggedIn()
+
+    fun goToDevices(devices: List<Device>)
+
+    fun getDefaultLockColours(): Array<String>
 }

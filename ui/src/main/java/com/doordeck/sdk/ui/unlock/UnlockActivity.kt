@@ -23,6 +23,7 @@ import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
+import com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -162,6 +163,14 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     override fun noUserLoggedIn() {
         showAccessDeniedAnimation()
         unlock_status.text = getString(R.string.no_user_logged_in)
+    }
+
+    override fun goToDevices(devices: List<Device>) {
+        ShowListOfDevicesToUnlockActivity.start(this, devices)
+    }
+
+    override fun getDefaultLockColours(): Array<String> {
+        return resources.getStringArray(R.array.lock_colours)
     }
 
     override fun displayVerificationView() {
