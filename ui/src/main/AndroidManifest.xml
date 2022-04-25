@@ -19,18 +19,22 @@
             android:name=".ui.unlock.UnlockActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ddLightTheme"
+            android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
             android:name=".ui.qrcode.QRcodeActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
             android:name=".ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
             android:name=".ui.nfc.NFCActivity"
             android:screenOrientation="portrait"
+            android:exported="true"
             android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
@@ -41,6 +45,7 @@
         <activity android:name=".ui.verify.VerifyDeviceActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
+            android:exported="true"
             />
 
         <meta-data
