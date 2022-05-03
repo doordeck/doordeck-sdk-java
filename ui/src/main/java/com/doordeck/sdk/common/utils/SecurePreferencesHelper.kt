@@ -1,5 +1,6 @@
 package com.doordeck.sdk.common.utils
 
+import android.content.Context
 import de.adorsys.android.securestoragelibrary.SecurePreferences
 
 object SecurePreferencesHelper {
@@ -7,18 +8,18 @@ object SecurePreferencesHelper {
 
     private fun getNumberOfChunksKey(key: String) = "${key}_numberOfChunks"
 
-    fun setLongStringValue(key: String, value: String) {
+    fun setLongStringValue(context: Context, key: String, value: String) {
         val chunks = value.chunked(chunkSize)
 
-        SecurePreferences.setValue(getNumberOfChunksKey(key), chunks.size)
+        SecurePreferences.setValue(context, getNumberOfChunksKey(key), chunks.size)
 
         chunks.forEachIndexed { index, chunk ->
-            SecurePreferences.setValue("$key$index", chunk)
+            SecurePreferences.setValue(context, "$key$index", chunk)
         }
     }
 
-    fun getLongStringValue(key: String): String? {
-        val numberOfChunks = SecurePreferences.getIntValue(getNumberOfChunksKey(key), 0)
+    fun getLongStringValue(context: Context, key: String): String? {
+        val numberOfChunks = SecurePreferences.getIntValue(context, getNumberOfChunksKey(key), 0)
 
         if (numberOfChunks == 0) {
             return null
@@ -26,7 +27,7 @@ object SecurePreferencesHelper {
 
         return (0 until numberOfChunks)
                 .map { index ->
-                    val string = SecurePreferences.getStringValue("$key$index", null) ?: run {
+                    val string = SecurePreferences.getStringValue(context, "$key$index", null) ?: run {
                         return null
                     }
 
@@ -34,14 +35,14 @@ object SecurePreferencesHelper {
                 }.reduce { accumulator, chunk -> accumulator + chunk }
     }
 
-    fun removeLongStringValue(key: String) {
-        val numberOfChunks = SecurePreferences.getIntValue(getNumberOfChunksKey(key), 0)
+    fun removeLongStringValue(context: Context, key: String) {
+        val numberOfChunks = SecurePreferences.getIntValue(context, getNumberOfChunksKey(key), 0)
 
-        (0 until numberOfChunks).map { SecurePreferences.removeValue("$key$it") }
-        SecurePreferences.removeValue(getNumberOfChunksKey(key))
+        (0 until numberOfChunks).map { SecurePreferences.removeValue(context, "$key$it") }
+        SecurePreferences.removeValue(context, getNumberOfChunksKey(key))
     }
 
-    fun containsLongStringValue(key: String): Boolean {
-        return SecurePreferences.contains(getNumberOfChunksKey(key))
+    fun containsLongStringValue(context: Context, key: String): Boolean {
+        return SecurePreferences.contains(context, getNumberOfChunksKey(key))
     }
 }

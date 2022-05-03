@@ -1,6 +1,4 @@
 apply plugin: 'java-library'
-apply plugin: "org.inferred.processors"
-apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.github.doordeck'
 
@@ -12,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath "gradle.plugin.org.inferred:gradle-processors:2.2.0"
+        classpath 'com.github.dcendents:android-maven-plugin:1.2'
     }
 }
 

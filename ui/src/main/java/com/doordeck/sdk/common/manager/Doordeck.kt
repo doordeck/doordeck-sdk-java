@@ -114,10 +114,10 @@ object Doordeck {
                 this.darkMode = darkMode
                 this.sharedPreference = SharedPreference(ctx)
                 createHttpClient()
-                generateKeys()
+                generateKeys(ctx)
                 this.storeTheme(darkMode)
-                if (getStoredAuthToken() != authToken) {
-                    storeToken(authToken)
+                if (getStoredAuthToken(ctx) != authToken) {
+                    storeToken(ctx, authToken)
                     keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
                 } else {
                     if (certificateChain == null) {
@@ -173,8 +173,8 @@ object Doordeck {
         this.jwtToken = jwtToken
         this.apiKey = authToken
         this.darkMode = darkMode
-        generateKeys()
-        storeToken(authToken)
+        generateKeys(ctx)
+        storeToken(ctx, authToken)
         storeTheme(darkMode)
         createHttpClient()
         keys?.public?.let { CertificateManager.getCertificatesAsync(it, unlockCallback) }
@@ -277,10 +277,10 @@ object Doordeck {
      * Cleanup the data internally
      * Call when you log out a user.
      */
-    fun logout() {
+    fun logout(context: Context) {
         this.apiKey = null
         this.certificateChain = null
-        this.datastore.clean()
+        this.datastore.clean(context)
         this.keys = null
     }
 
@@ -298,7 +298,7 @@ object Doordeck {
     internal fun hasUserLoggedIn (ctx: Context): Boolean {
         if (this.apiKey != null) return true
         else {
-            val token = getStoredAuthToken()
+            val token = getStoredAuthToken(ctx)
             if (token !== null) {
                 try {
                     initialize(ctx, token, getSavedTheme())
@@ -338,12 +338,12 @@ object Doordeck {
     /**
      * Generate the private/public key and store them in the keychains
      */
-    private fun generateKeys() {
-        val keys = datastore.getKeyPair()
+    private fun generateKeys(context: Context) {
+        val keys = datastore.getKeyPair(context)
         if (keys == null || keys.private == null || keys.public == null) {
             try {
                 val keyPair = Ed25519KeyGenerator.generate()
-                datastore.saveKeyPair(keyPair)
+                datastore.saveKeyPair(context, keyPair)
                 this.keys = keyPair
             } catch (e: GeneralSecurityException) {
                 LOG.e(LOG_SDK, e.localizedMessage)
@@ -371,15 +371,15 @@ object Doordeck {
     /**
      * Store certificates them in the keychains
      */
-    internal fun storeToken(authToken: String) {
-        datastore.saveAuthToken(authToken)
+    internal fun storeToken(context: Context, authToken: String) {
+        datastore.saveAuthToken(context, authToken)
     }
 
     /**
      * get stored certificates from keychains
      */
-    internal fun getStoredAuthToken(): String? {
-        return datastore.getAuthToken()
+    internal fun getStoredAuthToken(context: Context): String? {
+        return datastore.getAuthToken(context)
     }
 
     /**
