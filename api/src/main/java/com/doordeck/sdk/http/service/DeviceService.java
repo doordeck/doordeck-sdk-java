@@ -24,14 +24,13 @@ public interface DeviceService {
     Call<MultiDeviceResponse> resolveTile(@Path("tileId") UUID tileId);
 
     @GET("device/{deviceId}")
-    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v3+json")
+    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v2+json")
     Call<Device> getDevice(@Path("deviceId") UUID deviceId);
 
     @GET("site/{siteId}/device")
     Call<List<Device>> getSiteDevices(@Path("siteId") UUID siteId);
 
     @PUT("device/{deviceId}")
-    @Headers(HttpHeaders.ACCEPT + ": application/vnd.doordeck.api-v3+json") // Prefer newer endpoint
     Call<Void> updateDevice(@Path("deviceId") UUID deviceId, @Body RequestBody updateDeviceRequest);
 
     @GET("device/favourite")
