@@ -7,10 +7,10 @@ apply plugin: 'com.jakewharton.butterknife'
 group='com.github.doordeck'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionName "1.2"
 
         vectorDrawables.useSupportLibrary = true
