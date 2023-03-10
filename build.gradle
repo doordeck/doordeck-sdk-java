@@ -10,13 +10,13 @@ buildscript {
     }
 
     ext.versions = [
-            'kotlin': '1.3.72',
+            'kotlin': '1.8.0',
             'okhttp': '3.14.7',
             'bouncycastle': '1.61',
             'guava': '27.1',
             'findbugs': '3.0.2',
             'joda': '2.10.1',
-            'jackson': '2.9.10',
+            'jackson': '2.14.1',
             'retrofit': '2.6.2'
     ]
 
