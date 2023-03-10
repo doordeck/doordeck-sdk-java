@@ -3,6 +3,9 @@ apply plugin: "maven-publish"
 
 group='com.github.doordeck'
 
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 buildscript {
     repositories {
         mavenLocal()
@@ -40,7 +43,19 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
 
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.java
+            }
+        }
+        repositories {
+            maven {
+                url 'file://' + "${System.properties['user.home']}/.m2/repository"
+            }
+        }
+    }
+}
