@@ -55,6 +55,7 @@ android {
 buildscript {
 
     repositories {
+        mavenLocal()
         google()
         mavenCentral()
     }

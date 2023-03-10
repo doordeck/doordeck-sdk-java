@@ -5,6 +5,7 @@ group='com.github.doordeck'
 
 buildscript {
     repositories {
+        mavenLocal()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
