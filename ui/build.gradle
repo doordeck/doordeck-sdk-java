@@ -38,8 +38,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_ 11
+        targetCompatibility JavaVersion.VERSION_ 11
     }
 
     buildToolsVersion '33.0.1'
@@ -105,6 +105,19 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 }
-repositories {
-    mavenCentral()
+
+project.afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+                artifact androidSourcesJar
+            }
+        }
+    }
+}
+
+task androidSourcesJar(type: Jar) {
+    classifier 'sources'
+    from android.sourceSets.main.java.srcDirs
 }
