@@ -42,6 +42,8 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
+    buildToolsVersion '33.0.1'
+
     testOptions {
         unitTests {
             // Note: without this, all Robolectric tests using BuildConfig will fail.
