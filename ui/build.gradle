@@ -106,3 +106,18 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+        repositories {
+            maven {
+                url 'file://' + "${System.properties['user.home']}/.m2/repository"
+            }
+        }
+    }
+}
