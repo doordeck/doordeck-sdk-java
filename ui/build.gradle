@@ -42,7 +42,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    buildToolsVersion '33.0.1'
+    buildToolsVersion '29.0.2'
 
     testOptions {
         unitTests {

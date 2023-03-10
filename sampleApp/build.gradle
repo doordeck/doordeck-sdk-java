@@ -22,7 +22,7 @@ android {
         viewBinding true
     }
 
-    buildToolsVersion '33.0.1'
+    buildToolsVersion '29.0.2'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
