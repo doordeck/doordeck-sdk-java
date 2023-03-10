@@ -8,14 +8,9 @@ import android.nfc.NfcManager
 import android.os.Bundle
 import android.widget.Toast
 import com.doordeck.sdk.R
-import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.manager.Doordeck
-import com.doordeck.sdk.common.models.EventAction
+import com.doordeck.sdk.databinding.ActivityNfcBinding
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_nfc.*
 
 
 /**
@@ -25,16 +20,21 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
     private lateinit var nfcPresenter: NFCPresenter
 
+    private lateinit var binding: ActivityNfcBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_nfc)
+
+        binding = ActivityNfcBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         checkNfcEnabled()
         nfcPresenter = NFCPresenter()
         setupListeners()
     }
 
     private fun setupListeners() {
-        tvDismiss.setOnClickListener { finish() }
+        binding.tvDismiss.setOnClickListener { finish() }
     }
 
 
@@ -42,7 +42,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
         val manager = getSystemService(Context.NFC_SERVICE) as NfcManager
         val adapter = manager.defaultAdapter
         if (adapter != null && !adapter.isEnabled) {
-            Toast.makeText(applicationContext, getString(R.string.nfc_not_enabled_message), Toast.LENGTH_LONG).show();
+            Toast.makeText(applicationContext, getString(R.string.nfc_not_enabled_message), Toast.LENGTH_LONG).show()
             startActivity(Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS))
         }
     }

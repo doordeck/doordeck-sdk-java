@@ -5,13 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import com.doordeck.sdk.R
-import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.models.EventAction
+import com.doordeck.sdk.databinding.ActivityQrScanBinding
 import com.doordeck.sdk.ui.BaseActivity
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_qr_scan.*
 
 
 /**
@@ -19,44 +14,49 @@ import kotlinx.android.synthetic.main.activity_qr_scan.*
  */
 internal class QRcodeActivity : BaseActivity() {
 
+    private lateinit var binding: ActivityQrScanBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_qr_scan)
+
+        binding = ActivityQrScanBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
         setupListeners()
     }
 
     private fun setupListeners() {
-        tvDismiss.setOnClickListener { finish() }
+        binding.tvDismiss.setOnClickListener { finish() }
     }
 
     // check if the user has grandted the camera permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             if (requestCode == CAMERA)
-                qr.start()
+                binding.qr.start()
         }
     }
 
     public override fun onStart() {
         super.onStart()
-        qr.start()
+        binding.qr.start()
     }
 
 
     public override fun onResume() {
         super.onResume()
-        qr.start()
+        binding.qr.start()
     }
 
     override fun onPause() {
         super.onPause()
-        qr.pause()
+        binding.qr.pause()
     }
 
     companion object {
 
-         const val CAMERA = 98
+        const val CAMERA = 98
 
         @JvmStatic
         fun start(context: Context) {

@@ -3,24 +3,15 @@ package com.doordeck.sdk.ui.showlistofdevicestounlock
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import com.doordeck.sdk.R
+import com.doordeck.sdk.databinding.ActivityListOfDevicesToUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.adapter.DevicesToUnlockAdapter
-import com.fasterxml.jackson.core.type.TypeReference
-import kotlinx.android.synthetic.main.activity_list_of_devices_to_unlock.*
-import kotlinx.android.synthetic.main.activity_unlock.*
-import com.doordeck.sdk.R2.id.recyclerView
-
-import com.doordeck.sdk.R2.attr.layoutManager
-
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
-import com.doordeck.sdk.R2
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.utils.recyclerview.VerticalSpaceItemDecoration
+import com.fasterxml.jackson.core.type.TypeReference
 
 
 // screen responsible to display different locks to unlock
@@ -28,11 +19,14 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
 
     private var presenter: ShowListOfDevicesToUnlockPresenter? = null
 
+    private lateinit var binding: ActivityListOfDevicesToUnlockBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list_of_devices_to_unlock)
+
+        binding = ActivityListOfDevicesToUnlockBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         presenter = ShowListOfDevicesToUnlockPresenter(devices)
     }
@@ -52,7 +46,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
     }
 
     override fun showDevices(devices: List<Device>) {
-        with(recyclerView?:return) {
+        with(binding.recyclerView) {
             adapter = DevicesToUnlockAdapter(devices) {
                 goToUnlockDevice(it)
             }

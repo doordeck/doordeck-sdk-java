@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.doordeck.sdk.R
 import com.doordeck.sdk.common.manager.Doordeck
+import com.doordeck.sdk.databinding.ActivityUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
@@ -29,7 +30,6 @@ import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import kotlinx.android.synthetic.main.activity_unlock.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -45,33 +45,34 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var googlePermissionShown = false
     private var canceledVerify = false
 
+    private lateinit var binding: ActivityUnlockBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_unlock)
+        
+        binding = ActivityUnlockBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         unlockPresenter = UnlockPresenter()
-        tvDismiss.setOnClickListener { finishActivity() }
-
+        binding.tvDismiss.setOnClickListener { finishActivity() }
     }
 
 
     override fun showNoAccessGeoFence() {
         showAccessDeniedAnimation()
-        unlock_status.setText(R.string.ACCESS_DENIED_GEOFENCE)
+        binding.unlockStatus.setText(R.string.ACCESS_DENIED_GEOFENCE)
     }
 
     override fun updateLockName(name: String) {
-        key_title.text = name
+        binding.keyTitle.text = name
     }
 
     override fun setUnlocking() {
-        unlock_status.text = getText(R.string.UNLOCKING)
+        binding.unlockStatus.text = getText(R.string.UNLOCKING)
     }
 
     override fun showGeoLoading() {
-        unlock_status.setText(R.string.CHECKING_GEOFENCE)
+        binding.unlockStatus.setText(R.string.CHECKING_GEOFENCE)
     }
 
 
@@ -81,42 +82,42 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
 
     private fun resetAnimation() {
-        circle_back.scaleX = 0f
-        circle_back.scaleY = 0f
+        binding.circleBack.scaleX = 0f
+        binding.circleBack.scaleY = 0f
 
-        key_title.alpha = 0f
+        binding.keyTitle.alpha = 0f
 
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
-        val animation = lock_image.drawable
+        val animation = binding.lockImage.drawable
         if (animation is Animatable) {
             (animation as Animatable).stop()
         }
-        lock_image.setImageDrawable(null)
-        lock_image.setImageDrawable(animated)
-        logo_spinner.visibility = View.VISIBLE
-        unlock_status.setText(R.string.UNLOCKING)
+        binding.lockImage.setImageDrawable(null)
+        binding.lockImage.setImageDrawable(animated)
+        binding.logoSpinner.visibility = View.VISIBLE
+        binding.unlockStatus.setText(R.string.UNLOCKING)
     }
 
     private fun showDelayTimer(delay: Double) {
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success_blank)
-        val animation = lock_image.drawable
+        val animation = binding.lockImage.drawable
         if (animation is Animatable) {
             (animation as Animatable).stop()
         }
-        lock_image.setImageDrawable(null)
-        lock_image.setImageDrawable(animated)
+        binding.lockImage.setImageDrawable(null)
+        binding.lockImage.setImageDrawable(animated)
 
-        unlock_status?.text = getString(R.string.Please_Wait)
+        binding.unlockStatus.text = getString(R.string.Please_Wait)
 
         GlobalScope.launch(Dispatchers.Main) {
             val tickSeconds = 1
             val totalSeconds = max(TimeUnit.SECONDS.toSeconds(delay.toLong()), tickSeconds.toLong())
             for (second in totalSeconds downTo tickSeconds) {
-                delay_lock_time_text?.text = second.toString()
+                binding.delayLockTimeText.text = second.toString()
                 delay(1000)
             }
 
-            delay_lock_time_text?.text = null
+            binding.delayLockTimeText.text = null
 
             // Finish with the timer and show the unlock
             showUnlockAnimation()
@@ -136,23 +137,23 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     private fun showUnlockAnimation() {
 
-        tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
-        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
-        logo_spinner.alpha = 0f
+        binding.tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
+        binding.circleBack.setColorFilter(ContextCompat.getColor(this, R.color.success), PorterDuff.Mode.SRC_IN)
+        binding.circleBack.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
+        binding.logoSpinner.alpha = 0f
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success)
-        lock_image.setImageDrawable(animated)
-        val animation = lock_image.drawable
+        binding.lockImage.setImageDrawable(animated)
+        val animation = binding.lockImage.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
-        unlock_status.setText(R.string.UNLOCKED)
-        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
+        binding.unlockStatus.setText(R.string.UNLOCKED)
+        binding.keyTitle.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
     }
 
     override fun showAccessDenied() {
         showAccessDeniedAnimation()
-        unlock_status.text = ""
+        binding.unlockStatus.text = ""
     }
 
     override fun notValidTileId() {
@@ -162,7 +163,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     override fun noUserLoggedIn() {
         showAccessDeniedAnimation()
-        unlock_status.text = getString(R.string.no_user_logged_in)
+        binding.unlockStatus.text = getString(R.string.no_user_logged_in)
     }
 
     override fun goToDevices(devices: List<Device>) {
@@ -184,18 +185,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     private fun showAccessDeniedAnimation() {
 
-        tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
-        circle_back.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
-        circle_back.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
-        logo_spinner.alpha = 0f
+        binding.tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
+        binding.circleBack.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
+        binding.circleBack.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
+        binding.logoSpinner.alpha = 0f
         val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_fail)
-        lock_image.setImageDrawable(animated)
-        val animation = lock_image.drawable
+        binding.lockImage.setImageDrawable(animated)
+        val animation = binding.lockImage.drawable
         if (animation is Animatable) {
             (animation as Animatable).start()
         }
-        key_title.setText(R.string.ACCESS_DENIED)
-        key_title.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
+        binding.keyTitle.setText(R.string.ACCESS_DENIED)
+        binding.keyTitle.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
 
     }
 
@@ -275,6 +276,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
     }
 
+    @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
         finish()
     }
