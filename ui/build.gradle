@@ -93,7 +93,7 @@ dependencies {
     // scan
     implementation('com.journeyapps:zxing-android-embedded:4.1.0') { transitive = false }
 
-    implementation 'com.google.zxing:core:3.3.3'
+    implementation 'com.google.zxing:core:3.4.0'
 
     // location
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
