@@ -1,6 +1,7 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.Manifest
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -24,6 +25,7 @@ import com.doordeck.sdk.databinding.ActivityUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
+import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.android.gms.common.api.ResolvableApiException
@@ -54,9 +56,13 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         setContentView(binding.root)
 
         unlockPresenter = UnlockPresenter()
-        binding.tvDismiss.setOnClickListener { finishActivity() }
+        binding.tvDismiss.setOnClickListener { backToQRcodeActivity() }
     }
 
+    private fun backToQRcodeActivity() {
+        finish()
+        QRcodeActivity.start(this)
+    }
 
     override fun showNoAccessGeoFence() {
         showAccessDeniedAnimation()
@@ -77,7 +83,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
 
     override fun finishActivity() {
-        finish()
+        backToQRcodeActivity()
     }
 
 
@@ -158,7 +164,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     override fun notValidTileId() {
         Toast.makeText(this, getString(R.string.tile_id_not_valid), Toast.LENGTH_LONG).show()
-        finish()
+        backToQRcodeActivity()
     }
 
     override fun noUserLoggedIn() {
@@ -179,7 +185,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             canceledVerify = true
             VerifyDeviceActivity.start(this)
         } else {
-            finish()
+            backToQRcodeActivity()
         }
     }
 
@@ -278,7 +284,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
-        finish()
+        backToQRcodeActivity()
     }
 
     public override fun onStart() {
@@ -306,7 +312,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         super.onPause()
         unlockPresenter?.onStop()
         unlockPresenter = null
-        finish()
+        backToQRcodeActivity()
     }
 
     public override fun onStop() {
@@ -331,7 +337,13 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         private const val DEVICE = "DEVICE"
 
 
+        /**
+         * Using this from the QR/NFC viewer, so we finish the activity which is the previous one,
+         * if it's an activity
+         */
         fun start(context: Context, id: String) {
+            (context as? Activity)?.finish()
+
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

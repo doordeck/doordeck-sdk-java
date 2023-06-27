@@ -16,6 +16,8 @@ internal class QRcodeActivity : BaseActivity() {
 
     private lateinit var binding: ActivityQrScanBinding
 
+    private var flagWentToBackground = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -47,11 +49,21 @@ internal class QRcodeActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
         binding.qr.start()
+        if (flagWentToBackground) {
+            finish()
+        }
     }
 
     override fun onPause() {
         super.onPause()
         binding.qr.pause()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // This is also called when we move to another screen, but onResume won't be called as we're leaving this activity
+        // Also this won't be triggered when we get asked for a permission
+        flagWentToBackground = true
     }
 
     companion object {

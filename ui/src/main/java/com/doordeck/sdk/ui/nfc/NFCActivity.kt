@@ -22,6 +22,8 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
     private lateinit var binding: ActivityNfcBinding
 
+    private var flagWentToBackground = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,6 +66,8 @@ internal class NFCActivity : BaseActivity(), NFCView {
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
             // Yes, Activity start via Beam...  wonder if we should pass a flag indicating Beam?
             nfcPresenter.processNFCData(intent)
+        } else if (flagWentToBackground) {
+            finish()
         }
     }
 
@@ -75,6 +79,9 @@ internal class NFCActivity : BaseActivity(), NFCView {
     override fun onStop() {
         super.onStop()
         nfcPresenter.onStop()
+        // This is also called when we move to another screen, but onResume won't be called as we're leaving this activity
+        // Also this won't be triggered when we get asked for a permission
+        flagWentToBackground = true
     }
 
 

@@ -101,9 +101,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}"
     implementation 'ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4'
 
 }
 
