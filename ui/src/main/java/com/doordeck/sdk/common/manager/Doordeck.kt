@@ -1,6 +1,7 @@
 package com.doordeck.sdk.common.manager
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -209,7 +210,7 @@ object Doordeck {
     /**
      * Unlock method for unlocking via button unlock
      *
-     * @param ctx current context
+     * @param ctx current Context
      * @param device a valid device.
      * @param callback (optional) callback function for catching async response after unlock.
      * @return Doordeck the current instance of the SDK

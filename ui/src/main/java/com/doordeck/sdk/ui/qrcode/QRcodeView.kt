@@ -59,7 +59,7 @@ internal class QRcodeView : CompoundBarcodeView {
                 val id = scan.substring(scan.lastIndexOf("/") + 1)
                 if (isUUID(id)) {
                     pause()
-                    UnlockActivity.start(context, id)
+                    (context as? Activity)?.let { activity -> UnlockActivity.start(activity, id) }
                 } else {
                     // show error
                     LOG.d(TAG, "not a uuid")
