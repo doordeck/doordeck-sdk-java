@@ -10,6 +10,7 @@ import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.adapter.DevicesToUnlockAdapter
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.utils.recyclerview.VerticalSpaceItemDecoration
 import com.fasterxml.jackson.core.type.TypeReference
 
@@ -59,7 +60,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
     }
 
     private fun goToUnlockDevice(device: Device) {
-        UnlockActivity.start(this, device)
+        UnlockActivity.start(this, device, comingFrom = COMING_FROM_DIRECT_UNLOCK)
     }
 
     private val devices: List<Device>

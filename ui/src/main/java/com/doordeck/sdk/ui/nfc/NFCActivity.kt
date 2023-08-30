@@ -11,6 +11,7 @@ import com.doordeck.sdk.R
 import com.doordeck.sdk.databinding.ActivityNfcBinding
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_NFC
 
 
 /**
@@ -87,7 +88,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
     override fun unlockFromTileId(tileId: String) {
         intent.action = ""
-        UnlockActivity.start(this, tileId)
+        UnlockActivity.start(this, tileId, comingFrom = COMING_FROM_NFC)
         finish()
     }
 

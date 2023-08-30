@@ -1,7 +1,6 @@
 package com.doordeck.sdk.common.manager
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
@@ -23,6 +22,7 @@ import com.doordeck.sdk.signer.util.JWTUtils
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
 import com.google.common.base.Preconditions
 import io.reactivex.Observable
@@ -247,7 +247,11 @@ object Doordeck {
                     when (type) {
                         ScanType.QR -> QRcodeActivity.start(context)
                         ScanType.NFC -> NFCActivity.start(context)
-                        ScanType.UNLOCK -> UnlockActivity.start(context, deviceToUnlock!!)
+                        ScanType.UNLOCK -> UnlockActivity.start(
+                            context = context,
+                            device = deviceToUnlock!!,
+                            comingFrom = COMING_FROM_DIRECT_UNLOCK,
+                        )
                     }
                 }
                 this.unlockCallback = callback
