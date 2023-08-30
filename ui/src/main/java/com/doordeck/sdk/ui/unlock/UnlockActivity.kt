@@ -25,6 +25,7 @@ import com.doordeck.sdk.databinding.ActivityUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
+import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
@@ -51,17 +52,24 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        
+
         binding = ActivityUnlockBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         unlockPresenter = UnlockPresenter()
-        binding.tvDismiss.setOnClickListener { backToQRcodeActivity() }
+        binding.tvDismiss.setOnClickListener { back() }
     }
 
-    private fun backToQRcodeActivity() {
+    private fun back() {
         finish()
-        QRcodeActivity.start(this)
+        when (comingFrom) {
+            COMING_FROM_DIRECT_UNLOCK -> {
+                // NO-OP, just finish ☝️
+            }
+
+            COMING_FROM_QR_SCAN -> QRcodeActivity.start(this)
+            COMING_FROM_NFC -> NFCActivity.start(this)
+        }
     }
 
     override fun showNoAccessGeoFence() {
@@ -83,7 +91,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
 
     override fun finishActivity() {
-        backToQRcodeActivity()
+        back()
     }
 
 
@@ -164,7 +172,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     override fun notValidTileId() {
         Toast.makeText(this, getString(R.string.tile_id_not_valid), Toast.LENGTH_LONG).show()
-        backToQRcodeActivity()
+        back()
     }
 
     override fun noUserLoggedIn() {
@@ -185,7 +193,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             canceledVerify = true
             VerifyDeviceActivity.start(this)
         } else {
-            backToQRcodeActivity()
+            back()
         }
     }
 
@@ -284,7 +292,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
-        backToQRcodeActivity()
+        back()
     }
 
     public override fun onStart() {
@@ -299,10 +307,10 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             noUserLoggedIn()
             return
         }
-        if (intent.extras?.getString(TILE_ID) != null) unlockPresenter?.init(intent.extras?.getString(TILE_ID))
-        else if (intent.extras?.getString(DEVICE) != null)  {
+        if (tileId != null) unlockPresenter?.init(tileId)
+        else if (deviceJson != null)  {
             val om = Jackson.sharedObjectMapper()
-            val deviceToUnlock = om.readValue(intent.extras?.getString(DEVICE), Device::class.java)
+            val deviceToUnlock = om.readValue(deviceJson, Device::class.java)
             unlockPresenter?.init(deviceToUnlock)
         }
 
@@ -312,12 +320,12 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         super.onPause()
         unlockPresenter?.onStop()
         unlockPresenter = null
-        backToQRcodeActivity()
     }
 
     public override fun onStop() {
         super.onStop()
         unlockPresenter?.onStop()
+        finish()
     }
 
     override fun onDestroy() {
@@ -341,21 +349,37 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
          * Using this from the QR/NFC viewer, so we finish the activity which is the previous one,
          * if it's an activity
          */
-        fun start(context: Context, id: String) {
+        fun start(context: Context, id: String, comingFrom: String) {
             (context as? Activity)?.finish()
 
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
+            starter.putExtra(COMING_FROM_KEY, comingFrom)
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
-        fun start(context: Context, device: Device) {
+        fun start(context: Context, device: Device, comingFrom: String) {
             val starter = Intent(context, UnlockActivity::class.java)
             val om = Jackson.sharedObjectMapper()
             starter.putExtra(DEVICE, om.writeValueAsString(device))
+            starter.putExtra(COMING_FROM_KEY, comingFrom)
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
+
+        private const val COMING_FROM_KEY = "comingFrom"
+        const val COMING_FROM_DIRECT_UNLOCK = "comingFromDirectUnlock"
+        const val COMING_FROM_QR_SCAN = "comingFromQRScan"
+        const val COMING_FROM_NFC = "comingFromNFC"
     }
+
+    private val comingFrom: String?
+        get() = intent.extras?.getString(COMING_FROM_KEY)
+
+    private val tileId: String?
+        get() = intent.extras?.getString(TILE_ID)
+
+    private val deviceJson: String?
+        get() = intent.extras?.getString(DEVICE)
 
 }
