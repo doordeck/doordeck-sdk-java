@@ -28,7 +28,7 @@ dependencies {
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${versions.jackson}"
 
-    implementation "com.google.guava:guava:27.1-jre"
+    implementation "com.google.guava:guava:${versions.guava}-jre"
 
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-jackson:${versions.retrofit}"

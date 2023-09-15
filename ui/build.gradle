@@ -79,7 +79,7 @@ dependencies {
     annotationProcessor "org.immutables:value:2.7.5"
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
-    implementation 'com.google.guava:guava:27.1-android'
+    implementation "com.google.guava:guava:${versions.guava}-android"
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
     implementation "androidx.recyclerview:recyclerview:1.3.1"
