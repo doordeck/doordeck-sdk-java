@@ -45,6 +45,17 @@ The 2nd param is optional, and correspond to the theme to use. Light or Dark. By
     fun initialize(apiKey: String, darkMode: Boolean = true): Doordeck
 ```
     
+#### Proguard
+
+When enabling `minifyEnabled`, proguard and or R8 tools, you need to include these rules to the proguard-rules.pro:
+
+```
+-keep class com.doordeck.** { *; }
+-keep class org.bouncycastle.jcajce.provider.** { *; }
+-keep class org.bouncycastle.jce.provider.** { *; }
+-dontwarn javax.naming.**
+```
+
     
 #### Unlock a door
 
