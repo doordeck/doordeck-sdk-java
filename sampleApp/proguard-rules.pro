@@ -23,3 +23,13 @@
 -keep class org.bouncycastle.jcajce.provider.** { *; }
 -keep class org.bouncycastle.jce.provider.** { *; }
 -dontwarn javax.naming.**
+-dontwarn de.adorsys.android.securestoragelibrary.R$string
+-dontwarn org.joda.convert.FromString
+-dontwarn org.joda.convert.ToString
+-keep class retrofit2.** { *; }
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-keepclassmembers class java.util.Optional { *; }

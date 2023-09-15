@@ -56,6 +56,22 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
 -dontwarn javax.naming.**
 ```
 
+When using Gradle over 8.x, unless you're using
+
+```
+android.enableR8.fullMode=false
+```
+
+add this as well:
+```
+-keep class retrofit2.** { *; }
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+```
+
     
 #### Unlock a door
 
