@@ -3,7 +3,7 @@ package com.doordeck.sdk.dto.device;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Preconditions;
+
 import org.immutables.value.Value;
 
 @Value.Immutable
