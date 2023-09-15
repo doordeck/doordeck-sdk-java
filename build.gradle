@@ -15,7 +15,7 @@ buildscript {
             'guava': '27.1',
             'findbugs': '3.0.2',
             'joda': '2.10.1',
-            'jackson': '2.14.2',
+            'jackson': '2.14.1',
             'retrofit': '2.6.2'
     ]
 
