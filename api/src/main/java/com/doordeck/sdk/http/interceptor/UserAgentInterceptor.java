@@ -1,12 +1,13 @@
 package com.doordeck.sdk.http.interceptor;
 
-import com.google.common.net.HttpHeaders;
+import java.io.IOException;
+
 import okhttp3.Interceptor;
 import okhttp3.Response;
 
-import java.io.IOException;
-
 public class UserAgentInterceptor implements Interceptor {
+
+    public static final String USER_AGENT_HEADER = "User-Agent";
 
     private final String userAgent;
 
@@ -20,8 +21,8 @@ public class UserAgentInterceptor implements Interceptor {
         if (userAgent != null) {
             return chain.proceed(chain.request()
                     .newBuilder()
-                    .removeHeader(HttpHeaders.USER_AGENT)
-                    .header(HttpHeaders.USER_AGENT, userAgent)
+                    .removeHeader(USER_AGENT_HEADER)
+                    .header(USER_AGENT_HEADER, userAgent)
                     .build());
         }
         return chain.proceed(chain.request());

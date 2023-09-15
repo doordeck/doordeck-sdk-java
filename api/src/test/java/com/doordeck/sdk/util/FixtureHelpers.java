@@ -1,11 +1,7 @@
 package com.doordeck.sdk.util;
 
-import com.google.common.io.CharStreams;
-import com.google.common.io.Resources;
-
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -42,7 +38,7 @@ public class FixtureHelpers {
      */
     public static URL getResource(String resourceName) {
         final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-        final ClassLoader loader = contextClassLoader == null ? Resources.class.getClassLoader() : contextClassLoader;
+        final ClassLoader loader = contextClassLoader == null ? FixtureHelpers.class.getClassLoader() : contextClassLoader;
         final URL url = loader.getResource(resourceName);
         if (url == null) {
             throw new IllegalArgumentException("resource " + resourceName + " not found.");
@@ -61,7 +57,7 @@ public class FixtureHelpers {
      */
     public static String toString(URL url, Charset charset) throws IOException {
         try (InputStream inputStream = url.openStream()) {
-            return CharStreams.toString(new InputStreamReader(inputStream, charset));
+            return new String(inputStream.readAllBytes(), charset);
         }
     }
 
@@ -77,7 +73,7 @@ public class FixtureHelpers {
     private static String fixture(String filename, Charset charset) {
         final URL resource = getResource(filename);
         try {
-            return Resources.toString(resource, charset).trim();
+            return toString(resource, charset).trim();
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
         }

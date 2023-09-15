@@ -25,7 +25,6 @@ import com.doordeck.sdk.jackson.serializer.PublicKeySerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 
@@ -41,7 +40,6 @@ public class Jackson {
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
             .registerModule(new Jdk8Module())
             .registerModule(new OptionalUpdateModule())
-            .registerModule(new GuavaModule())
             .registerModule(new JodaModule())
             .registerModule(new SimpleModule()
                     .addSerializer(new DurationSerializer())
