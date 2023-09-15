@@ -19,9 +19,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.doordeck.sdk.R
+import com.github.doordeck.ui.R
 import com.doordeck.sdk.common.manager.Doordeck
-import com.doordeck.sdk.databinding.ActivityUnlockBinding
+import com.github.doordeck.ui.databinding.ActivityUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity

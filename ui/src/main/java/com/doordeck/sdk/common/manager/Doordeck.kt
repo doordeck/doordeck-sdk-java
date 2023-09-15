@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.text.TextUtils
 import android.util.Log
-import com.doordeck.sdk.BuildConfig
 import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
@@ -24,6 +23,7 @@ import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
+import com.github.doordeck.ui.BuildConfig
 import com.google.common.base.Preconditions
 import io.reactivex.Observable
 import java.net.URI

@@ -15,7 +15,7 @@ buildscript {
             'guava': '27.1',
             'findbugs': '3.0.2',
             'joda': '2.10.1',
-            'jackson': '2.14.1',
+            'jackson': '2.14.2',
             'retrofit': '2.6.2'
     ]
 
@@ -26,7 +26,8 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath 'com.android.tools:r8:8.1.56'
+        classpath 'com.android.tools.build:gradle:8.1.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
     }

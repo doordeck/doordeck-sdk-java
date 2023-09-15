@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
-import com.doordeck.sdk.databinding.ActivityQrScanBinding
 import com.doordeck.sdk.ui.BaseActivity
+import com.github.doordeck.ui.databinding.ActivityQrScanBinding
 
 
 /**

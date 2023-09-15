@@ -9,8 +9,8 @@ import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.doordeck.sdk.R
-import com.doordeck.sdk.databinding.ActivityVerifyDeviceBinding
+import com.github.doordeck.ui.R
+import com.github.doordeck.ui.databinding.ActivityVerifyDeviceBinding
 import com.doordeck.sdk.ui.BaseActivity
 
 // screen responsible to send a new verification code and validate the user

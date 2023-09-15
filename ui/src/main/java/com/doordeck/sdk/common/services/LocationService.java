@@ -10,7 +10,11 @@ import android.location.Location;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.doordeck.sdk.R;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.github.doordeck.ui.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -26,16 +30,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 
 public class LocationService {
 
     private static final int GEO_LOCATION_PERMISSION = 101;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    private static final String TAG = "LOCATIONSERVICE";
     private long UPDATE_INTERVAL = 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 200; /* 2 sec */
     private int NUM_REQ = 1; /* 2 sec */

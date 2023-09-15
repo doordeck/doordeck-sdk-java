@@ -7,10 +7,10 @@ import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.os.Bundle
 import android.widget.Toast
-import com.doordeck.sdk.R
-import com.doordeck.sdk.databinding.ActivityNfcBinding
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.github.doordeck.ui.R
+import com.github.doordeck.ui.databinding.ActivityNfcBinding
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_NFC
 
 
