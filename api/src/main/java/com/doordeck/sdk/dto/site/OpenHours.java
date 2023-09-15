@@ -1,5 +1,7 @@
 package com.doordeck.sdk.dto.site;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.doordeck.sdk.jackson.deserializer.AmericanDayDeseralizer;
 import com.doordeck.sdk.jackson.serializer.AmericanDaySeralizer;
 import com.doordeck.sdk.util.DayOfWeek;
@@ -7,15 +9,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
 import com.google.common.collect.ComparisonChain;
+
 import org.immutables.value.Value;
 import org.joda.time.LocalTime;
 
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Example output

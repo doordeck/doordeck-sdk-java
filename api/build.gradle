@@ -25,6 +25,7 @@ dependencies {
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${versions.jackson}"
 

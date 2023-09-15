@@ -1,6 +1,6 @@
 package com.doordeck.sdk.util;
 
-import com.google.common.base.Optional;
+import java.util.Optional;
 
 import java.util.Objects;
 
@@ -41,7 +41,7 @@ public class OptionalUpdate<T> {
     }
 
     public static <T> OptionalUpdate<T> preserve() {
-        return new OptionalUpdate<>(Optional.<T>absent());
+        return new OptionalUpdate<>(Optional.empty());
     }
 
     public static <T> OptionalUpdate<T> update(T value) {

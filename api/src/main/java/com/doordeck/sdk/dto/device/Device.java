@@ -7,10 +7,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
+
 import org.immutables.value.Value;
 import org.joda.time.Instant;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nullable;

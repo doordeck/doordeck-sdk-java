@@ -1,16 +1,18 @@
 package com.doordeck.sdk.dto.operation;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.doordeck.sdk.dto.device.UnlockBetweenWindow;
 import com.doordeck.sdk.util.OptionalUpdate;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
+
 import org.immutables.value.Value;
 import org.joda.time.Duration;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableMutateSetting.class)

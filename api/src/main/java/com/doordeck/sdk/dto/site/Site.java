@@ -5,13 +5,14 @@ import com.doordeck.sdk.jackson.serializer.InstantSecondSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
+
 import org.immutables.value.Value;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Instant;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Value.Immutable

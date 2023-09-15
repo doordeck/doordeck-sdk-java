@@ -7,18 +7,25 @@ import com.doordeck.sdk.http.service.DeviceService;
 import com.doordeck.sdk.http.service.SiteService;
 import com.doordeck.sdk.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.net.HttpHeaders;
-import okhttp3.*;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.CertificatePinner;
+import okhttp3.ConnectionSpec;
+import okhttp3.CookieJar;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class DoordeckClient {
 
@@ -77,12 +84,12 @@ public class DoordeckClient {
 
         this.retrofit = new Retrofit.Builder()
                 .client(okHttp)
-                .baseUrl(Optional.fromNullable(config.baseUrl).or(DEFAULT_BASE_URL).toString())
+                .baseUrl(Optional.ofNullable(config.baseUrl).orElse(DEFAULT_BASE_URL).toString())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(
                         JacksonConverterFactory.create(Optional
-                                .fromNullable(config.objectMapper)
-                                .or(Jackson.sharedObjectMapper())))
+                                .ofNullable(config.objectMapper)
+                                .orElse(Jackson.sharedObjectMapper())))
                 .build();
 
         this.deviceService = retrofit.create(DeviceService.class);
