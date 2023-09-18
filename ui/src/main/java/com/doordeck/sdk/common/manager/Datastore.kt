@@ -15,15 +15,15 @@ internal class Datastore {
     // store pub/priv key in the safe android keychain
     fun saveKeyPair(context: Context, keyPair: KeyPair) {
         val om = Jackson.sharedObjectMapper()
-        SecurePreferences.setValue(context, PUB_KEY, om.writeValueAsString(keyPair.public))
-        SecurePreferences.setValue(context, PRIV_KEY, om.writeValueAsString(keyPair.private))
+        SecurePreferences.setValue(PUB_KEY, om.writeValueAsString(keyPair.public), context)
+        SecurePreferences.setValue(PRIV_KEY, om.writeValueAsString(keyPair.private), context)
     }
 
 
     // retrieve pub/priv key in the safe android keychain
     fun getKeyPair(context: Context): KeyPair? {
-        val pubKeyStr = SecurePreferences.getStringValue(context, PUB_KEY, null)
-        val privKeyStr = SecurePreferences.getStringValue(context, PRIV_KEY, null)
+        val pubKeyStr = SecurePreferences.getStringValue(PUB_KEY, context, null)
+        val privKeyStr = SecurePreferences.getStringValue(PRIV_KEY, context, null)
         if (pubKeyStr == null || privKeyStr == null)
             return null
         val om = Jackson.sharedObjectMapper()
