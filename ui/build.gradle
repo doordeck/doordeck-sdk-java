@@ -7,18 +7,15 @@ group='com.github.doordeck'
 android {
 
     defaultConfig {
+        minSdkVersion 21
         compileSdk 33
         buildToolsVersion = '33.0.1'
-    }
-
-    namespace "com.github.doordeck.ui"
-
-    defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 33
+        multiDexEnabled = true
         versionName "1.2"
         vectorDrawables.useSupportLibrary = true
     }
+
+    namespace "com.github.doordeck.ui"
 
     buildFeatures {
         viewBinding true
@@ -46,6 +43,7 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
@@ -73,6 +71,8 @@ buildscript {
 }
 
 dependencies {
+    api(project(":api"))
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
 
     implementation files('libs/securestorage.jar')
     implementation "org.immutables:value-annotations:2.7.5" // or implementation, or compileOnly
@@ -112,9 +112,7 @@ afterEvaluate {
             }
         }
         repositories {
-            maven {
-                url 'file://' + "${System.properties['user.home']}/.m2/repository"
-            }
+            mavenLocal()
         }
     }
 }
