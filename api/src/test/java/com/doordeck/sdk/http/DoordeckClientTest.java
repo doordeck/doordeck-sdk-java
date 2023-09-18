@@ -1,6 +1,7 @@
 package com.doordeck.sdk.http;
 
 import com.doordeck.sdk.dto.device.Device;
+import com.doordeck.sdk.dto.device.MultiDeviceResponse;
 
 import org.junit.Test;
 
@@ -17,9 +18,9 @@ import static org.junit.Assert.assertEquals;
 
 public class DoordeckClientTest {
 
-    private String BASE_URL_API = "https://api.dev.doordeck.com";
-    private String USER_AGENT_PREFIX = "Doordeck SDK - ";
-    private String APIKEY = "eyJraWQiOiJkZWZhdWx0IiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJjNWRlNWVmMC03MTFiLTExZTctOTgyMy1hOWY3MzZkYWM3NjYiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwic2Vzc2lvbiI6IjU0ZjdkOGQwLWEyM2ItMTFlOS1iMTg3LWY1MGNmZjIwZDU3NyIsIm5hbWUiOiJHcmVnb3J5IFBlZXRlcnMiLCJpc3MiOiJodHRwczpcL1wvYXBpLmRvb3JkZWNrLmNvbVwvIiwicmVmcmVzaCI6ZmFsc2UsImV4cCI6MTU2Mjc1NzUzMiwiaWF0IjoxNTYyNjcxMTMyLCJlbWFpbCI6ImdyZWdvcnlAZG9vcmRlY2suY29tIiwic2lkIjoiNTRmN2Q4ZDAtYTIzYi0xMWU5LWIxODctZjUwY2ZmMjBkNTc3In0.w88UIroi05l_qXR3nSKOKKXNJtr3suU265RKoNfEUyq1_uRZIhc4DaK9pfyJz3ZHIASjVth3WcBt1oP4ugZS6Q";
+    private final String BASE_URL_API = "https://api.dev.doordeck.com";
+    private final String USER_AGENT_PREFIX = "Doordeck SDK - ";
+    private final String APIKEY = "eyJraWQiOiJkZWZhdWx0IiwiYWxnIjoiRVMyNTYifQ.eyJzdWIiOiJjNWRlNWVmMC03MTFiLTExZTctOTgyMy1hOWY3MzZkYWM3NjYiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwic2Vzc2lvbiI6IjU0ZjdkOGQwLWEyM2ItMTFlOS1iMTg3LWY1MGNmZjIwZDU3NyIsIm5hbWUiOiJHcmVnb3J5IFBlZXRlcnMiLCJpc3MiOiJodHRwczpcL1wvYXBpLmRvb3JkZWNrLmNvbVwvIiwicmVmcmVzaCI6ZmFsc2UsImV4cCI6MTU2Mjc1NzUzMiwiaWF0IjoxNTYyNjcxMTMyLCJlbWFpbCI6ImdyZWdvcnlAZG9vcmRlY2suY29tIiwic2lkIjoiNTRmN2Q4ZDAtYTIzYi0xMWU5LWIxODctZjUwY2ZmMjBkNTc3In0.w88UIroi05l_qXR3nSKOKKXNJtr3suU265RKoNfEUyq1_uRZIhc4DaK9pfyJz3ZHIASjVth3WcBt1oP4ugZS6Q";
 
     @Test
     public void requestTile() {
@@ -33,9 +34,9 @@ public class DoordeckClientTest {
         long elapsedTime = stopTime - startTime;
         System.out.println("ClientSetup: " + elapsedTime);
         CompletableFuture<String> future = new CompletableFuture<>();
-        client.device().resolveTile(UUID.fromString("f1192b4c-21cc-45b4-bd67-43dad9856f58")).enqueue(new Callback<Device>() {
+        client.device().resolveTile(UUID.fromString("f1192b4c-21cc-45b4-bd67-43dad9856f58")).enqueue(new Callback<MultiDeviceResponse>() {
             @Override
-            public void onResponse(Call<Device> call, Response<Device> response) {
+            public void onResponse(Call<MultiDeviceResponse> call, Response<MultiDeviceResponse> response) {
                 long stopTime = System.currentTimeMillis();
                 long elapsedTime = stopTime - startTime;
                 System.out.println("TileRequestSuccess: " + elapsedTime);
@@ -43,7 +44,7 @@ public class DoordeckClientTest {
             }
 
             @Override
-            public void onFailure(Call<Device> call, Throwable t) {
+            public void onFailure(Call<MultiDeviceResponse> call, Throwable t) {
                 long stopTime = System.currentTimeMillis();
                 long elapsedTime = stopTime - startTime;
                 System.out.println(t.toString());

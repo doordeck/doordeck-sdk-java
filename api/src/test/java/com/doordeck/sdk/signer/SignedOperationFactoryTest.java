@@ -2,16 +2,21 @@ package com.doordeck.sdk.signer;
 
 import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
 import com.doordeck.sdk.jwt.Claims;
-import com.doordeck.sdk.jwt.ImmutableClaims;
 import com.doordeck.sdk.jwt.Header;
+import com.doordeck.sdk.jwt.ImmutableClaims;
 import com.doordeck.sdk.jwt.ImmutableHeader;
 import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.doordeck.sdk.jwt.signer.Ed25519Signer;
 import com.doordeck.sdk.jwt.signer.RSASigner;
-import com.google.common.io.BaseEncoding;
+
 import org.junit.Test;
 
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.util.Base64;
 import java.util.UUID;
 
 public class SignedOperationFactoryTest {
@@ -65,7 +70,7 @@ public class SignedOperationFactoryTest {
         String header = "-----BEGIN PUBLIC KEY-----";
         String footer = "-----END PUBLIC KEY-----";
 
-        String encodedKey = BaseEncoding.base64().withSeparator("\n", 64).encode(publicKey.getEncoded());
+        String encodedKey = Base64.getMimeEncoder().encodeToString(publicKey.getEncoded());
 
         return String.format("%s\n%s\n%s", header, encodedKey, footer);
     }

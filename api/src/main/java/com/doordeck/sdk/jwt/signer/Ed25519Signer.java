@@ -22,12 +22,12 @@ import com.doordeck.sdk.jwt.JOSEException;
 import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.BaseEncoding;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.PrivateKey;
 import java.security.Signature;
+import java.util.Base64;
 
 public class Ed25519Signer extends BaseSigner {
 
@@ -52,7 +52,7 @@ public class Ed25519Signer extends BaseSigner {
 
 
             byte[] jwsSignature = signer.sign();
-            String signature = BaseEncoding.base64Url().omitPadding().encode(jwsSignature);
+            String signature = Base64.getUrlEncoder().withoutPadding().encodeToString(jwsSignature);
 
             return serialized + "." + signature;
         } catch (GeneralSecurityException e) {

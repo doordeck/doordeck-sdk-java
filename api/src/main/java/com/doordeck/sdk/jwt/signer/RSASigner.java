@@ -21,10 +21,14 @@ import com.doordeck.sdk.jwt.Header;
 import com.doordeck.sdk.jwt.JOSEException;
 import com.doordeck.sdk.jwt.SupportedAlgorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.BaseEncoding;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.SignatureException;
+import java.util.Base64;
 
 public class RSASigner extends BaseSigner {
 
@@ -47,7 +51,7 @@ public class RSASigner extends BaseSigner {
             signer.initSign(privateKey);
             signer.update(serializedToken.getBytes(StandardCharsets.UTF_8));
             byte[] signature = signer.sign();
-            return serializedToken + "." + BaseEncoding.base64Url().omitPadding().encode(signature);
+            return serializedToken + "." + Base64.getUrlEncoder().withoutPadding().encodeToString(signature);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e ) {
             throw new JOSEException(e);
         }

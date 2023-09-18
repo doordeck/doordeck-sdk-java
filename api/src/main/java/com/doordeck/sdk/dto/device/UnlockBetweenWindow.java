@@ -5,14 +5,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import org.immutables.value.Value;
 import org.joda.time.DateTimeZone;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import java.util.Set;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableUnlockBetweenWindow.class)
@@ -34,8 +33,13 @@ public abstract class UnlockBetweenWindow {
 
     @Value.Check
     protected void validate() {
-        checkArgument(!days().isEmpty(), "Days must be specified");
-        checkArgument(end().equals(start()) || start().isBefore(end()), "Start time must be before end time");
+        if (days().isEmpty()) {
+            throw new IllegalArgumentException("Days must be specified");
+        }
+
+        if (start().isAfter(end())) {
+            throw new IllegalArgumentException("Start time must be before end time");
+        }
     }
 
 }
