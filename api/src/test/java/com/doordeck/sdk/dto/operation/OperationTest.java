@@ -1,22 +1,19 @@
 package com.doordeck.sdk.dto.operation;
 
-import com.doordeck.sdk.dto.operation.*;
+import static com.doordeck.sdk.util.FixtureHelpers.fixture;
+import static org.junit.Assert.assertEquals;
+
 import com.doordeck.sdk.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.io.BaseEncoding;
-import com.doordeck.sdk.dto.operation.ImmutableMutateDoorState;
-import com.doordeck.sdk.dto.operation.ImmutableAddUserOperation;
-import com.doordeck.sdk.jwt.ImmutableHeader;
-import java.security.KeyFactory;
-import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.UUID;
 
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.doordeck.sdk.util.FixtureHelpers.fixture;
-import static org.junit.Assert.assertEquals;
+import java.security.KeyFactory;
+import java.security.PublicKey;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+import java.util.UUID;
 
 public class OperationTest {
 
@@ -24,8 +21,8 @@ public class OperationTest {
 
     @Before
     public void before() throws Exception {
-        byte[] decodedKey = BaseEncoding.base64().decode(PUBLIC_KEY);
-        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decodedKey);
+        var decodedKey = Base64.getDecoder().decode(PUBLIC_KEY);
+        var keySpec = new X509EncodedKeySpec(decodedKey);
         KEY = KeyFactory.getInstance("RSA").generatePublic(keySpec);
 
         ADD_USER = ImmutableAddUserOperation.builder().user(USER).publicKey(KEY).build();

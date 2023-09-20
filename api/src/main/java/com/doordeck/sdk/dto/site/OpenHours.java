@@ -7,15 +7,13 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
-import com.google.common.collect.ComparisonChain;
+
 import org.immutables.value.Value;
 import org.joda.time.LocalTime;
 
+import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
-import static com.google.common.base.Preconditions.checkArgument;
 
 /**
  * Example output
@@ -99,21 +97,25 @@ public interface OpenHours {
         @JsonInclude(JsonInclude.Include.NON_ABSENT)
         Optional<Entry> close();
 
-        @Value.Check
-        default void check() {
-            checkArgument(close().isPresent() || (!close().isPresent() && open().time().equals(LocalTime.MIDNIGHT)), "Open time must be midnight when place is always open");
-            checkArgument(close().isPresent() || (!close().isPresent() && open().day().equals(DayOfWeek.SUNDAY)), "Always open sites must specify Sunday as the start date");
-        }
-
         default int compareTo(Period other) {
-            ComparisonChain comparisonChain = ComparisonChain.start()
-                .compare(open(), other.open());
-
-            if (close().isPresent() && other.close().isPresent()) {
-                comparisonChain = comparisonChain.compare(close().get(), other.close().get());
+            // Compare open times, then close times if present
+            if (open().compareTo(other.open()) != 0) {
+                return open().compareTo(other.open());
             }
 
-            return comparisonChain.result();
+            if (close().isPresent() && other.close().isPresent()) {
+                return close().get().compareTo(other.close().get());
+            }
+
+            if (close().isEmpty() && other.close().isEmpty()) {
+                return 0;
+            }
+
+            if (close().isEmpty()) {
+                return 1;
+            } else {
+                return -1;
+            }
         }
     }
 
@@ -134,10 +136,12 @@ public interface OpenHours {
             // Adjust day of week to start from Sunday
             int thisDay = day().equals(DayOfWeek.SUNDAY) ?  0 : day().getValue();
             int otherDay = other.day().equals(DayOfWeek.SUNDAY) ? 0 : day().getValue();
-            return ComparisonChain.start()
-                .compare(thisDay, otherDay)
-                .compare(time(), other.time())
-                .result();
+
+            if (thisDay != otherDay) {
+                return Integer.compare(thisDay, otherDay);
+            } else {
+                return time().compareTo(other.time());
+            }
         }
     }
 

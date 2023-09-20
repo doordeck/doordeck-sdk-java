@@ -3,8 +3,8 @@ apply plugin: "maven-publish"
 
 group='com.github.doordeck'
 
-sourceCompatibility = JavaVersion.VERSION_11
-targetCompatibility = JavaVersion.VERSION_11
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 buildscript {
     repositories {
@@ -25,10 +25,8 @@ dependencies {
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-guava:${versions.jackson}"
-
-    implementation "com.google.guava:guava:27.1-jre"
 
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-jackson:${versions.retrofit}"

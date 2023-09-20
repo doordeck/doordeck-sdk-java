@@ -23,7 +23,8 @@ import com.doordeck.sdk.jwt.JOSEException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
-import com.google.common.io.BaseEncoding;
+
+import java.util.Base64;
 
 public abstract class BaseSigner {
 
@@ -48,9 +49,9 @@ public abstract class BaseSigner {
             byte[] headerJson = headerWriter.writeValueAsBytes(header);
             byte[] payloadJson = payloadWriter.writeValueAsBytes(payload);
 
-            BaseEncoding encoder = BaseEncoding.base64Url().omitPadding();
-            String serializedHeader = encoder.encode(headerJson);
-            String serializedPayload = encoder.encode(payloadJson);
+            var encoder = Base64.getUrlEncoder().withoutPadding();
+            var serializedHeader = encoder.encodeToString(headerJson);
+            var serializedPayload = encoder.encodeToString(payloadJson);
 
             return String.format("%s.%s", serializedHeader, serializedPayload);
         } catch (JsonProcessingException e) {

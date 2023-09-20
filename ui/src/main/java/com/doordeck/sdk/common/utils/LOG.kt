@@ -1,7 +1,7 @@
 package com.doordeck.sdk.common.utils
 
 import android.util.Log
-import com.doordeck.sdk.BuildConfig
+import com.github.doordeck.ui.BuildConfig
 
 // to display the messages only in debug mode
 internal object LOG {

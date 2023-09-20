@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun notAuthenticated() {
-                Toast.makeText(applicationContext, "Not authentificated", LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Not authenticated", LENGTH_SHORT).show()
             }
 
             override fun unlockSuccess() {

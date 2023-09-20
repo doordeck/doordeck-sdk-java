@@ -1,13 +1,13 @@
 package com.doordeck.sdk.http.interceptor;
 
-import com.google.common.net.HttpHeaders;
+import java.io.IOException;
+import java.net.URI;
+
+import javax.annotation.Nullable;
+
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
-
-import javax.annotation.Nullable;
-import java.io.IOException;
-import java.net.URI;
 
 public class OriginInterceptor implements Interceptor {
 
@@ -24,7 +24,7 @@ public class OriginInterceptor implements Interceptor {
         if (origin != null) {
             return chain.proceed(originalRequest
                     .newBuilder()
-                    .addHeader(HttpHeaders.ORIGIN, origin.toString())
+                    .addHeader("Origin", origin.toString())
                     .build());
         } else {
             return chain.proceed(originalRequest);

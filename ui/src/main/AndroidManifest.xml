@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.doordeck.sdk">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,23 +15,23 @@
     
     <application>
         <activity
-            android:name=".ui.unlock.UnlockActivity"
+            android:name="com.doordeck.sdk.ui.unlock.UnlockActivity"
             android:screenOrientation="portrait"
             android:theme="@style/ddLightTheme"
             android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
-            android:name=".ui.qrcode.QRcodeActivity"
+            android:name="com.doordeck.sdk.ui.qrcode.QRcodeActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
-            android:name=".ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity"
+            android:name="com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true"/>
         <activity
-            android:name=".ui.nfc.NFCActivity"
+            android:name="com.doordeck.sdk.ui.nfc.NFCActivity"
             android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true">
@@ -42,7 +41,7 @@
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.verify.VerifyDeviceActivity"
+        <activity android:name="com.doordeck.sdk.ui.verify.VerifyDeviceActivity"
             android:screenOrientation="portrait"
             android:excludeFromRecents="true"
             android:exported="true"

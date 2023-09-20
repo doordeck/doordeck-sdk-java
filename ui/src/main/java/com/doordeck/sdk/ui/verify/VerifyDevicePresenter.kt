@@ -1,7 +1,6 @@
 package com.doordeck.sdk.ui.verify
 
 import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.events.EventsManager.sendEvent
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.models.EventAction
@@ -10,7 +9,6 @@ import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.certificate.ImmutableRegisterEphemeralKey
 import com.doordeck.sdk.dto.certificate.ImmutableVerificationRequest
 import com.doordeck.sdk.dto.certificate.VerificationMethod
-import com.google.common.base.Optional
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job

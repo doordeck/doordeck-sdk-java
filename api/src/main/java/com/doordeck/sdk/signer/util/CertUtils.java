@@ -16,11 +16,10 @@
 
 package com.doordeck.sdk.signer.util;
 
-import com.google.common.io.BaseEncoding;
-
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class CertUtils {
@@ -28,11 +27,11 @@ public class CertUtils {
     private CertUtils() { /* Static class */ }
 
     public static List<String> asBase64(List<X509Certificate> certificates) throws CertificateEncodingException {
-        BaseEncoding encoder = BaseEncoding.base64Url().omitPadding();
+        var encoder = Base64.getUrlEncoder().withoutPadding();
 
         List<String> b64EncodedCertificates = new ArrayList<>(certificates.size());
         for (X509Certificate certificate : certificates) {
-            b64EncodedCertificates.add(encoder.encode(certificate.getEncoded()));
+            b64EncodedCertificates.add(encoder.encodeToString(certificate.getEncoded()));
         }
         return b64EncodedCertificates;
     }

@@ -1,5 +1,8 @@
 package com.doordeck.sdk.http;
 
+import static com.doordeck.sdk.http.interceptor.AuthenticationInterceptor.AUTHORIZATION_HEADER;
+import static com.doordeck.sdk.http.interceptor.AuthenticationInterceptor.BEARER_PREFIX;
+
 import com.doordeck.sdk.http.interceptor.OriginInterceptor;
 import com.doordeck.sdk.http.interceptor.UserAgentInterceptor;
 import com.doordeck.sdk.http.service.CertificateService;
@@ -7,18 +10,24 @@ import com.doordeck.sdk.http.service.DeviceService;
 import com.doordeck.sdk.http.service.SiteService;
 import com.doordeck.sdk.jackson.Jackson;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ImmutableList;
-import com.google.common.net.HttpHeaders;
-import okhttp3.*;
-import retrofit2.Retrofit;
-import retrofit2.converter.jackson.JacksonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+
+import okhttp3.CertificatePinner;
+import okhttp3.ConnectionSpec;
+import okhttp3.CookieJar;
+import okhttp3.Headers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
+import retrofit2.Retrofit;
+import retrofit2.converter.jackson.JacksonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class DoordeckClient {
 
@@ -43,22 +52,19 @@ public class DoordeckClient {
     private final SiteService siteService;
     private final CertificateService certificateService;
 
-    private static final String BEARER_PREFIX = "Bearer ";
-
-
     private DoordeckClient(Builder config) {
 
         Interceptor headerAuthorizationInterceptor = chain -> {
             okhttp3.Request request = chain.request();
             Headers headers = request.headers().newBuilder()
-                    .add(HttpHeaders.AUTHORIZATION, BEARER_PREFIX + config.authTokenSupplier.get())
+                    .add(AUTHORIZATION_HEADER, BEARER_PREFIX + config.authTokenSupplier.get())
                     .build();
             request = request.newBuilder().headers(headers).build();
             return chain.proceed(request);
         };
 
         OkHttpClient okHttp = new OkHttpClient.Builder()
-                .connectionSpecs(ImmutableList.of(ConnectionSpec.RESTRICTED_TLS))
+                .connectionSpecs(List.of(ConnectionSpec.RESTRICTED_TLS))
                 .protocols(Arrays.asList(Protocol.HTTP_2, Protocol.HTTP_1_1))
                 .retryOnConnectionFailure(true)
                 .cookieJar(CookieJar.NO_COOKIES) // Disable cookies
@@ -77,12 +83,12 @@ public class DoordeckClient {
 
         this.retrofit = new Retrofit.Builder()
                 .client(okHttp)
-                .baseUrl(Optional.fromNullable(config.baseUrl).or(DEFAULT_BASE_URL).toString())
+                .baseUrl(Optional.ofNullable(config.baseUrl).orElse(DEFAULT_BASE_URL).toString())
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(
                         JacksonConverterFactory.create(Optional
-                                .fromNullable(config.objectMapper)
-                                .or(Jackson.sharedObjectMapper())))
+                                .ofNullable(config.objectMapper)
+                                .orElse(Jackson.sharedObjectMapper())))
                 .build();
 
         this.deviceService = retrofit.create(DeviceService.class);

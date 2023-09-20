@@ -1,23 +1,22 @@
 package com.doordeck.sdk.dto.operation;
 
+import static com.doordeck.sdk.util.FixtureHelpers.fixture;
+import static org.junit.Assert.assertEquals;
+
 import com.doordeck.sdk.dto.device.ImmutableUnlockBetweenWindow;
 import com.doordeck.sdk.dto.device.UnlockBetweenWindow;
-import com.doordeck.sdk.dto.operation.ImmutableMutateSetting;
-import com.doordeck.sdk.dto.operation.MutateSetting;
-import com.doordeck.sdk.dto.operation.Operation;
 import com.doordeck.sdk.jackson.Jackson;
 import com.doordeck.sdk.util.DayOfWeek;
 import com.doordeck.sdk.util.OptionalUpdate;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Optional;
+
 import org.joda.time.DateTimeZone;
 import org.joda.time.Duration;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 
-import static com.doordeck.sdk.util.FixtureHelpers.fixture;
-import static org.junit.Assert.assertEquals;
+import java.util.Optional;
 
 public class MutateSettingTest {
 
@@ -55,7 +54,7 @@ public class MutateSettingTest {
         Operation op = MAPPER.readValue(fixture("fixtures/settings-with-null-window.json"), Operation.class);
         assertEquals(true, op instanceof MutateSetting);
         assertEquals(OptionalUpdate.delete(), ((MutateSetting)op).unlockBetween());
-        assertEquals(Optional.absent(), ((MutateSetting)op).unlockDuration());
+        assertEquals(Optional.empty(), ((MutateSetting)op).unlockDuration());
     }
 
     @Test
@@ -72,7 +71,7 @@ public class MutateSettingTest {
         Operation op = MAPPER.readValue(fixture("fixtures/settings-without-values.json"), Operation.class);
         assertEquals(true, op instanceof MutateSetting);
         assertEquals(OptionalUpdate.preserve(), ((MutateSetting)op).unlockBetween());
-        assertEquals(Optional.absent(), ((MutateSetting)op).unlockDuration());
+        assertEquals(Optional.empty(), ((MutateSetting)op).unlockDuration());
     }
 
     @Test

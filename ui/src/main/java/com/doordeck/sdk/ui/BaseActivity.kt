@@ -3,8 +3,8 @@ package com.doordeck.sdk.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.doordeck.sdk.R
 import com.doordeck.sdk.common.manager.Doordeck
+import com.github.doordeck.ui.R
 
 internal open class BaseActivity : AppCompatActivity() {
 

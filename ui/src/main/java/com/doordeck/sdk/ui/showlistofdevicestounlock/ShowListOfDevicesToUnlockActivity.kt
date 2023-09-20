@@ -3,8 +3,8 @@ package com.doordeck.sdk.ui.showlistofdevicestounlock
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.doordeck.sdk.R
-import com.doordeck.sdk.databinding.ActivityListOfDevicesToUnlockBinding
+import com.github.doordeck.ui.R
+import com.github.doordeck.ui.databinding.ActivityListOfDevicesToUnlockBinding
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity

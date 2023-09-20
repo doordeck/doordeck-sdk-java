@@ -6,11 +6,11 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.google.common.base.Optional;
+
 import org.immutables.value.Value;
 import org.joda.time.Duration;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import java.util.Optional;
 
 @Value.Immutable
 @JsonSerialize(as = ImmutableMutateSetting.class)
@@ -32,10 +32,13 @@ public abstract class MutateSetting implements Operation {
     protected void validate() {
         if (unlockDuration().isPresent()) {
             Duration unlockDuration = unlockDuration().get();
-            checkArgument(unlockDuration.getMillis() >= 0,
-                    "Min unlock duration must be greater than zero");
-            checkArgument(unlockDuration.compareTo(MAX_UNLOCK_DURATION) <= 0,
-                    "Unlock duration must be less than 60 seconds");
+            if (unlockDuration.getMillis() <= 0) {
+                throw new IllegalArgumentException("Unlock duration must be greater than zero");
+            }
+
+            if (unlockDuration.compareTo(MAX_UNLOCK_DURATION) > 0) {
+                throw new IllegalArgumentException("Unlock duration must be less than 60 seconds");
+            }
         }
     }
 

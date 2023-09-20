@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.doordeck.sdk.R
+import com.github.doordeck.ui.R
 import com.doordeck.sdk.dto.device.Device
 
 class DevicesToUnlockAdapter(
