@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.immutables.value.Value;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Set;
 
 @Value.Immutable
@@ -25,7 +25,7 @@ public abstract class UnlockBetweenWindow {
     @JsonFormat(pattern = "HH:mm")
     public abstract LocalTime end();
 
-    public abstract DateTimeZone timezone();
+    public abstract ZoneId timezone();
     public abstract Set<DayOfWeek> days();
 
     @JsonFormat(pattern = "yyyy-MM-dd")

@@ -5,10 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.immutables.value.Value;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalTime;
 
+import org.immutables.value.Value;
+
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Set;
 
 @Value.Immutable
@@ -23,7 +24,7 @@ public interface TimeRequirement {
     @JsonFormat(pattern = "HH:mm")
     LocalTime end();
 
-    DateTimeZone timezone();
+    ZoneId timezone();
     Set<DayOfWeek> days();
 
 }

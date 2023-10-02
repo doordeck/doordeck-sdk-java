@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.immutables.value.Value;
-import org.joda.time.DateTimeZone;
-import org.joda.time.Instant;
 
 import java.net.URI;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,7 +42,7 @@ public interface Site {
 
     Optional<String> googlePlaceId();
     Optional<String> address();
-    Optional<DateTimeZone> timezone();
+    Optional<ZoneId> timezone();
     Optional<OpenHours> openingHours();
     List<SiteInfo> information();
 

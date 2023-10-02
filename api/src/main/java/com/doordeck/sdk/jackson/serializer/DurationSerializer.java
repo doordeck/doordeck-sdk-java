@@ -19,9 +19,9 @@ package com.doordeck.sdk.jackson.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.joda.time.Duration;
 
 import java.io.IOException;
+import java.time.Duration;
 
 public class DurationSerializer extends StdSerializer<Duration> {
 
@@ -34,7 +34,7 @@ public class DurationSerializer extends StdSerializer<Duration> {
     @Override
     public void serialize(Duration duration, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         // We prefer seconds
-        jsonGenerator.writeNumber(duration.getMillis() / 1000f);
+        jsonGenerator.writeNumber(duration.toMillis() / 1000f);
     }
 
 }

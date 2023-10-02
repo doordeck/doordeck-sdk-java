@@ -13,7 +13,6 @@ buildscript {
             'okhttp': '3.14.7',
             'bouncycastle': '1.61',
             'findbugs': '3.0.2',
-            'joda': '2.10.1',
             'jackson': '2.14.1',
             'retrofit': '2.6.2'
     ]
@@ -21,7 +20,6 @@ buildscript {
     ext.deps = [
             'jsr305': "com.google.code.findbugs:jsr305:${versions.findbugs}",
             'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
-            'joda': "joda-time:joda-time:${versions.joda}",
     ]
 
     dependencies {

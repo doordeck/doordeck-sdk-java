@@ -10,12 +10,12 @@ import com.doordeck.sdk.util.DayOfWeek;
 import com.doordeck.sdk.util.OptionalUpdate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.joda.time.DateTimeZone;
-import org.joda.time.Duration;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
 import org.junit.Test;
 
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 public class MutateSettingTest {
@@ -27,14 +27,14 @@ public class MutateSettingTest {
         .addDays(DayOfWeek.TUESDAY)
         .start(new LocalTime(9,0))
         .end(new LocalTime(17,0))
-        .timezone(DateTimeZone.forID("Europe/London"))
+        .timezone(ZoneId.of("Europe/London"))
         .addExceptions(new LocalDate(2017,5,6))
         .build();
 
     @Test
     public void serializesToJSON() throws Exception {
         MutateSetting setting = ImmutableMutateSetting.builder()
-            .unlockDuration(Duration.standardSeconds(7))
+            .unlockDuration(Duration.ofSeconds(7))
             .unlockBetween(OptionalUpdate.update(window))
             .build();
         assertEquals(fixture("fixtures/settings-with-window-and-duration.json"), MAPPER.writeValueAsString(setting));

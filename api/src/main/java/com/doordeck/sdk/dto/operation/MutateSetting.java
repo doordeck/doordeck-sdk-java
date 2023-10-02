@@ -8,8 +8,8 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import org.immutables.value.Value;
-import org.joda.time.Duration;
 
+import java.time.Duration;
 import java.util.Optional;
 
 @Value.Immutable
@@ -18,7 +18,7 @@ import java.util.Optional;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class MutateSetting implements Operation {
 
-    private static final Duration MAX_UNLOCK_DURATION = Duration.standardSeconds(60);
+    private static final Duration MAX_UNLOCK_DURATION = Duration.ofSeconds(60);
 
     public abstract Optional<Duration> unlockDuration();
 
@@ -32,7 +32,7 @@ public abstract class MutateSetting implements Operation {
     protected void validate() {
         if (unlockDuration().isPresent()) {
             Duration unlockDuration = unlockDuration().get();
-            if (unlockDuration.getMillis() <= 0) {
+            if (unlockDuration.toMillis() <= 0) {
                 throw new IllegalArgumentException("Unlock duration must be greater than zero");
             }
 

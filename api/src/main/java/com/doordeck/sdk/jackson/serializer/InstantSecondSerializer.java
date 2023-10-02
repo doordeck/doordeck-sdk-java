@@ -19,9 +19,9 @@ package com.doordeck.sdk.jackson.serializer;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import org.joda.time.Instant;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class InstantSecondSerializer extends StdSerializer<Instant> {
 
@@ -34,6 +34,6 @@ public class InstantSecondSerializer extends StdSerializer<Instant> {
     @Override
     public void serialize(Instant value, JsonGenerator gen, SerializerProvider provider) throws IOException {
         // We need epoch seconds
-        gen.writeNumber(value.getMillis() / 1000);
+        gen.writeNumber(value.toEpochMilli() / 1000);
     }
 }
