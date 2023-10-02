@@ -11,6 +11,7 @@ import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.manager.ScanType
+import com.doordeck.sdk.common.models.DefaultDeviceWithUuid
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.nfc.setOnClickListener { Doordeck.showUnlock(this) }
         binding.qrcode.setOnClickListener { unlockWithQRCode() }
+        binding.uuid.setOnClickListener { showPopupUnlockWithUUID() }
+
 
         // the listeners are optional, only if you wish to listen to those events
         listenForEventsRx()
@@ -42,39 +45,36 @@ class MainActivity : AppCompatActivity() {
     private fun unlockWithQRCode() {
         // the ScanType is optional, by default it's set to NFC
         // the callback is optional too
-        Doordeck.showUnlock(this, ScanType.QR, object : UnlockCallback {
-            override fun invalidAuthToken() {
-                Toast.makeText(applicationContext, "Invalid auth token", LENGTH_SHORT).show()
-
-            }
-
-            override fun notAuthenticated() {
-                Toast.makeText(applicationContext, "Not authenticated", LENGTH_SHORT).show()
-            }
-
-            override fun unlockSuccess() {
-                Toast.makeText(applicationContext, "Unlock Success", LENGTH_SHORT).show()
-            }
-
-            override fun unlockFailed() {
-                Toast.makeText(applicationContext, "Unlock Failed", LENGTH_SHORT).show()
-            }
-
-            override fun verificationNeeded() {
-                Doordeck.showVerificationScreen(this@MainActivity)
-                Toast.makeText(applicationContext, "2fa needed", LENGTH_SHORT).show()
-            }
-        })
+        Doordeck.showUnlock(this, ScanType.QR, defaultCallback)
     }
 
-    // suscribe to Doordeck.eventsObservable() that emits the events sent by the SDK
+    private fun showPopupUnlockWithUUID() {
+        binding.uuidText.error = null
+        try {
+            val uuid = binding.uuidText.text.toString()
+            unlockWithUUID(uuid)
+        } catch (illegalStateException: IllegalStateException) {
+            binding.uuidText.error = illegalStateException.message
+        }
+    }
+
+    private fun unlockWithUUID(uuid: String) {
+        Doordeck.unlock(
+            ctx = this,
+            uuid = uuid,
+            callback = defaultCallback,
+        )
+    }
+
+    // subscribe to Doordeck.eventsObservable() that emits the events sent by the SDK
     private fun listenForEventsRx() {
-        disposables.add(Doordeck.eventsObservable()
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ event ->
-                Log.d("MainActivity", "event received : $event")
-            }, Throwable::printStackTrace)
+        disposables.add(
+            Doordeck.eventsObservable()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ event ->
+                    Log.d("MainActivity", "event received : $event")
+                }, Throwable::printStackTrace)
         )
     }
 
@@ -144,6 +144,29 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         // free the memory
         disposables.dispose()
+    }
+
+    private val defaultCallback: UnlockCallback = object : UnlockCallback {
+        override fun invalidAuthToken() {
+            Toast.makeText(applicationContext, "Invalid auth token", LENGTH_SHORT).show()
+        }
+
+        override fun notAuthenticated() {
+            Toast.makeText(applicationContext, "Not authenticated", LENGTH_SHORT).show()
+        }
+
+        override fun unlockSuccess() {
+            Toast.makeText(applicationContext, "Unlock Success", LENGTH_SHORT).show()
+        }
+
+        override fun unlockFailed() {
+            Toast.makeText(applicationContext, "Unlock Failed", LENGTH_SHORT).show()
+        }
+
+        override fun verificationNeeded() {
+            Doordeck.showVerificationScreen(this@MainActivity)
+            Toast.makeText(applicationContext, "2fa needed", LENGTH_SHORT).show()
+        }
     }
 
 }

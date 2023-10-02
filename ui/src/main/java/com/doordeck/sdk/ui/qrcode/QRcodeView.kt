@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.doordeck.sdk.common.utils.LOG
+import com.doordeck.sdk.common.utils.UuidUtils
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
 import com.google.zxing.ResultPoint
@@ -58,7 +59,7 @@ internal class QRcodeView : CompoundBarcodeView {
                 val scan = result.toString()
                 LOG.d(TAG, "scanned data : $result")
                 val id = scan.substring(scan.lastIndexOf("/") + 1)
-                if (isUUID(id)) {
+                if (UuidUtils.isUUID(id)) {
                     pause()
                     (context as? Activity)?.let { activity -> UnlockActivity.start(activity, id, comingFrom = COMING_FROM_QR_SCAN) }
                 } else {
@@ -73,14 +74,4 @@ internal class QRcodeView : CompoundBarcodeView {
         })
     }
 
-    // verify if the content from in the QR code is an UUID
-    private fun isUUID(id: String): Boolean {
-        return try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        }
-
-    }
 }

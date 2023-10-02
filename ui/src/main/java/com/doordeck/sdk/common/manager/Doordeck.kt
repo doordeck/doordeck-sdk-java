@@ -7,6 +7,7 @@ import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.models.DDEVENT
+import com.doordeck.sdk.common.models.DefaultDeviceWithUuid
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
@@ -208,11 +209,25 @@ object Doordeck {
      * @param ctx current Context
      * @param device a valid device.
      * @param callback (optional) callback function for catching async response after unlock.
-     * @return Doordeck the current instance of the SDK
+     *
      */
     @JvmOverloads
     fun unlock(ctx: Context, device: Device, callback: UnlockCallback? = null){
         this.deviceToUnlock = device
+        showUnlock(ctx, ScanType.UNLOCK, callback)
+    }
+
+    /**
+     * Unlock method for unlocking via UUID
+     *
+     * @param ctx current Context
+     * @param uuid, a valid uuid to a [Device]'s id. It has to be a valid UUID format
+     * @param callback (optional) callback function for catching async response after unlock.
+     *
+     */
+    @JvmOverloads
+    fun unlock(ctx: Context, uuid: String, callback: UnlockCallback? = null){
+        this.deviceToUnlock = DefaultDeviceWithUuid(uuid)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 
@@ -242,11 +257,18 @@ object Doordeck {
                     when (type) {
                         ScanType.QR -> QRcodeActivity.start(context)
                         ScanType.NFC -> NFCActivity.start(context)
-                        ScanType.UNLOCK -> UnlockActivity.start(
-                            context = context,
-                            device = deviceToUnlock!!,
-                            comingFrom = COMING_FROM_DIRECT_UNLOCK,
-                        )
+                        ScanType.UNLOCK -> when(deviceToUnlock) {
+                            is DefaultDeviceWithUuid -> UnlockActivity.start(
+                                context = context,
+                                id = deviceToUnlock!!.deviceId().toString(),
+                                comingFrom = COMING_FROM_DIRECT_UNLOCK,
+                            )
+                            else -> UnlockActivity.start(
+                                context = context,
+                                device = deviceToUnlock!!,
+                                comingFrom = COMING_FROM_DIRECT_UNLOCK,
+                            )
+                        }
                     }
                 }
                 this.unlockCallback = callback

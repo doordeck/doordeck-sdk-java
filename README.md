@@ -63,7 +63,7 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
 ```
 
     
-#### Unlock a door
+#### Unlock a door by NFC/QR
 
 The SDK has a method that will open an activity to get the information regarding the door to open, and open it according to the option you give to the method.
 - The `Context` needs to be provided, it's required.
@@ -85,6 +85,25 @@ Once the door unlocked, the activity opened by the SDK will close automatically 
 
 ```
 
+#### Unlock a door by UUID
+The SDK has a method that will open an activity to pass the information once obtained the UUID beforehand.
+- You need the `uuid (String)`
+
+```
+/**
+     * Unlock method for unlocking via UUID
+     *
+     * @param ctx current Context
+     * @param uuid, a valid uuid to a [Device]'s id. It has to be a valid UUID format
+     * @param callback (optional) callback function for catching async response after unlock.
+     *
+     */
+    @JvmOverloads
+    fun unlock(ctx: Context, uuid: String, callback: UnlockCallback? = null){
+        this.deviceToUnlock = DefaultDeviceWithUuid(uuid)
+        showUnlock(ctx, ScanType.UNLOCK, callback)
+    }
+```
 
 #### Being aware of events
 
