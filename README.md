@@ -90,7 +90,7 @@ The SDK has a method that will open an activity to pass the information once obt
 - You need the `uuid (String)`
 
 ```
-/**
+    /**
      * Unlock method for unlocking via UUID
      *
      * @param ctx current Context
