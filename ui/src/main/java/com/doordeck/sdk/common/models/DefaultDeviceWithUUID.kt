@@ -1,6 +1,6 @@
 package com.doordeck.sdk.common.models
 
-import com.doordeck.sdk.common.utils.UuidUtils
+import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.dto.Role
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.device.DeviceSetting
@@ -9,9 +9,9 @@ import java.time.Instant
 import java.util.Optional
 import java.util.UUID
 
-class DefaultDeviceWithUuid(
+class DefaultDeviceWithUUID(
     private val uuid: String,
-    private val name: String = defaultName,
+    private val name: String = uuid,
     private val colour: String? = defaultColour,
     private val favourite: Boolean = defaultFavourite,
     private val start: Instant? = defaultStart,
@@ -20,7 +20,7 @@ class DefaultDeviceWithUuid(
     private val deviceSettings: DeviceSetting = defaultDeviceSettings,
 ) : Device {
     override fun deviceId(): UUID {
-        if (UuidUtils.isUUID(uuid)) {
+        if (isUUID(uuid)) {
             return UUID.fromString(uuid)
         }
 
@@ -42,7 +42,6 @@ class DefaultDeviceWithUuid(
     override fun settings(): DeviceSetting = deviceSettings
 
     private companion object {
-        private const val defaultName: String = ""
         private val defaultColour: String? = null
         private const val defaultFavourite: Boolean = false
         private val defaultStart: Instant? = null
@@ -56,7 +55,7 @@ class DefaultDeviceWithUuid(
 
         override fun defaultName(): String = ""
 
-        override fun tiles(): MutableSet<UUID> = mutableSetOf()
+        override fun tiles(): Set<UUID> = setOf()
 
     }
 }

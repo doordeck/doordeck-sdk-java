@@ -7,7 +7,7 @@ import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.models.DDEVENT
-import com.doordeck.sdk.common.models.DefaultDeviceWithUuid
+import com.doordeck.sdk.common.models.DefaultDeviceWithUUID
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
@@ -227,7 +227,7 @@ object Doordeck {
      */
     @JvmOverloads
     fun unlock(ctx: Context, uuid: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = DefaultDeviceWithUuid(uuid)
+        this.deviceToUnlock = DefaultDeviceWithUUID(uuid)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 
@@ -258,7 +258,7 @@ object Doordeck {
                         ScanType.QR -> QRcodeActivity.start(context)
                         ScanType.NFC -> NFCActivity.start(context)
                         ScanType.UNLOCK -> when(deviceToUnlock) {
-                            is DefaultDeviceWithUuid -> UnlockActivity.start(
+                            is DefaultDeviceWithUUID -> UnlockActivity.start(
                                 context = context,
                                 id = deviceToUnlock!!.deviceId().toString(),
                                 comingFrom = COMING_FROM_DIRECT_UNLOCK,

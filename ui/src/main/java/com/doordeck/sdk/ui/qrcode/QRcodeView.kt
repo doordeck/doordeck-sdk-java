@@ -10,7 +10,7 @@ import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.doordeck.sdk.common.utils.LOG
-import com.doordeck.sdk.common.utils.UuidUtils
+import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
 import com.google.zxing.ResultPoint
@@ -18,7 +18,6 @@ import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
-import java.util.*
 
 /**
  * Custom view for the QRCode
@@ -59,7 +58,7 @@ internal class QRcodeView : CompoundBarcodeView {
                 val scan = result.toString()
                 LOG.d(TAG, "scanned data : $result")
                 val id = scan.substring(scan.lastIndexOf("/") + 1)
-                if (UuidUtils.isUUID(id)) {
+                if (isUUID(id)) {
                     pause()
                     (context as? Activity)?.let { activity -> UnlockActivity.start(activity, id, comingFrom = COMING_FROM_QR_SCAN) }
                 } else {
