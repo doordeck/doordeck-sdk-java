@@ -100,7 +100,7 @@ The SDK has a method that will open an activity to pass the information once obt
      */
     @JvmOverloads
     fun unlock(ctx: Context, uuid: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = DefaultDeviceWithUUID(uuid)
+        this.deviceToUnlock = PartialDevice(uuid)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 ```

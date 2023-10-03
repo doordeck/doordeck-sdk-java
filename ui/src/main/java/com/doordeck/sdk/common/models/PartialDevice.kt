@@ -9,7 +9,7 @@ import java.time.Instant
 import java.util.Optional
 import java.util.UUID
 
-class DefaultDeviceWithUUID(
+class PartialDevice(
     private val uuid: String,
     private val name: String = uuid,
     private val colour: String? = defaultColour,
