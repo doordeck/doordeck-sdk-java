@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.doordeck.sdk.common.utils.LOG
+import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
 import com.google.zxing.ResultPoint
@@ -17,7 +18,6 @@ import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
-import java.util.*
 
 /**
  * Custom view for the QRCode
@@ -73,14 +73,4 @@ internal class QRcodeView : CompoundBarcodeView {
         })
     }
 
-    // verify if the content from in the QR code is an UUID
-    private fun isUUID(id: String): Boolean {
-        return try {
-            UUID.fromString(id)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        }
-
-    }
 }

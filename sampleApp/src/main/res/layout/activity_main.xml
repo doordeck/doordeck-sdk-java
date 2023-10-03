@@ -20,5 +20,26 @@
         android:layout_marginTop="20dp"
         android:text="qr scan" />
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/uuid_text"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:hint="Enter tile id (UUID)" />
+
+        <ImageButton
+            android:id="@+id/uuid"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@android:drawable/ic_menu_send" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </LinearLayout>

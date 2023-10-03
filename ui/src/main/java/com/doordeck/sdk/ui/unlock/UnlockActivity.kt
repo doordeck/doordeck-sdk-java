@@ -350,12 +350,12 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
          * if it's an activity
          */
         fun start(context: Context, id: String, comingFrom: String) {
-            (context as? Activity)?.finish()
-
             val starter = Intent(context, UnlockActivity::class.java)
             starter.putExtra(TILE_ID, id)
             starter.putExtra(COMING_FROM_KEY, comingFrom)
-            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (comingFrom != COMING_FROM_DIRECT_UNLOCK) {
+                starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             context.startActivity(starter)
         }
         fun start(context: Context, device: Device, comingFrom: String) {
@@ -363,7 +363,9 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             val om = Jackson.sharedObjectMapper()
             starter.putExtra(DEVICE, om.writeValueAsString(device))
             starter.putExtra(COMING_FROM_KEY, comingFrom)
-            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            if (comingFrom != COMING_FROM_DIRECT_UNLOCK) {
+                starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             context.startActivity(starter)
         }
 
