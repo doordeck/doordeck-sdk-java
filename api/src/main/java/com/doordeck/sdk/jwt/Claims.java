@@ -27,7 +27,7 @@ import org.immutables.value.Value;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Value.Immutable
@@ -50,7 +50,7 @@ public abstract class Claims {
     @JsonDeserialize(using = InstantSecondDeserializer.class)
     public Instant issuedAt() {
         // Truncate to seconds
-        return Instant.now().with(ChronoField.MILLI_OF_SECOND, 0);
+        return Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Value.Default
@@ -84,7 +84,7 @@ public abstract class Claims {
             throw new IllegalArgumentException("Expiry must be in less than 14 days time");
         }
 
-        Instant truncatedExpiresAt = expiresAt().with(ChronoField.MILLI_OF_SECOND, 0);
+        Instant truncatedExpiresAt = expiresAt().truncatedTo(ChronoUnit.SECONDS);
 
         if (!truncatedExpiresAt.equals(expiresAt())) {
             return ImmutableClaims.builder()

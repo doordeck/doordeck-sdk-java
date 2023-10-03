@@ -43,7 +43,6 @@ public interface Site {
     Optional<String> googlePlaceId();
     Optional<String> address();
     Optional<ZoneId> timezone();
-    Optional<OpenHours> openingHours();
     List<SiteInfo> information();
 
     Optional<URI> website();
