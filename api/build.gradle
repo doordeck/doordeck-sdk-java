@@ -26,7 +26,8 @@ dependencies {
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${versions.jackson}"
-    implementation "com.fasterxml.jackson.datatype:jackson-datatype-joda:${versions.jackson}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
+
 
     implementation "com.squareup.retrofit2:retrofit:${versions.retrofit}"
     implementation "com.squareup.retrofit2:converter-jackson:${versions.retrofit}"
@@ -34,8 +35,7 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:${versions.okhttp}"
 
     implementation "org.bouncycastle:bcprov-jdk15on:${versions.bouncycastle}"
-    implementation deps.joda
-    
+
     compileOnly deps.jsr305
 
     testImplementation 'junit:junit:4.12'

@@ -19,9 +19,9 @@ package com.doordeck.sdk.jackson.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.joda.time.Duration;
 
 import java.io.IOException;
+import java.time.Duration;
 
 public class DurationDeserializer extends StdDeserializer<Duration> {
 
@@ -34,6 +34,6 @@ public class DurationDeserializer extends StdDeserializer<Duration> {
     @Override
     public Duration deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         // We expect seconds
-        return Duration.millis((long)(jsonParser.getFloatValue() * 1000));
+        return Duration.ofMillis((long)(jsonParser.getFloatValue() * 1000));
     }
 }

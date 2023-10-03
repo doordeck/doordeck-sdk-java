@@ -60,8 +60,6 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
 -keep interface com.squareup.okhttp.** { *; }
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
--dontwarn org.joda.convert.FromString
--dontwarn org.joda.convert.ToString
 ```
 
     

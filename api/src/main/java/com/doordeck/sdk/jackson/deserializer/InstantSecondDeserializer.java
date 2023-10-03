@@ -19,9 +19,9 @@ package com.doordeck.sdk.jackson.deserializer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.joda.time.Instant;
 
 import java.io.IOException;
+import java.time.Instant;
 
 public class InstantSecondDeserializer extends StdDeserializer<Instant> {
 
@@ -33,7 +33,7 @@ public class InstantSecondDeserializer extends StdDeserializer<Instant> {
 
     @Override
     public Instant deserialize(JsonParser p, DeserializationContext ctxt) throws IOException {
-        return new Instant(p.getLongValue() * 1000);
+        return Instant.ofEpochSecond(p.getLongValue());
     }
 
 }
