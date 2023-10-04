@@ -8,14 +8,11 @@
     <com.doordeck.sdk.ui.qrcode.QRcodeView
         android:id="@+id/qr"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    </com.doordeck.sdk.ui.qrcode.QRcodeView>
+        android:layout_height="match_parent"/>
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/tvDismiss"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/ic_scanner_background" />
 

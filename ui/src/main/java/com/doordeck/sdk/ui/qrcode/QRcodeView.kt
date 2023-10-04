@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
@@ -13,11 +14,14 @@ import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
+import com.github.doordeck.ui.R
 import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.Intents
 import com.journeyapps.barcodescanner.BarcodeCallback
 import com.journeyapps.barcodescanner.BarcodeResult
+import com.journeyapps.barcodescanner.BarcodeView
 import com.journeyapps.barcodescanner.CompoundBarcodeView
+import com.journeyapps.barcodescanner.ViewfinderView
 
 /**
  * Custom view for the QRCode
@@ -53,6 +57,9 @@ internal class QRcodeView : CompoundBarcodeView {
                 Intent()
                         .putExtra(Intents.Scan.SCAN_TYPE, Intents.Scan.MIXED_SCAN)
         )
+        viewFinder.setLaserVisibility(false)
+        viewFinder.setMaskColor(Color.TRANSPARENT)
+
         decodeSingle(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult) {
                 val scan = result.toString()
