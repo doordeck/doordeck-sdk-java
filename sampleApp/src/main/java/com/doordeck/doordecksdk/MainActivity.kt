@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.nfc.setOnClickListener { Doordeck.showUnlock(this) }
         binding.qrcode.setOnClickListener { unlockWithQRCode() }
-        binding.uuid.setOnClickListener { showPopupUnlockWithUUID() }
+        binding.uuid.setOnClickListener { showPopupUnlockWithDeviceUUID() }
 
 
         // the listeners are optional, only if you wish to listen to those events
@@ -47,20 +47,20 @@ class MainActivity : AppCompatActivity() {
         Doordeck.showUnlock(this, ScanType.QR, defaultCallback)
     }
 
-    private fun showPopupUnlockWithUUID() {
+    private fun showPopupUnlockWithDeviceUUID() {
         binding.uuidText.error = null
         try {
             val uuid = binding.uuidText.text.toString()
-            unlockWithUUID(uuid)
+            unlockWithDeviceUUID(uuid)
         } catch (illegalStateException: IllegalStateException) {
             binding.uuidText.error = illegalStateException.message
         }
     }
 
-    private fun unlockWithUUID(uuid: String) {
-        Doordeck.unlock(
+    private fun unlockWithDeviceUUID(uuid: String) {
+        Doordeck.unlockByDeviceUUID(
             ctx = this,
-            uuid = uuid,
+            deviceUUID = uuid,
             callback = defaultCallback,
         )
     }
