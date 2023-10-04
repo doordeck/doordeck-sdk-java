@@ -85,22 +85,22 @@ Once the door unlocked, the activity opened by the SDK will close automatically 
 
 ```
 
-#### Unlock a door by UUID
-The SDK has a method that will open an activity to pass the information once obtained the UUID beforehand.
-- You need the `uuid (String)`
+#### Unlock by Device's UUID
+The SDK has a method that will open an activity to pass the information once obtained the Device's UUID beforehand.
+- You need the `UUID (String)`
 
 ```
     /**
      * Unlock method for unlocking via UUID
      *
      * @param ctx current Context
-     * @param uuid, a valid uuid to a [Device]'s id. It has to be a valid UUID format
+     * @param deviceUUID, a valid [Device]'s UUID. It has to be a valid UUID format
      * @param callback (optional) callback function for catching async response after unlock.
      *
      */
     @JvmOverloads
-    fun unlock(ctx: Context, uuid: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = PartialDevice(uuid)
+    fun unlockByDeviceUUID(ctx: Context, deviceUUID: String, callback: UnlockCallback? = null){
+        this.deviceToUnlock = PartialDevice(deviceUUID)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 ```
