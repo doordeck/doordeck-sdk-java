@@ -7,11 +7,11 @@ import com.doordeck.sdk.common.events.EventsManager
 import com.doordeck.sdk.common.events.IEventCallback
 import com.doordeck.sdk.common.events.UnlockCallback
 import com.doordeck.sdk.common.models.DDEVENT
-import com.doordeck.sdk.common.models.PartialDevice
 import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
+import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.operation.Operation
@@ -65,7 +65,7 @@ object Doordeck {
         return keys!!
     }
     // device to unlock
-    private var deviceToUnlock: Device? = null
+    private var objectToUnlock: ObjectToUnlock? = null
 
     // Shared Preferences
     @SuppressLint("StaticFieldLeak")
@@ -213,7 +213,7 @@ object Doordeck {
      */
     @JvmOverloads
     fun unlock(ctx: Context, device: Device, callback: UnlockCallback? = null){
-        this.deviceToUnlock = device
+        this.objectToUnlock = DeviceToUnlock(device)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 
@@ -227,8 +227,12 @@ object Doordeck {
      */
     @JvmOverloads
     fun unlockTileID(ctx: Context, tileID: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = PartialDevice(tileID)
-        showUnlock(ctx, ScanType.UNLOCK, callback)
+        if (isUUID(tileID)) {
+            this.objectToUnlock = TileIdToUnlock(UUID.fromString(tileID))
+            showUnlock(ctx, ScanType.UNLOCK, callback)
+        } else {
+            throw IllegalStateException("No valid UUID")
+        }
     }
 
     /**
@@ -257,17 +261,20 @@ object Doordeck {
                     when (type) {
                         ScanType.QR -> QRcodeActivity.start(context)
                         ScanType.NFC -> NFCActivity.start(context)
-                        ScanType.UNLOCK -> when(deviceToUnlock) {
-                            is PartialDevice -> UnlockActivity.start(
+                        ScanType.UNLOCK -> when(val objectToUnlock = this.objectToUnlock) {
+                            is DeviceToUnlock -> UnlockActivity.start(
                                 context = context,
-                                id = deviceToUnlock!!.deviceId().toString(),
+                                device = objectToUnlock.device,
                                 comingFrom = COMING_FROM_DIRECT_UNLOCK,
                             )
-                            else -> UnlockActivity.start(
+                            is TileIdToUnlock -> UnlockActivity.start(
                                 context = context,
-                                device = deviceToUnlock!!,
+                                tileId = objectToUnlock.tileID.toString(),
                                 comingFrom = COMING_FROM_DIRECT_UNLOCK,
                             )
+                            null  -> {
+                                // NO-OP
+                            }
                         }
                     }
                 }

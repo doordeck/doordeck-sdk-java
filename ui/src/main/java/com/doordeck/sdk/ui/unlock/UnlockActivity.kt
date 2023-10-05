@@ -1,7 +1,6 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
@@ -349,9 +348,9 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
          * Using this from the QR/NFC viewer, so we finish the activity which is the previous one,
          * if it's an activity
          */
-        fun start(context: Context, id: String, comingFrom: String) {
+        fun start(context: Context, tileId: String, comingFrom: String) {
             val starter = Intent(context, UnlockActivity::class.java)
-            starter.putExtra(TILE_ID, id)
+            starter.putExtra(TILE_ID, tileId)
             starter.putExtra(COMING_FROM_KEY, comingFrom)
             if (comingFrom != COMING_FROM_DIRECT_UNLOCK) {
                 starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
