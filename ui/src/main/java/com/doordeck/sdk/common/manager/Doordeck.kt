@@ -11,6 +11,7 @@ import com.doordeck.sdk.common.models.EventAction
 import com.doordeck.sdk.common.models.JWTHeader
 import com.doordeck.sdk.common.utils.JWTContentUtils
 import com.doordeck.sdk.common.utils.LOG
+import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.dto.certificate.CertificateChain
 import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.dto.operation.Operation
@@ -226,8 +227,12 @@ object Doordeck {
      */
     @JvmOverloads
     fun unlockTileID(ctx: Context, tileID: String, callback: UnlockCallback? = null){
-        this.objectToUnlock = TileIdToUnlock(UUID.fromString(tileID))
-        showUnlock(ctx, ScanType.UNLOCK, callback)
+        if (isUUID(tileID)) {
+            this.objectToUnlock = TileIdToUnlock(UUID.fromString(tileID))
+            showUnlock(ctx, ScanType.UNLOCK, callback)
+        } else {
+            throw IllegalStateException("No valid UUID")
+        }
     }
 
     /**
