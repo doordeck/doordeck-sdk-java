@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Build
 import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
@@ -53,6 +54,9 @@ internal class QRcodeView : CompoundBarcodeView {
                 Intent()
                         .putExtra(Intents.Scan.SCAN_TYPE, Intents.Scan.MIXED_SCAN)
         )
+        viewFinder.setLaserVisibility(false)
+        viewFinder.setMaskColor(Color.TRANSPARENT)
+
         decodeSingle(object : BarcodeCallback {
             override fun barcodeResult(result: BarcodeResult) {
                 val scan = result.toString()
