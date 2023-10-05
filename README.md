@@ -85,8 +85,8 @@ Once the door unlocked, the activity opened by the SDK will close automatically 
 
 ```
 
-#### Unlock by Device's UUID
-The SDK has a method that will open an activity to pass the information once obtained the Device's UUID beforehand.
+#### Unlock by Tile ID
+The SDK has a method that will open an activity to pass the information once obtained the Tile ID (UUID) beforehand.
 - You need the `UUID (String)`
 
 ```
@@ -94,13 +94,13 @@ The SDK has a method that will open an activity to pass the information once obt
      * Unlock method for unlocking via UUID
      *
      * @param ctx current Context
-     * @param deviceUUID, a valid [Device]'s UUID. It has to be a valid UUID format
+     * @param tileID: Tile UUID is UUID for a ile from a deeplink or QR or background NFC
      * @param callback (optional) callback function for catching async response after unlock.
      *
      */
     @JvmOverloads
-    fun unlockByDeviceUUID(ctx: Context, deviceUUID: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = PartialDevice(deviceUUID)
+    fun unlockTileID(ctx: Context, tileID: String, callback: UnlockCallback? = null){
+        this.deviceToUnlock = PartialDevice(tileID)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 ```

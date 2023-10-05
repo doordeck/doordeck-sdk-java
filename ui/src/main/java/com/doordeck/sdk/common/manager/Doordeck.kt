@@ -221,13 +221,13 @@ object Doordeck {
      * Unlock method for unlocking via UUID
      *
      * @param ctx current Context
-     * @param deviceUUID, a valid [Device]'s UUID. It has to be a valid UUID format
+     * @param tileID: Tile UUID is UUID for a ile from a deeplink or QR or background NFC
      * @param callback (optional) callback function for catching async response after unlock.
      *
      */
     @JvmOverloads
-    fun unlockByDeviceUUID(ctx: Context, deviceUUID: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = PartialDevice(deviceUUID)
+    fun unlockTileID(ctx: Context, tileID: String, callback: UnlockCallback? = null){
+        this.deviceToUnlock = PartialDevice(tileID)
         showUnlock(ctx, ScanType.UNLOCK, callback)
     }
 
