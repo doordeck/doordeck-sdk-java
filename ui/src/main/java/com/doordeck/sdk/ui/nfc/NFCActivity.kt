@@ -3,6 +3,7 @@ package com.doordeck.sdk.ui.nfc
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.os.Bundle
@@ -87,8 +88,10 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
 
     override fun unlockFromTileId(tileId: String) {
+        val uuid = Uri.parse(tileId).lastPathSegment ?: ""
+
         intent.action = ""
-        UnlockActivity.start(this, tileId, comingFrom = COMING_FROM_NFC)
+        UnlockActivity.start(this, uuid, comingFrom = COMING_FROM_NFC)
         finish()
     }
 

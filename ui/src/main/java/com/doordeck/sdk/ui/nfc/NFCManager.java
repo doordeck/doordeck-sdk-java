@@ -25,13 +25,8 @@ public class NFCManager {
         String action = intent.getAction();
 
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(action)) {
-            String type = intent.getType();
-            if (MIME_TEXT_PLAIN.equals(type)) {
-                Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-                verifyContentTag(tag, callback);
-            } else {
-                Log.d(TAG, "Wrong mime type: " + type);
-            }
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            verifyContentTag(tag, callback);
         } else if (NfcAdapter.ACTION_TECH_DISCOVERED.equals(action)) {
             // In case we would still use the Tech Discovered Intent
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
@@ -57,7 +52,7 @@ public class NFCManager {
 
         NdefRecord[] records = ndefMessage.getRecords();
         for (NdefRecord ndefRecord : records) {
-            if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_TEXT)) {
+            if (ndefRecord.getTnf() == NdefRecord.TNF_WELL_KNOWN && Arrays.equals(ndefRecord.getType(), NdefRecord.RTD_URI)) {
                 try {
                     callback.onReadSuccess(readText(ndefRecord));
                 } catch (UnsupportedEncodingException e) {

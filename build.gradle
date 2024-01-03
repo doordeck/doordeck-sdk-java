@@ -22,6 +22,12 @@ buildscript {
             'okhttp': "com.squareup.okhttp3:okhttp:${versions.okhttp}",
     ]
 
+    ext.nfcUri = [
+        "scheme": "https",
+        "host": "doordeck.link",
+        "pathPrefix": "/uuid",
+    ]
+
     dependencies {
         classpath 'com.android.tools:r8:8.1.56'
         classpath 'com.android.tools.build:gradle:8.1.1'
