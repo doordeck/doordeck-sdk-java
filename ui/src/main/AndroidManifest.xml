@@ -12,7 +12,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
-    
+
     <application>
         <activity
             android:name="com.doordeck.sdk.ui.unlock.UnlockActivity"
@@ -35,10 +35,22 @@
             android:screenOrientation="portrait"
             android:exported="true"
             android:excludeFromRecents="true">
+
+            <!-- Old mimetype to keep backwards compatibility -->
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/plain"/>
+            </intent-filter>
+
+            <!-- New mimetype to migrate soon -->
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="${nfc_uri_host}"
+                    android:pathPrefix="${nfc_uri_path_prefix}"
+                    android:scheme="${nfc_uri_scheme}" />
             </intent-filter>
         </activity>
         <activity android:name="com.doordeck.sdk.ui.verify.VerifyDeviceActivity"

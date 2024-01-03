@@ -61,10 +61,10 @@ internal class QRcodeView : CompoundBarcodeView {
             override fun barcodeResult(result: BarcodeResult) {
                 val scan = result.toString()
                 LOG.d(TAG, "scanned data : $result")
-                val id = scan.substring(scan.lastIndexOf("/") + 1)
-                if (isUUID(id)) {
+                val uuid = scan.substring(scan.lastIndexOf("/") + 1)
+                if (isUUID(uuid)) {
                     pause()
-                    (context as? Activity)?.let { activity -> UnlockActivity.start(activity, id, comingFrom = COMING_FROM_QR_SCAN) }
+                    (context as? Activity)?.let { activity -> UnlockActivity.start(activity, uuid, comingFrom = COMING_FROM_QR_SCAN) }
                 } else {
                     // show error
                     LOG.d(TAG, "not a uuid")
