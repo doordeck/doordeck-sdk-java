@@ -30,11 +30,9 @@ android {
         // Fallback values for tiles
         def fallbackNfcUriHost = "doordeck.link"
         def fallbackNfcUriScheme = "https"
-        def fallBackUriPathPrefix = "/uuid"
 
         type.manifestPlaceholders['nfc_uri_host'] = project.properties.get("nfcUri").getOrDefault("host", fallbackNfcUriHost)
         type.manifestPlaceholders['nfc_uri_scheme'] = project.properties.get("nfcUri").getOrDefault("scheme", fallbackNfcUriScheme)
-        type.manifestPlaceholders['nfc_uri_path_prefix'] = project.properties.get("nfcUri").getOrDefault("pathPrefix", fallBackUriPathPrefix)
 
     }
 

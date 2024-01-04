@@ -49,7 +49,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data
                     android:host="${nfc_uri_host}"
-                    android:pathPrefix="${nfc_uri_path_prefix}"
                     android:scheme="${nfc_uri_scheme}" />
             </intent-filter>
         </activity>

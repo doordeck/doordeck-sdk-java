@@ -53,7 +53,6 @@ If you want to customise this values, go to your main project's `build.gradle`, 
 ext.nfcUri = [
     "scheme": "https", // Replace with the scheme you want or leave it empty
     "host": "doordeck.link", // Replace with the host you want or leave it empty
-    "pathPrefix": "/uuid", // Replace with the pathPrefix you want or leave it empty
 ]
 ```
 

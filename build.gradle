@@ -25,7 +25,6 @@ buildscript {
     ext.nfcUri = [
         "scheme": "https",
         "host": "doordeck.link",
-        "pathPrefix": "/uuid",
     ]
 
     dependencies {
