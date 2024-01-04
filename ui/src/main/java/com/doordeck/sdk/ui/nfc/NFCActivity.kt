@@ -1,8 +1,10 @@
 package com.doordeck.sdk.ui.nfc
 
 
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
@@ -10,9 +12,9 @@ import android.os.Bundle
 import android.widget.Toast
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_NFC
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityNfcBinding
-import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_NFC
 
 
 /**
@@ -61,8 +63,16 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+
+        disableListeningHereReEnableNFCSystemReading()
+    }
+
     override fun onResume() {
         super.onResume()
+
+        listenNfcDisableSystem()
 
         // Check to see that the Activity started due to an Android Beam
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
@@ -99,8 +109,52 @@ internal class NFCActivity : BaseActivity(), NFCView {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    companion object {
+    /**
+     * Reading NFC on activity.
+     * Disables Android system reading
+     * Methods:
+     */
 
+    private val nfcOnActivityPendingIntent by lazy {
+        PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE)
+    }
+
+    private val nfcOnActivityIntentFilters by lazy {
+        arrayOf(
+            // Old method, needs to be migrated at some point
+            IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED).apply {
+                addDataType("text/plain")
+            },
+            // New method
+            IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED).apply {
+                addDataScheme(getString(R.string.nfc_uri_scheme))
+                addDataAuthority(getString(R.string.nfc_uri_host), null)
+            }
+        )
+    }
+
+    private fun listenNfcDisableSystem() {
+        NfcAdapter
+            .getDefaultAdapter(this)
+            ?.enableForegroundDispatch(
+                this@NFCActivity,
+                nfcOnActivityPendingIntent,
+                nfcOnActivityIntentFilters,
+                null
+            )
+    }
+
+    private fun disableListeningHereReEnableNFCSystemReading() {
+        NfcAdapter
+            .getDefaultAdapter(this)
+            ?.disableForegroundDispatch(this@NFCActivity)
+    }
+
+    /**
+     * End of disabling Android NFC system reading
+     */
+
+    companion object {
         @JvmStatic
         fun start(context: Context) {
             val starter = Intent(context, NFCActivity::class.java)
