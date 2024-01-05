@@ -46,7 +46,7 @@ The 2nd param is optional, and correspond to the theme to use. Light or Dark. By
 ``` 
 
 #### Tweak the NFC Uri settings
-Default values for a NFC Uri link would be `https://doordeck.link/uuid/${uuid}`.
+Default values for a NFC Uri link would be `https://doordeck.link/${uuid}`.
 If you want to customise this values, go to your main project's `build.gradle`, inside `buildscript { }` define:
 
 ```
