@@ -43,8 +43,19 @@ The 2nd param is optional, and correspond to the theme to use. Light or Dark. By
      * @return Doordeck the current instance of the SDK
      */
     fun initialize(apiKey: String, darkMode: Boolean = true): Doordeck
+``` 
+
+#### Tweak the NFC Uri settings
+Default values for a NFC Uri link would be `https://doordeck.link/${uuid}`.
+If you want to customise this values, go to your main project's `build.gradle`, inside `buildscript { }` define:
+
 ```
-    
+ext.nfcUri = [
+    "scheme": "https", // Replace with the scheme you want or leave it empty
+    "host": "doordeck.link", // Replace with the host you want or leave it empty
+]
+```
+
 #### Proguard
 
 When enabling `minifyEnabled`, proguard and or R8 tools, you need to include these rules to the proguard-rules.pro:

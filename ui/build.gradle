@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: "maven-publish"
 
-group='com.github.doordeck'
+group = 'com.github.doordeck'
 
 android {
 
@@ -26,6 +26,15 @@ android {
         exclude 'META-INF/atomicfu.kotlin_module'
     }
 
+    buildTypes.each { type ->
+        // Fallback values for tiles
+        def fallbackNfcUriHost = "doordeck.link"
+        def fallbackNfcUriScheme = "https"
+
+        type.manifestPlaceholders['nfc_uri_host'] = project.properties.get("nfcUri").getOrDefault("host", fallbackNfcUriHost)
+        type.manifestPlaceholders['nfc_uri_scheme'] = project.properties.get("nfcUri").getOrDefault("scheme", fallbackNfcUriScheme)
+
+    }
 
     buildTypes {
         debug {
@@ -72,7 +81,7 @@ buildscript {
 
 dependencies {
     api(project(":api"))
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.3")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation 'com.github.adorsys:secure-storage-android:0.0.2'
     implementation "org.immutables:value-annotations:2.7.5" // or implementation, or compileOnly
