@@ -46,6 +46,11 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var locationPermissionShown = false
     private var googlePermissionShown = false
     private var canceledVerify = false
+    // Using this to avoid entering on onResume after a beaming.
+    //
+    // There can be a situation when the user beams, goes to see result and beams
+    // again while/after computing the result without clicking "Dismiss"
+    private var unlockFinished = false
 
     private lateinit var binding: ActivityUnlockBinding
 
@@ -69,11 +74,15 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             COMING_FROM_QR_SCAN -> QRcodeActivity.start(this)
             COMING_FROM_NFC -> NFCActivity.start(this)
         }
+
+        unlockFinished = false
     }
 
     override fun showNoAccessGeoFence() {
         showAccessDeniedAnimation()
         binding.unlockStatus.setText(R.string.ACCESS_DENIED_GEOFENCE)
+
+        unlockFinished = true
     }
 
     override fun updateLockName(name: String) {
@@ -167,6 +176,8 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     override fun showAccessDenied() {
         showAccessDeniedAnimation()
         binding.unlockStatus.text = ""
+
+        unlockFinished = true
     }
 
     override fun notValidTileId() {
@@ -177,6 +188,8 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     override fun noUserLoggedIn() {
         showAccessDeniedAnimation()
         binding.unlockStatus.text = getString(R.string.no_user_logged_in)
+
+        unlockFinished = true
     }
 
     override fun goToDevices(devices: List<Device>) {
@@ -197,7 +210,6 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     }
 
     private fun showAccessDeniedAnimation() {
-
         binding.tvDismiss.setBackgroundColor(ContextCompat.getColor(this, R.color.black_transp))
         binding.circleBack.setColorFilter(ContextCompat.getColor(this, R.color.error), PorterDuff.Mode.SRC_IN)
         binding.circleBack.animate().alpha(1f).scaleX(13f).scaleY(13f).setInterpolator(AccelerateInterpolator()).setDuration(500)
@@ -211,6 +223,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         binding.keyTitle.setText(R.string.ACCESS_DENIED)
         binding.keyTitle.animate().alpha(1f).translationY(150f).setInterpolator(OvershootInterpolator()).setDuration(500).startDelay = 500
 
+        unlockFinished = true
     }
 
     override fun checkGoogleApiPermissions() {
@@ -301,13 +314,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     public override fun onResume() {
         super.onResume()
+        if (unlockFinished) {
+            return
+        }
+
         resetAnimation()
         if(!Doordeck.hasUserLoggedIn(this)) {
             noUserLoggedIn()
             return
         }
-        if (tileId != null) unlockPresenter?.init(tileId)
-        else if (deviceJson != null)  {
+        if (tileId != null) {
+            unlockPresenter?.init(tileId)
+        } else if (deviceJson != null)  {
             val om = Jackson.sharedObjectMapper()
             val deviceToUnlock = om.readValue(deviceJson, Device::class.java)
             unlockPresenter?.init(deviceToUnlock)

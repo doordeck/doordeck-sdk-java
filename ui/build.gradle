@@ -5,6 +5,9 @@ apply plugin: "maven-publish"
 group = 'com.github.doordeck'
 
 android {
+    // Fallback values for NFC tiles
+    def fallbackNfcUriHost = "doordeck.link"
+    def fallbackNfcUriScheme = "https"
 
     defaultConfig {
         minSdkVersion 21
@@ -13,6 +16,9 @@ android {
         multiDexEnabled = true
         versionName "1.2"
         vectorDrawables.useSupportLibrary = true
+
+        resValue "string", "nfc_uri_host", project.properties.get("nfcUri").getOrDefault("host", fallbackNfcUriHost)
+        resValue "string", "nfc_uri_scheme", project.properties.get("nfcUri").getOrDefault("scheme", fallbackNfcUriScheme)
     }
 
     namespace "com.github.doordeck.ui"
@@ -27,13 +33,8 @@ android {
     }
 
     buildTypes.each { type ->
-        // Fallback values for tiles
-        def fallbackNfcUriHost = "doordeck.link"
-        def fallbackNfcUriScheme = "https"
-
-        type.manifestPlaceholders['nfc_uri_host'] = project.properties.get("nfcUri").getOrDefault("host", fallbackNfcUriHost)
-        type.manifestPlaceholders['nfc_uri_scheme'] = project.properties.get("nfcUri").getOrDefault("scheme", fallbackNfcUriScheme)
-
+        type.manifestPlaceholders["nfc_uri_host"] = project.properties.get("nfcUri").getOrDefault("host", fallbackNfcUriHost)
+        type.manifestPlaceholders["nfc_uri_scheme"] = project.properties.get("nfcUri").getOrDefault("scheme", fallbackNfcUriScheme)
     }
 
     buildTypes {
