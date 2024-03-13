@@ -316,8 +316,8 @@ object Doordeck {
     /**
      * Shows the verification screen
      */
-    fun showVerificationScreen(context: Context) {
-        VerifyDeviceActivity.start(context)
+    fun showVerificationScreen(context: Context, shouldUnlockAfterSuccessVerifying: Boolean) {
+        VerifyDeviceActivity.start(context, shouldUnlockAfterSuccessVerifying)
     }
 
 

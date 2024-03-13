@@ -9,6 +9,7 @@ import android.os.CountDownTimer
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.doordeck.sdk.common.manager.Doordeck
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityVerifyDeviceBinding
 import com.doordeck.sdk.ui.BaseActivity
@@ -206,7 +207,12 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
     // the code is valid, close the with and come back on the previous screen : The UnlockActivity
     override fun succeed() {
-        finish()
+        if (shouldUnlockAfterSuccessVerifying) {
+            finish()
+            Doordeck.showUnlock(this)
+        } else {
+            finish()
+        }
     }
 
     override fun fail() {
@@ -225,12 +231,20 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     }
 
 
+    private val shouldUnlockAfterSuccessVerifying: Boolean
+        get() = intent.extras?.getBoolean(SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY) ?: defaultShouldUnlockAfterSuccessVerifying
+
     companion object {
 
+        private const val SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY = "SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING"
+        private const val defaultShouldUnlockAfterSuccessVerifying = false
+
         @JvmStatic
-        fun start(context: Context) {
+        fun start(context: Context, shouldUnlockAfterSuccessVerifying: Boolean = defaultShouldUnlockAfterSuccessVerifying) {
             val starter = Intent(context, VerifyDeviceActivity::class.java)
-            starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            starter
+                .putExtra(SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY, shouldUnlockAfterSuccessVerifying)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
     }
