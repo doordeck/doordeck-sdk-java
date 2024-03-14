@@ -23,6 +23,7 @@ import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
+import com.doordeck.sdk.ui.verify.VerifyDeviceActivity.Companion.defaultShouldUnlockAfterSuccessVerifying
 import com.github.doordeck.ui.BuildConfig
 import io.reactivex.Observable
 import java.net.URI
@@ -316,7 +317,7 @@ object Doordeck {
     /**
      * Shows the verification screen
      */
-    fun showVerificationScreen(context: Context, shouldUnlockAfterSuccessVerifying: Boolean) {
+    fun showVerificationScreen(context: Context, shouldUnlockAfterSuccessVerifying: Boolean = defaultShouldUnlockAfterSuccessVerifying) {
         VerifyDeviceActivity.start(context, shouldUnlockAfterSuccessVerifying)
     }
 

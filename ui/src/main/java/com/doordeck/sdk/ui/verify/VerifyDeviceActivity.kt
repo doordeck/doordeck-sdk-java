@@ -237,7 +237,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     companion object {
 
         private const val SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY = "SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING"
-        private const val defaultShouldUnlockAfterSuccessVerifying = false
+        const val defaultShouldUnlockAfterSuccessVerifying = false
 
         @JvmStatic
         fun start(context: Context, shouldUnlockAfterSuccessVerifying: Boolean = defaultShouldUnlockAfterSuccessVerifying) {
