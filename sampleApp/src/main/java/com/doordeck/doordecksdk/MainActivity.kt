@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         override fun verificationNeeded() {
-            Doordeck.showVerificationScreen(this@MainActivity)
+            Doordeck.showVerificationScreen(this@MainActivity, shouldUnlockAfterSuccessVerifying = true)
             Toast.makeText(applicationContext, "2fa needed", LENGTH_SHORT).show()
         }
     }
