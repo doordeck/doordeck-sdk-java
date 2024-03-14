@@ -207,11 +207,9 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
     // the code is valid, close the with and come back on the previous screen : The UnlockActivity
     override fun succeed() {
+        finish()
         if (shouldUnlockAfterSuccessVerifying) {
-            finish()
             Doordeck.showUnlock(this)
-        } else {
-            finish()
         }
     }
 
