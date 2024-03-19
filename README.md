@@ -73,6 +73,14 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
 -keep interface okhttp3.** { *; }
 ```
 
+If you're using Gson, also add:
+
+```
+-keep class com.google.gson.reflect.TypeToken
+-keep class * extends com.google.gson.reflect.TypeToken
+-keep public class * implements java.lang.reflect.Type
+```
+
     
 #### Unlock a door by NFC/QR
 
