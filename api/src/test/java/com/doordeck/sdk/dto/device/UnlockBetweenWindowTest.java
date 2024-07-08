@@ -20,10 +20,10 @@ public class UnlockBetweenWindowTest {
     private final UnlockBetweenWindow window = ImmutableUnlockBetweenWindow.builder()
         .addDays(DayOfWeek.MONDAY)
         .addDays(DayOfWeek.TUESDAY)
-        .start(new LocalTime(9,0))
-        .end(new LocalTime(17,0))
+        .start(LocalTime.of(9,0))
+        .end(LocalTime.of(17,0))
         .timezone(ZoneId.of("Europe/London"))
-        .addExceptions(new LocalDate(2017,5,6))
+        .addExceptions(LocalDate.of(2017,5,6))
         .build();
 
     @Test

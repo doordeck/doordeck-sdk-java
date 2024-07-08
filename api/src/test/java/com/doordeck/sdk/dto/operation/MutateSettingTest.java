@@ -25,10 +25,10 @@ public class MutateSettingTest {
     private final UnlockBetweenWindow window = ImmutableUnlockBetweenWindow.builder()
         .addDays(DayOfWeek.MONDAY)
         .addDays(DayOfWeek.TUESDAY)
-        .start(new LocalTime(9,0))
-        .end(new LocalTime(17,0))
+        .start(LocalTime.of(9,0))
+        .end(LocalTime.of(17,0))
         .timezone(ZoneId.of("Europe/London"))
-        .addExceptions(new LocalDate(2017,5,6))
+        .addExceptions(LocalDate.of(2017,5,6))
         .build();
 
     @Test
@@ -43,7 +43,7 @@ public class MutateSettingTest {
     @Test
     public void deserializesFromJSON() throws Exception {
         MutateSetting setting = ImmutableMutateSetting.builder()
-            .unlockDuration(Duration.standardSeconds(7))
+            .unlockDuration(Duration.ofSeconds(7))
             .unlockBetween(OptionalUpdate.update(window))
             .build();
         assertEquals(setting, MAPPER.readValue(fixture("fixtures/settings-with-window-and-duration.json"), Operation.class));
