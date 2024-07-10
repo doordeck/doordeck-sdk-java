@@ -47,6 +47,12 @@ buildscript {
             force "com.google.guava:guava:33.2.1-android"
             force "com.squareup.okio:okio:3.9.0"
             force "io.grpc:grpc-netty:1.65.0"
+
+            eachDependency {
+                if (requested.group == "io.netty") {
+                    useVersion("4.1.111.Final")
+                }
+            }
         }
     }
 }
@@ -70,6 +76,12 @@ allprojects {
             force "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
             force "com.squareup.okio:okio:3.9.0"
             force "io.grpc:grpc-netty:1.65.0"
+
+            eachDependency {
+                if (requested.group == "io.netty") {
+                    useVersion("4.1.111.Final")
+                }
+            }
         }
     }
 }
