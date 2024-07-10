@@ -10,9 +10,9 @@ android {
     def fallbackNfcUriScheme = "https"
 
     defaultConfig {
-        minSdkVersion 21
-        compileSdk 33
-        buildToolsVersion = '33.0.1'
+        minSdkVersion 24
+        compileSdk 34
+        buildToolsVersion = '34.0.0'
         multiDexEnabled = true
         versionName "1.2"
         vectorDrawables.useSupportLibrary = true
@@ -53,9 +53,12 @@ android {
     }
 
     compileOptions {
-        coreLibraryDesugaringEnabled = true
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlin {
+        jvmToolchain(17)
     }
 
     testOptions {
@@ -82,16 +85,15 @@ buildscript {
 
 dependencies {
     api(project(":api"))
-    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     implementation 'com.github.adorsys:secure-storage-android:0.0.2'
     implementation "org.immutables:value-annotations:2.7.5" // or implementation, or compileOnly
     annotationProcessor "org.immutables:value:2.7.5"
     testAnnotationProcessor "org.immutables:value:2.7.5"
 
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation "androidx.constraintlayout:constraintlayout:2.1.4"
-    implementation "androidx.recyclerview:recyclerview:1.3.1"
+    implementation "androidx.recyclerview:recyclerview:1.3.2"
     implementation "androidx.cardview:cardview:1.0.0"
 
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
@@ -106,8 +108,8 @@ dependencies {
     implementation 'com.google.zxing:core:3.4.0'
 
     // location
-    implementation 'com.google.android.gms:play-services-auth:20.4.1'
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     // kotlin
     implementation 'ru.gildor.coroutines:kotlin-coroutines-retrofit:1.1.0'
