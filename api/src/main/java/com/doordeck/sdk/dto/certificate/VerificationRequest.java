@@ -4,7 +4,6 @@ import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.immutables.value.Value;
 
 import java.nio.charset.StandardCharsets;

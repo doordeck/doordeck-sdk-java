@@ -4,8 +4,8 @@ import com.doordeck.sdk.dto.device.Device
 import com.doordeck.sdk.http.service.DeviceService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.MediaType
-import okhttp3.RequestBody
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 import ru.gildor.coroutines.retrofit.Result
 import ru.gildor.coroutines.retrofit.awaitResult
 import java.util.*
@@ -41,10 +41,8 @@ class DeviceRepositoryImpl(
     private suspend fun updateColourOfDevice(deviceId: UUID, colour: String): Result<Void> {
         return deviceService.updateDevice(
             deviceId,
-            RequestBody.create(
-                MediaType.parse("application/json"),
-                "{\"colour\": \"$colour\"}"
-            )
+            "{\"colour\": \"$colour\"}"
+                .toRequestBody("application/json".toMediaType())
         ).awaitResult()
     }
 }

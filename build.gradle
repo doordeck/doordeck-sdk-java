@@ -10,12 +10,14 @@ buildscript {
 
     ext.versions = [
             'kotlin': '1.8.0',
-            'okhttp': '3.14.7',
-            'bouncycastle': '1.61',
+            'okhttp': '4.12.0',
+            'bouncycastle': '1.72',
             'findbugs': '3.0.2',
-            'jackson': '2.14.1',
+            'jackson': '2.17.2',
             'retrofit': '2.6.2'
     ]
+
+    ext.kotlin_version = ext.versions.kotlin
 
     ext.deps = [
             'jsr305': "com.google.code.findbugs:jsr305:${versions.findbugs}",
@@ -28,10 +30,23 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools:r8:8.1.56'
-        classpath 'com.android.tools.build:gradle:8.1.1'
+        classpath 'com.android.tools:r8:8.3.37'
+        classpath "com.android.tools.build:gradle:8.5.0"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
+    }
+
+    configurations.configureEach {
+        // Transitive dependencies check
+        resolutionStrategy {
+            force "org.apache.commons:commons-compress:1.26.2"
+            force "org.bitbucket.b_c:jose4j:0.9.4"
+            force "io.netty:netty-codec-http2:4.1.108.Final"
+            force "org.bouncycastle:bcpkix-jdk18on:1.78"
+            force "org.bouncycastle:bcprov-jdk18on:1.78"
+            force "org.bouncycastle:bcutil-jdk18on:1.78"
+            force "com.google.guava:guava:33.2.1-android"
+        }
     }
 }
 
@@ -47,6 +62,6 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+tasks.register('clean', Delete) {
+    delete rootProject.layout.buildDirectory
 }
