@@ -69,6 +69,7 @@ allprojects {
             force "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
             force "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
             force "com.squareup.okio:okio:3.9.0"
+            force "io.grpc:grpc-netty:1.65.0"
         }
     }
 }
