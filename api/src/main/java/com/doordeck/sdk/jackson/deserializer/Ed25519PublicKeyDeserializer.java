@@ -4,9 +4,9 @@ import com.doordeck.sdk.util.BouncyCastleSingleton;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
-import org.bouncycastle.asn1.edec.EdECObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.internal.asn1.edec.EdECObjectIdentifiers;
 
 import java.io.IOException;
 import java.security.KeyFactory;

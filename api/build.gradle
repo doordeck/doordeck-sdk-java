@@ -7,9 +7,7 @@ group='com.github.doordeck'
 buildscript {
     repositories {
         mavenLocal()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath "gradle.plugin.org.inferred:gradle-processors:2.2.0"
@@ -50,9 +48,7 @@ afterEvaluate {
             }
         }
         repositories {
-            maven {
-                url 'file://' + "${System.properties['user.home']}/.m2/repository"
-            }
+            mavenLocal()
         }
     }
 }

@@ -11,7 +11,7 @@ buildscript {
     ext.versions = [
             'kotlin': '1.8.0',
             'okhttp': '4.12.0',
-            'bouncycastle': '1.72',
+            'bouncycastle': '1.78.1',
             'findbugs': '3.0.2',
             'jackson': '2.17.2',
             'retrofit': '2.6.2'
@@ -41,11 +41,17 @@ buildscript {
         resolutionStrategy {
             force "org.apache.commons:commons-compress:1.26.2"
             force "org.bitbucket.b_c:jose4j:0.9.4"
-            force "io.netty:netty-codec-http2:4.1.108.Final"
-            force "org.bouncycastle:bcpkix-jdk18on:1.78"
-            force "org.bouncycastle:bcprov-jdk18on:1.78"
-            force "org.bouncycastle:bcutil-jdk18on:1.78"
+            force "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+            force "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+            force "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
             force "com.google.guava:guava:33.2.1-android"
+            force "com.squareup.okio:okio:3.9.0"
+
+            eachDependency {
+                if (requested.group == "io.netty") {
+                    useVersion("4.1.108.Final")
+                }
+            }
         }
     }
 }
@@ -59,6 +65,16 @@ allprojects {
         google()
         mavenCentral()
         maven { url "https://jitpack.io" }
+    }
+
+    configurations.configureEach {
+        // Transitive dependencies check
+        resolutionStrategy {
+            force "org.bouncycastle:bcpkix-jdk18on:${versions.bouncycastle}"
+            force "org.bouncycastle:bcprov-jdk18on:${versions.bouncycastle}"
+            force "org.bouncycastle:bcutil-jdk18on:${versions.bouncycastle}"
+            force "com.squareup.okio:okio:3.9.0"
+        }
     }
 }
 
