@@ -63,6 +63,12 @@ public class DoordeckClient {
             return chain.proceed(request);
         };
 
+        CertificatePinner certificatePinner = new CertificatePinner.Builder()
+                .add("api.dev.doordeck.com", TRUSTED_CERTIFICATES)
+                .add("api.staging.doordeck.com", TRUSTED_CERTIFICATES)
+                .add("api.doordeck.com", TRUSTED_CERTIFICATES)
+                .build();
+
         OkHttpClient okHttp = new OkHttpClient.Builder()
                 .connectionSpecs(List.of(ConnectionSpec.RESTRICTED_TLS))
                 .protocols(Arrays.asList(Protocol.HTTP_2, Protocol.HTTP_1_1))
@@ -76,9 +82,7 @@ public class DoordeckClient {
                 .addInterceptor(new UserAgentInterceptor(config.userAgent))
                 .followRedirects(true)
                 .followSslRedirects(false)
-                .certificatePinner(new CertificatePinner.Builder()
-                        .add("*.doordeck.com", TRUSTED_CERTIFICATES)
-                        .build())
+                .certificatePinner(certificatePinner)
                 .build();
 
         this.retrofit = new Retrofit.Builder()
