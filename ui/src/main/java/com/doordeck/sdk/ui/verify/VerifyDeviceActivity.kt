@@ -181,6 +181,10 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         showError(getString(R.string.code_not_send), getString(R.string.code_not_send_message))
     }
 
+    override fun verifyCodeRequestedTooManyTimes() {
+        showError(getString(R.string.code_not_send), getString(R.string.code_requested_too_many_times))
+    }
+
     private fun showVerifySend() {
         binding.tvReSendCode.setOnClickListener { }
         binding.tvReSendCode.text = getString(R.string.code_send)

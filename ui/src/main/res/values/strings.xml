@@ -31,8 +31,9 @@
     <string name="resend_code">Re-send invite code</string>
     <string name="code_send">Code has been sent</string>
     <string name="time_until_code">Time until you can request a new code: </string>
-    <string name="code_not_send">Code was not send</string>
+    <string name="code_not_send">Code was not sent</string>
     <string name="code_not_send_message">Please check your internet connection and try again later.</string>
+    <string name="code_requested_too_many_times">Please try again in a minute.</string>
     <string name="wrong_code">Invalid code</string>
     <string name="wrong_code_message">Please check if you have entered all digits correctly from the latest invite code we have sent you.</string>
     <string name="verify_device_desc_whatsapp">Enter your verification code send via WhatsApp to %s</string>
