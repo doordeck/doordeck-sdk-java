@@ -81,7 +81,11 @@ internal class VerifyDevicePresenter {
                 false -> {
                     EventsManager.sendEvent(EventAction.VERIFICATION_CODE_FAILED_SENDING)
                     LOG.d("onSendCode", "error : " + result.message())
-                    view?.verifyCodeFail()
+                    if (result.code() == 429) {
+                        view?.verifyCodeRequestedTooManyTimes()
+                    } else {
+                        view?.verifyCodeFail()
+                    }
                 }
             }
         }

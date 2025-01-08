@@ -10,4 +10,5 @@ internal interface VerifyDeviceView  {
     fun noMethodDefined()
     fun verifyCodeSuccess()
     fun verifyCodeFail()
+    fun verifyCodeRequestedTooManyTimes()
 }
