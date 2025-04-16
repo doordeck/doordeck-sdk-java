@@ -1,1 +1,0 @@
-{"type":"MUTATE_SETTING","unlockDuration":7.0,"unlockBetween":{"start":"09:00","end":"17:00","timezone":"Europe/London","days":["MONDAY","TUESDAY"],"exceptions":["2017-05-06"]}}

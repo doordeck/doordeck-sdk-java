@@ -1,7 +1,7 @@
 package com.doordeck.sdk.ui.showlistofdevicestounlock
 
-import com.doordeck.sdk.dto.device.Device
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
 
 internal interface ShowListOfDevicesToUnlockView {
-    fun showDevices(devices: List<Device>)
+    fun showDevices(devices: List<LockResponse>)
 }

@@ -1,48 +1,65 @@
 package com.doordeck.sdk.common.repo
 
-import com.doordeck.sdk.dto.device.Device
-import com.doordeck.sdk.http.service.DeviceService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.RequestBody.Companion.toRequestBody
-import ru.gildor.coroutines.retrofit.Result
-import ru.gildor.coroutines.retrofit.awaitResult
-import java.util.*
+import com.doordeck.multiplatform.sdk.Doordeck
+import com.doordeck.multiplatform.sdk.model.data.LockOperations
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
+import java.util.concurrent.CompletableFuture
 
 interface DeviceRepository {
-    suspend fun getDevicesAvailable(tileId: String, defaultLockColours: Array<String>): Result<List<Device>>
+    fun getDevicesAvailable(tileId: String, defaultLockColours: Array<String>): CompletableFuture<List<LockResponse>>
+    fun unlockDevice(deviceId: String): CompletableFuture<Unit>
 }
 
 class DeviceRepositoryImpl(
-    private val deviceService: DeviceService
+    private val doordeck: Doordeck
 ) : DeviceRepository {
-    override suspend fun getDevicesAvailable(tileId: String, defaultLockColours: Array<String>): Result<List<Device>> {
-        return when (val devices = deviceService.resolveTile(UUID.fromString(tileId)).awaitResult()) {
-            is Result.Ok -> {
-                devices.value.deviceIds().map {
-                    withContext(Dispatchers.Default) {
-                        val deviceResult = deviceService.getDevice(it).awaitResult()
-                        if (deviceResult is Result.Ok && deviceResult.value.colour() == null) {
-                            updateColourOfDevice(deviceResult.value.deviceId(), defaultLockColours.random())
+    override fun getDevicesAvailable(tileId: String, defaultLockColours: Array<String>): CompletableFuture<List<LockResponse>> {
+        // Get device ids from tile
+        return doordeck.tiles().getLocksBelongingToTileAsync(tileId)
+            .thenCompose { tileLocksResponse ->
+
+                // Map each device id to a lock
+                val lockFutures = tileLocksResponse.deviceIds.map { deviceId -> doordeck.lockOperations().getSingleLockAsync(deviceId) }
+                CompletableFuture.allOf(*lockFutures.toTypedArray())
+                    .thenCompose {
+                        val resolvedLocks = lockFutures.map { it.join() }
+
+                        // Update to a colour if its color is null
+                        val updatedLocksIfNeeded = resolvedLocks.map { lock ->
+                            if (lock.colour == null) {
+                                updateColourOfDevice(lock.id, defaultLockColours.random())
+                            } else {
+                                CompletableFuture.completedFuture(lock)
+                            }
                         }
-                        return@withContext deviceService.getDevice(it).awaitResult()
+
+                        // Return all
+                        CompletableFuture.allOf(*updatedLocksIfNeeded.toTypedArray())
+                            .thenApply {
+                                updatedLocksIfNeeded.map { it.join() }
+                            }
                     }
-                }
-                    .filterIsInstance<Result.Ok<Device>>()
-                    .map { return@map it.value }
-                    .let { return@let Result.Ok(it, devices.response) }
             }
-            is Result.Error -> return devices
-            is Result.Exception -> return devices
-        }
     }
 
-    private suspend fun updateColourOfDevice(deviceId: UUID, colour: String): Result<Void> {
-        return deviceService.updateDevice(
-            deviceId,
-            "{\"colour\": \"$colour\"}"
-                .toRequestBody("application/json".toMediaType())
-        ).awaitResult()
+    private fun updateColourOfDevice(lockId: String, colour: String): CompletableFuture<LockResponse> {
+        return doordeck.lockOperations()
+            // First update
+            .updateLockColourAsync(lockId, colour)
+            // Server does not answer with the updated lock, retrieve
+            .thenCompose {
+                doordeck.lockOperations().getSingleLockAsync(lockId)
+            }
+    }
+
+    override fun unlockDevice(deviceId: String): CompletableFuture<Unit> {
+        return doordeck.lockOperations()
+            .unlockAsync(
+                LockOperations.UnlockOperation(
+                    baseOperation = LockOperations.BaseOperation(
+                        lockId = deviceId,
+                    )
+                )
+            )
     }
 }

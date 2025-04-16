@@ -1,6 +1,5 @@
 package com.doordeck.sdk.ui.showlistofdevicestounlock.adapter
 
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,12 +7,13 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
 import com.github.doordeck.ui.R
-import com.doordeck.sdk.dto.device.Device
+import androidx.core.graphics.toColorInt
 
 class DevicesToUnlockAdapter(
-        private val devices: List<Device>,
-        private val onDeviceClicked: (Device) -> Unit
+        private val devices: List<LockResponse>,
+        private val onDeviceClicked: (LockResponse) -> Unit
 ) : RecyclerView.Adapter<DeviceToUnlockViewHolder>() {
     override fun onCreateViewHolder(root: ViewGroup, position: Int): DeviceToUnlockViewHolder {
         return DeviceToUnlockViewHolder(
@@ -30,10 +30,10 @@ class DevicesToUnlockAdapter(
 }
 
 class DeviceToUnlockViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
-    fun showDevice(device: Device, onDeviceClicked: (Device) -> Unit) {
-        view.findViewById<TextView>(R.id.deviceName)?.text = device.name()
+    fun showDevice(device: LockResponse, onDeviceClicked: (LockResponse) -> Unit) {
+        view.findViewById<TextView>(R.id.deviceName)?.text = device.name
 
-        val backgroundColour = device.colour()?.let { Color.parseColor(it) } ?: ContextCompat.getColor(view.context, R.color.ddColorSecondaryDark)
+        val backgroundColour = device.colour?.toColorInt() ?: ContextCompat.getColor(view.context, R.color.ddColorSecondaryDark)
         (view as CardView).setCardBackgroundColor(backgroundColour)
 
         view.setOnClickListener {

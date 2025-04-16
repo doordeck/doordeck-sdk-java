@@ -7,7 +7,6 @@ import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.graphics.drawable.Animatable
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -18,26 +17,25 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
-import com.github.doordeck.ui.R
+import com.doordeck.multiplatform.sdk.model.responses.LocationRequirementResponse
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
+import com.doordeck.multiplatform.sdk.model.responses.SiteLocksResponse
+import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
-import com.github.doordeck.ui.databinding.ActivityUnlockBinding
-import com.doordeck.sdk.dto.device.Device
-import com.doordeck.sdk.jackson.Jackson
+import com.doordeck.sdk.common.manager.authStatus
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.ShowListOfDevicesToUnlockActivity
 import com.doordeck.sdk.ui.verify.VerifyDeviceActivity
+import com.github.doordeck.ui.R
+import com.github.doordeck.ui.databinding.ActivityUnlockBinding
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import java.util.concurrent.TimeUnit
-import kotlin.math.max
+import com.google.android.gms.location.Priority
+import kotlinx.serialization.json.Json
 
 // screen responsible to display the status of the unlock process
 internal class UnlockActivity : BaseActivity(), UnlockView {
@@ -46,6 +44,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     private var locationPermissionShown = false
     private var googlePermissionShown = false
     private var canceledVerify = false
+
     // Using this to avoid entering on onResume after a beaming.
     //
     // There can be a situation when the user beams, goes to see result and beams
@@ -120,37 +119,6 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         binding.unlockStatus.setText(R.string.UNLOCKING)
     }
 
-    private fun showDelayTimer(delay: Double) {
-        val animated = AnimatedVectorDrawableCompat.create(this, R.drawable.ic_unlock_success_blank)
-        val animation = binding.lockImage.drawable
-        if (animation is Animatable) {
-            (animation as Animatable).stop()
-        }
-        binding.lockImage.setImageDrawable(null)
-        binding.lockImage.setImageDrawable(animated)
-
-        binding.unlockStatus.text = getString(R.string.Please_Wait)
-
-        GlobalScope.launch(Dispatchers.Main) {
-            val tickSeconds = 1
-            val totalSeconds = max(TimeUnit.SECONDS.toSeconds(delay.toLong()), tickSeconds.toLong())
-            for (second in totalSeconds downTo tickSeconds) {
-                binding.delayLockTimeText.text = second.toString()
-                delay(1000)
-            }
-
-            binding.delayLockTimeText.text = null
-
-            // Finish with the timer and show the unlock
-            showUnlockAnimation()
-            unlockPresenter?.setFinishTimer()
-        }
-    }
-
-    override fun unlockSuccessWithDelay(delayOfDevice: Double) {
-        showDelayTimer(delayOfDevice)
-    }
-
     override fun unlockSuccess() {
         showUnlockAnimation()
         unlockPresenter?.setFinishTimer()
@@ -192,7 +160,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         unlockFinished = true
     }
 
-    override fun goToDevices(devices: List<Device>) {
+    override fun goToDevices(devices: List<LockResponse>) {
         ShowListOfDevicesToUnlockActivity.start(this, devices)
     }
 
@@ -226,18 +194,19 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         unlockFinished = true
     }
 
-    override fun checkGoogleApiPermissions() {
+    override fun checkGoogleApiPermissions(device: LockResponse, location: LocationRequirementResponse) {
         if (checkLocationPermission()) {
 
-            val mLocationRequest = LocationRequest()
-            mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            val locationRequest = LocationRequest
+                .Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+                .build()
             // check if location is enabled
-            val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest)
+            val builder = LocationSettingsRequest.Builder().addLocationRequest(locationRequest)
             val client = LocationServices.getSettingsClient(this)
             val task = client.checkLocationSettings(builder.build())
 
             // location is enabled
-            task.addOnSuccessListener(this) { unlockPresenter?.checkGeofence() }
+            task.addOnSuccessListener(this) { unlockPresenter?.checkGeofence(device, location) }
 
             // location is disabled
             task.addOnFailureListener(this) { e ->
@@ -249,8 +218,10 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
                         // and check the result in onActivityResult().
                         if (!googlePermissionShown) {
                             googlePermissionShown = true
-                            e.startResolutionForResult(this@UnlockActivity,
-                                    LOCATION)
+                            e.startResolutionForResult(
+                                this@UnlockActivity,
+                                LOCATION
+                            )
                         }
                     } catch (sendEx: IntentSender.SendIntentException) {
                         // Ignore the error.
@@ -265,12 +236,18 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
     }
 
     private fun checkLocationPermission(): Boolean {
-        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
 
             // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                )
+            ) {
 
                 // Show an explanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
@@ -278,23 +255,27 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
                 if (!locationPermissionShown) {
                     locationPermissionShown = true
                     AlertDialog.Builder(this)
-                            .setTitle(R.string.LOCATION_PERMISSION_TITLE)
-                            .setMessage(R.string.LOCATION_PERMISSION_TEXT)
-                            .setPositiveButton(R.string.OK) { _, _ ->
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(this@UnlockActivity,
-                                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                                        LOCATION)
-                            }
-                            .create()
-                            .show()
+                        .setTitle(R.string.LOCATION_PERMISSION_TITLE)
+                        .setMessage(R.string.LOCATION_PERMISSION_TEXT)
+                        .setPositiveButton(R.string.OK) { _, _ ->
+                            //Prompt the user once explanation has been shown
+                            ActivityCompat.requestPermissions(
+                                this@UnlockActivity,
+                                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                                LOCATION
+                            )
+                        }
+                        .create()
+                        .show()
                 }
 
             } else {
                 // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(this,
-                        arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                        LOCATION)
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    LOCATION
+                )
             }
             return false
         } else {
@@ -319,29 +300,29 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         }
 
         resetAnimation()
-        if(!Doordeck.hasUserLoggedIn(this)) {
+
+        if (Doordeck.getHeadlessInstance().authStatus == AuthStatus.UNAUTHORIZED) {
             noUserLoggedIn()
             return
         }
-        if (tileId != null) {
-            unlockPresenter?.init(tileId)
-        } else if (deviceJson != null)  {
-            val om = Jackson.sharedObjectMapper()
-            val deviceToUnlock = om.readValue(deviceJson, Device::class.java)
-            unlockPresenter?.init(deviceToUnlock)
-        }
+        val tileId = this.tileId
+        val deviceJson = this.deviceJson
 
+        if (tileId != null) {
+            unlockPresenter?.resolveTile(tileId)
+        } else if (deviceJson != null) {
+            val deviceToUnlock = Json.decodeFromString<SiteLocksResponse>(deviceJson)
+            unlockPresenter?.resolveTile(deviceToUnlock.id)
+        }
     }
 
     public override fun onPause() {
         super.onPause()
-        unlockPresenter?.onStop()
         unlockPresenter = null
     }
 
     public override fun onStop() {
         super.onStop()
-        unlockPresenter?.onStop()
         finish()
     }
 
@@ -375,10 +356,10 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
             }
             context.startActivity(starter)
         }
-        fun start(context: Context, device: Device, comingFrom: String) {
+
+        fun start(context: Context, device: LockResponse, comingFrom: String) {
             val starter = Intent(context, UnlockActivity::class.java)
-            val om = Jackson.sharedObjectMapper()
-            starter.putExtra(DEVICE, om.writeValueAsString(device))
+            starter.putExtra(DEVICE, Json.encodeToString(device))
             starter.putExtra(COMING_FROM_KEY, comingFrom)
             if (comingFrom != COMING_FROM_DIRECT_UNLOCK) {
                 starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -4,9 +4,13 @@ package com.doordeck.sdk.ui.qrcode
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import com.doordeck.sdk.ui.BaseActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity
+import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
 import com.github.doordeck.ui.databinding.ActivityQrScanBinding
+import androidx.core.net.toUri
 
 
 /**
@@ -31,7 +35,7 @@ internal class QRcodeActivity : BaseActivity() {
         binding.tvDismiss.setOnClickListener { finish() }
     }
 
-    // check if the user has grandted the camera permission
+    // check if the user has granted the camera permission
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -49,7 +53,13 @@ internal class QRcodeActivity : BaseActivity() {
     public override fun onResume() {
         super.onResume()
         binding.qr.start()
-        if (flagWentToBackground) {
+
+        if (Intent.ACTION_VIEW == intent.action) {
+            val uuid = intent.dataString?.toUri()?.lastPathSegment
+            if (uuid != null) {
+                UnlockActivity.start(this, uuid, comingFrom = COMING_FROM_QR_SCAN)
+            }
+        } else if (flagWentToBackground) {
             finish()
         }
     }

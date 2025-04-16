@@ -1,6 +1,8 @@
 package com.doordeck.sdk.ui.unlock
 
-import com.doordeck.sdk.dto.device.Device
+import com.doordeck.multiplatform.sdk.Doordeck
+import com.doordeck.multiplatform.sdk.model.responses.LocationRequirementResponse
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
 
 // interface used between the presenter and the activity to make sure
 // the presenter does not know about the activity
@@ -11,21 +13,13 @@ internal interface UnlockView {
 
     fun unlockSuccess()
 
-    /**
-     * @param delayOfDevice is used when
-     * a device has been unlocked successfully,
-     * it could bring a delay and this is communicating
-     * to the view that it'll take a bit
-     */
-    fun unlockSuccessWithDelay(delayOfDevice: Double)
-
     fun updateLockName(name: String)
 
     fun setUnlocking()
 
     fun showGeoLoading()
 
-    fun checkGoogleApiPermissions()
+    fun checkGoogleApiPermissions(device: LockResponse, location: LocationRequirementResponse)
 
     fun finishActivity()
 
@@ -35,7 +29,7 @@ internal interface UnlockView {
 
     fun noUserLoggedIn()
 
-    fun goToDevices(devices: List<Device>)
+    fun goToDevices(devices: List<LockResponse>)
 
     fun getDefaultLockColours(): Array<String>
 }
