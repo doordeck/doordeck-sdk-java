@@ -40,13 +40,11 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "VERSION_NAME", '"1.2"'
             buildConfigField "String", "BASE_URL_API", '"https://api.dev.doordeck.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
-            buildConfigField "String", "VERSION_NAME", '"1.2"'
             buildConfigField "String", "BASE_URL_API", '"https://api.doordeck.com"'
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -98,8 +96,6 @@ dependencies {
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
-    //rx
-//    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
     // scan
     implementation('com.journeyapps:zxing-android-embedded:4.1.0') { transitive = false }
