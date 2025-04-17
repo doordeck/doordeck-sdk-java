@@ -1,8 +1,6 @@
 Doordeck SDK
 =================
 
-[![Build Status](https://travis-ci.org/doordeck/doordeck-sdk-java.svg?branch=master)](https://travis-ci.org/doordeck/doordeck-sdk-java)
-
 The official Doordeck SDK for Android
 
 
@@ -12,17 +10,11 @@ The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC
 
 ### Integration
 
-Integrate the module `ui` and `api` inside your project and add `implementation project(path: ':ui')` in the build.gradle of your app.
-
-A gradle version is coming soon.
+Integrate the module `ui` inside your project and add `implementation project(path: ':ui')` in the build.gradle of your app.
 
 ### Running the SDK Sample Code
 
-Developers can run the sample application, located in the `sample` directory, to immediately run code and see how the Doordeck Android SDK can be used.
-
-
-### SDK Key
-SDK Key can be  found ...
+Developers can run the sample application, located in the `sampleApp` directory, to immediately run code and see how the Doordeck Android SDK can be used.
 
 
 ### How to use the SDK ? 
@@ -36,13 +28,21 @@ firstly, the method `initialize` will need to be called with the provided `apiKe
 The 2nd param is optional, and correspond to the theme to use. Light or Dark. By default the dark theme is used.
 
 ```
- /**
-     * Initialize the Doordeck SDK and get the Api key from the manifest file.
-     * That's the first method to call, preferable in your Application or MainActivity, before using
-     * the SDK.
-     * @return Doordeck the current instance of the SDK
-     */
-    fun initialize(apiKey: String, darkMode: Boolean = true): Doordeck
+/**
+ * Initializes the Doordeck SDK.
+ *
+ * You must call this before using any other SDK methods.
+ * It can be called at any point in your app lifecycle, and with any valid context.
+ *
+ * @param context Any valid Android context (application or activity).
+ * @param darkMode Optional: Enables dark mode for SDK UI. Default is false.
+ * @return The initialized Doordeck instance.
+ */
+@JvmOverloads
+fun initialize(
+    context: Context,
+    darkMode: Boolean = false,
+): Doordeck
 ``` 
 
 #### Tweak the NFC Uri settings
@@ -62,25 +62,9 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
 
 ```
 -keep class com.doordeck.** { *; }
--keep class org.bouncycastle.jcajce.provider.** { *; }
--keep class org.bouncycastle.jce.provider.** { *; }
 -dontwarn javax.naming.**
--keep class retrofit2.** { *; }
 -keepattributes *Annotation*
--keep class com.squareup.okhttp.** { *; }
--keep interface com.squareup.okhttp.** { *; }
--keep class okhttp3.** { *; }
--keep interface okhttp3.** { *; }
 ```
-
-If you're using Gson, also add:
-
-```
--keep class com.google.gson.reflect.TypeToken
--keep class * extends com.google.gson.reflect.TypeToken
--keep public class * implements java.lang.reflect.Type
-```
-
     
 #### Unlock a door by NFC/QR
 
@@ -94,13 +78,13 @@ Once the door unlocked, the activity opened by the SDK will close automatically 
 
 ```
 /**
-     * Show the unlock screen given the Scan type given in parameter
-     *
-     * @param context current context
-     * @param type type of scan to use (NFC or QR) , NFC by default if not provided, optional
-     * @param callback callback of the method, optional
-     */
-    fun showUnlock(context: Context, type: ScanType = ScanType.NFC, callback: UnlockCallback? = null)
+ * Shows the unlock screen using the specified scan type.
+ *
+ * @param context Context for launching the screen.
+ * @param type Type of unlock scan (NFC, QR, or UNLOCK).
+ * @return A CompletableFuture that completes after navigation is triggered.
+ */
+fun showUnlock(context: Context, type: ScanType = ScanType.NFC)
 
 ```
 
@@ -109,96 +93,153 @@ The SDK has a method that will open an activity to pass the information once obt
 - You need the `UUID (String)`
 
 ```
-    /**
-     * Unlock method for unlocking via UUID
-     *
-     * @param ctx current Context
-     * @param tileID: Tile UUID is UUID for a ile from a deeplink or QR or background NFC
-     * @param callback (optional) callback function for catching async response after unlock.
-     *
-     */
-    @JvmOverloads
-    fun unlockTileID(ctx: Context, tileID: String, callback: UnlockCallback? = null){
-        this.deviceToUnlock = PartialDevice(tileID)
-        showUnlock(ctx, ScanType.UNLOCK, callback)
-    }
-```
-
-#### Being aware of events
-
-#### With a callback
-
-The SDK contains a public method for you to provide a callback of the `IEventCallback` in order to be aware of the errors or other important events that we think you need to be aware of.
-It's optional, you are not required to provide a callback.
-If you do not wish to implement all those methods, you can simply provide a `EventCallback` which is a abstract class of `IEventCallback`. 
-
-```
 /**
-     * Set a callback to listen to the events sent by the SDK
-     */
-    fun withEventsCallback(callback: IEventCallback) {
-        this.callback = callback
+ * Triggers the unlock flow using a tile UUID (e.g. from QR or NFC).
+ *
+ * @param context Valid context to launch the unlock screen.
+ * @param tileId A valid tile UUID string.
+ * @return A CompletableFuture that completes when the UI is shown.
+ */
+fun unlockTileID(context: Context, tileId: String): CompletableFuture<Void>
+```
+
+## 📡 Listening to SDK Events
+
+The Doordeck SDK exposes important events — such as unlock status, tile resolution, or geofence issues — through a Kotlin `Flow`.
+
+This is the official and only supported way to observe SDK state in version `3.0.0`.
+
+---
+
+### ✅ Subscribing to Events
+
+Collect events from the SDK using a coroutine:
+
+```kotlin
+lifecycleScope.launch {
+    Doordeck.eventsFlow().collect { event ->
+        when (event) {
+            is UnlockSuccessEvent -> {
+                // Successfully unlocked
+                val deviceId = event.deviceId
+            }
+            is UnlockFailedEvent -> {
+                // Unlock failed
+                val deviceId = event.deviceId
+                val error = event.exception
+            }
+            is ResolveTileSuccess -> {
+                val tileId = event.tileId
+                // Successfully resolved tile
+            }
+            is ResolveTileFailed -> {
+                val tileId = event.tileId
+                val error = event.exception
+                // Failed to resolve tile
+            }
+            is GeofenceError -> {
+                val deviceId = event.deviceId
+                val requirement = event.locationRequirement
+                // Location requirements not met
+            }
+            is GeneralErrorEvent -> {
+                val error = event.exception
+                // Catch-all for unexpected or SDK-level errors
+            }
+        }
     }
-    
- interface IEventCallback {
-    fun noInternet()
-    fun networkError()
-    fun verificationCodeSent()
-    fun verificationCodeFailedSending()
-    fun codeVerificationSuccess()
-    fun codeVerificationFailed()
-    fun sdkError()
-    fun unlockSuccess()
-    fun unlockFailed()
-    fun resolveTileFailed()
-    fun resolveTileSuccess()
-    fun unlockedInvalidTileID()
-    fun authentificationSuccess()
 }
-
-abstract class EventCallback : IEventCallback {
-    override fun noInternet() {}
-    override fun networkError() {}
-    override fun verificationCodeSent() {}
-    override fun verificationCodeFailedSending() {}
-    override fun codeVerificationSuccess() {}
-    override fun codeVerificationFailed() {}
-    override fun sdkError() {}
-    override fun unlockSuccess() {}
-    override fun unlockFailed() {}
-    override fun resolveTileFailed() {}
-    override fun resolveTileSuccess() {}
-    override fun unlockedInvalidTileID() {}
-}
-    
 ```
 
-#### With an observable
+## ⚠️ Breaking Changes in v3.0.0
 
+Version `3.0.0` introduces major refactors to modernize the SDK and simplify the interface.
+Several legacy APIs have been removed, event handling has been updated to use Kotlin `Flow`, and the unlock mechanism has been restructured.
 
-The SDK contains a public method for you to listen on an observable, emitting the events listed above.
+# We strongly suggest this is the right time for you to move into our [Doordeck Headless SDK](https://github.com/doordeck/doordeck-headless-sdk/) 
 
+---
+
+### ❌ Removed APIs
+
+#### Removed callback-based event system
+
+- `IEventCallback`, `EventCallback`, and related types have been **deleted**.
+- `withEventsCallback(...)` has been **removed**.
+- `UnlockCallback` is no longer supported.
+- Sample app methods `listenForEventsRx()` and `listenForAllEventsCallback()` have been removed.
+- All override methods like `noInternet()`, `networkError()`, etc., are no longer available.
+
+#### Removed Rx-style observables
+
+- The method `eventsObservable()` has been removed.
+- The SDK no longer uses or supports RxJava.
+
+---
+
+### ✅ Replaced with Kotlin Flow
+
+Event handling now uses a `Flow<DoordeckEvent>`, which can be collected in a coroutine:
+
+```kotlin
+fun eventsFlow(): Flow<DoordeckEvent>
 ```
-fun eventsObservable(): Observable<DDEVENT> {
-        return EventsManager.eventsObservable()
+
+Example usage:
+
+```kotlin
+lifecycleScope.launch {
+    Doordeck.eventsFlow().collect { event ->
+        when (event) {
+            is UnlockSuccessEvent -> { /* handle success */ }
+            is UnlockFailedEvent -> { /* handle failure */ }
+            is GeneralErrorEvent -> { /* handle general SDK error */ }
+            is GeofenceError -> { /* handle geofence mismatch */ }
+            // etc.
+        }
     }
-    
-enum class EventAction {
-    NO_INTERNET,
-    SDK_ERROR,
-    SDK_NETWORK_ERROR,
-    VERIFICATION_CODE_SENT,
-    VERIFICATION_CODE_FAILED_SENDING,
-    CODE_VERIFICATION_SUCCESS,
-    CODE_VERIFICATION_FAILED,
-    UNLOCK_INVALID_TILE_ID,
-    AUTHENTICATED,
-    UNLOCK_SUCCESS,
-    UNLOCK_FAILED,
-    RESOLVE_TILE_FAILED,
-    RESOLVE_TILE_SUCCESS
 }
-    
 ```
 
+-------------------
 
+### 📦 New Event Model
+
+DoordeckEvent is now a sealed class. The SDK emits the following events:
+- UnlockSuccessEvent(deviceId: String)
+- UnlockFailedEvent(deviceId: String, exception: Throwable)
+- ResolveTileSuccess(tileId: String)
+- ResolveTileFailed(tileId: String, exception: Throwable)
+- GeofenceError(deviceId: String, locationRequirement: LocationRequirementResponse)
+- GeneralErrorEvent(exception: Throwable)
+
+### 🧱 Interface Changes
+
+```kotlin
+fun initialize(ctx: Context, darkMode: Boolean = false): Doordeck
+```
+
+- Now accepts any valid Context (Application or Activity).
+- Can be called at any point in your app’s lifecycle.
+- No longer accepts an auth token directly — you must call setToken(...) separately.
+
+```kotlin
+fun setToken(authToken: String)
+```
+
+- Must be called after login with a valid JWT.
+- Throws if an empty or blank token is passed.
+- Automatically generates a key pair if needed.
+
+```kotlin
+fun showUnlock(context: Context, type: ScanType = ScanType.NFC): CompletableFuture<Void>
+fun unlock(ctx: Context, device: LockResponse): CompletableFuture<Void>
+fun unlockTileID(ctx: Context, tileId: String): CompletableFuture<Void>
+```
+
+- All these won't use the old `UnlockCallback`. Errors related to Auth will be thrown inside the `CompletableFuture` and
+performing errors will be thrown inside the `DoordeckEvent`'s flow and visually.
+
+### 🧹 General Cleanup
+- Removed the api/ module *(to favour the new Doordeck Headless SDK)*
+- README was updated for clarity and correctness.
