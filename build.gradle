@@ -10,7 +10,7 @@ buildscript {
 
     ext.versions = [
             'kotlin': '2.0.0',
-            'doordeck_headless_sdk': '0.97.0',
+            'doordeck_headless_sdk': '0.98.0',
             'jackson': '2.17.2',
     ]
 

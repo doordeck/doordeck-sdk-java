@@ -1,6 +1,5 @@
 package com.doordeck.sdk.ui.unlock
 
-import com.doordeck.multiplatform.sdk.Doordeck
 import com.doordeck.multiplatform.sdk.model.responses.LocationRequirementResponse
 import com.doordeck.multiplatform.sdk.model.responses.LockResponse
 

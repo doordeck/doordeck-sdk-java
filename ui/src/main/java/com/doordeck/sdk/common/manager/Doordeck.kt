@@ -25,7 +25,9 @@ object Doordeck {
     internal var darkMode: Boolean = true
 
     // headless sdk instance
-    private lateinit var doordeck: com.doordeck.multiplatform.sdk.Doordeck
+    private var doordeck: com.doordeck.multiplatform.sdk.Doordeck? = null // Not initialized yet
+    private val requireDoordeck: com.doordeck.multiplatform.sdk.Doordeck
+        get() = doordeck!!
 
     private var objectToUnlock: ObjectToUnlock? = null
 
@@ -64,7 +66,7 @@ object Doordeck {
         if (authToken.isBlank()) throw IllegalArgumentException("Token needs to be provided")
 
         setKeyPairIfNeeded()
-        doordeck.contextManager().setCloudAuthToken(authToken)
+        requireDoordeck.contextManager().setCloudAuthToken(authToken)
     }
 
     /**
@@ -149,10 +151,18 @@ object Doordeck {
     }
 
     val authStatus: AuthStatus
-        get() = doordeck.authStatus
+        get() = requireDoordeck.authStatus
 
-    fun getHeadlessInstance(): com.doordeck.multiplatform.sdk.Doordeck {
-        return doordeck
+    fun getHeadlessInstance(context: Context): com.doordeck.multiplatform.sdk.Doordeck {
+        if (doordeck == null) {
+            doordeck = KDoordeckFactory.initialize(
+                SdkConfig.Builder()
+                    .setApplicationContext(ApplicationContext.apply { set(context) })
+                    .build()
+            )
+        }
+
+        return requireDoordeck
     }
 
     /**
@@ -160,7 +170,7 @@ object Doordeck {
      * Call when you log out a user.
      */
     fun logout(): CompletableFuture<Unit> {
-        return doordeck.account().logoutAsync()
+        return requireDoordeck.account().logoutAsync()
     }
 
     /**
@@ -171,9 +181,9 @@ object Doordeck {
     }
 
     private fun setKeyPairIfNeeded() {
-        if (!doordeck.contextManager().isKeyPairValid()) {
-            val newKeyPair = doordeck.crypto().generateKeyPair()
-            doordeck.contextManager().setKeyPair(
+        if (!requireDoordeck.contextManager().isKeyPairValid()) {
+            val newKeyPair = requireDoordeck.crypto().generateKeyPair()
+            requireDoordeck.contextManager().setKeyPair(
                 publicKey = newKeyPair.public,
                 privateKey = newKeyPair.private,
             )

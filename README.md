@@ -8,7 +8,7 @@ The official Doordeck SDK for Android
 
 ### What Is This?
 
-The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC on your android device or simply to tapa the QR located on the door to unlock.
+The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC on your android device or simply to tap the QR located on the door to unlock.
 
 ### Integration
 
@@ -32,7 +32,7 @@ SDK Key can be  found ...
 
 
 The Doordeck SDK is a singleton that needs to initialized before using it, either in your Application or your MainActivity.
-firstly, the merhod `initialize` will need to be called with the provided `apiKey`.
+firstly, the method `initialize` will need to be called with the provided `apiKey`.
 The 2nd param is optional, and correspond to the theme to use. Light or Dark. By default the dark theme is used.
 
 ```

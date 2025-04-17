@@ -1,13 +1,12 @@
 package com.doordeck.sdk.ui.unlock
 
 import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
 import com.doordeck.multiplatform.sdk.model.responses.LocationRequirementResponse
 import com.doordeck.multiplatform.sdk.model.responses.LockResponse
 import com.doordeck.sdk.common.events.EventsManager
-import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
-import com.doordeck.sdk.common.manager.authStatus
-import com.doordeck.sdk.common.models.GeneralErrorEvent
 import com.doordeck.sdk.common.models.GeofenceError
 import com.doordeck.sdk.common.models.ResolveTileFailed
 import com.doordeck.sdk.common.models.ResolveTileSuccess
@@ -16,8 +15,7 @@ import com.doordeck.sdk.common.models.UnlockSuccessEvent
 import com.doordeck.sdk.common.repo.DeviceRepository
 import com.doordeck.sdk.common.repo.DeviceRepositoryImpl
 import com.doordeck.sdk.common.services.LocationService
-import com.doordeck.sdk.common.utils.LOG
-import com.google.android.gms.location.Geofence
+import com.doordeck.sdk.common.utils.onUiThread
 import java.util.Timer
 import java.util.TimerTask
 
@@ -33,7 +31,7 @@ internal class UnlockPresenter {
     fun onStart(view: UnlockView) {
         this.view = view
         this.locationService = LocationService(view as Activity)
-        this.deviceRepository = DeviceRepositoryImpl(Doordeck.getHeadlessInstance())
+        this.deviceRepository = DeviceRepositoryImpl(Doordeck.getHeadlessInstance(view))
     }
 
     /**
@@ -44,11 +42,15 @@ internal class UnlockPresenter {
         deviceRepository.getDevicesAvailable(tileId, view.getDefaultLockColours())
             .thenApply {
                 EventsManager.send(ResolveTileSuccess(tileId = tileId))
-                proceedWithDevices(tileId = tileId, devices = it)
+                onUiThread {
+                    proceedWithDevices(tileId = tileId, devices = it)
+                }
             }
             .exceptionally {
                 EventsManager.send(ResolveTileFailed(tileId = tileId, exception = it))
-                accessDenied()
+                onUiThread {
+                    accessDenied()
+                }
             }
     }
 
@@ -57,7 +59,7 @@ internal class UnlockPresenter {
             devices.isEmpty() -> {
                 EventsManager.send(
                     ResolveTileFailed(
-                        exception = Exception("No devices found"),
+                        exception = Exception("No devices found on tile $tileId"),
                         tileId = tileId,
                     )
                 )
@@ -78,7 +80,7 @@ internal class UnlockPresenter {
         view.setUnlocking()
 
         val possibleLocation = device.settings.usageRequirements?.location
-        if (possibleLocation != null && possibleLocation.enabled == true) {
+        if (possibleLocation != null && possibleLocation.enabled) {
             view.showGeoLoading()
             view.checkGoogleApiPermissions(device, possibleLocation)
         } else {
@@ -103,12 +105,16 @@ internal class UnlockPresenter {
     private fun unlockDevice(deviceId: String) {
         deviceRepository.unlockDevice(deviceId)
             .thenApply {
-                view.unlockSuccess()
                 EventsManager.send(UnlockSuccessEvent(deviceId = deviceId))
+                onUiThread {
+                    view.unlockSuccess()
+                }
             }
             .exceptionally {
                 EventsManager.send(UnlockFailedEvent(deviceId = deviceId, exception = it))
-                accessDenied()
+                onUiThread {
+                    accessDenied()
+                }
             }
     }
 
@@ -117,34 +123,25 @@ internal class UnlockPresenter {
      * Check if the device if around the user
      */
     fun checkGeofence(deviceToUnlock: LockResponse, locationRequirement: LocationRequirementResponse) {
-        locationService.getLocation(locationRequirement.accuracy!! /*TODO*/, object : LocationService.Callback {
-            override fun onGetLocation(lat: Double, lng: Double, acc: Float) {
-                if (locationService.inGeofence(
-                        locationRequirement.latitude,
-                        locationRequirement.longitude,
-                        locationRequirement.accuracy!! /*TODO*/,
-                        locationRequirement.radius!! /*TODO*/,
-                        lat,
-                        lng,
-                        acc
-                    )
-                ) {
-                    unlockDevice(deviceToUnlock.id)
-                } else {
-                    view.showNoAccessGeoFence()
-                    EventsManager.send(
-                        GeofenceError(deviceToUnlock.id, locationRequirement = locationRequirement)
-                    )
-                }
-
-            }
-
-            override fun onError(error: String) {
+        locationService.getLocation { lat, lng, acc ->
+            if (locationService.inGeofence(
+                    locationRequirement.latitude,
+                    locationRequirement.longitude,
+                    locationRequirement.accuracy,
+                    locationRequirement.radius,
+                    lat,
+                    lng,
+                    acc
+                )
+            ) {
+                unlockDevice(deviceToUnlock.id)
+            } else {
+                view.showNoAccessGeoFence()
                 EventsManager.send(
-                    GeneralErrorEvent(exception = Exception(error))
+                    GeofenceError(deviceToUnlock.id, locationRequirement = locationRequirement)
                 )
             }
-        })
+        }
     }
 
     /**
@@ -153,13 +150,14 @@ internal class UnlockPresenter {
     fun setFinishTimer() {
         Timer().schedule(object : TimerTask() {
             override fun run() {
-                view.finishActivity()
+                if ((view as AppCompatActivity).lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    view.finishActivity()
+                }
             }
         }, CLOSE_APP_DELAY_MS)
     }
 
     companion object {
-        private val TAG = UnlockPresenter::class.java.name
         private const val CLOSE_APP_DELAY_MS = 5000L
     }
 }

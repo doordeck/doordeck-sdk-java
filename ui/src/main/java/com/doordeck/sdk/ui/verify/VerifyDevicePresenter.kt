@@ -1,8 +1,8 @@
 package com.doordeck.sdk.ui.verify
 
+import android.content.Context
 import com.doordeck.multiplatform.sdk.model.responses.UserDetailsResponse
 import com.doordeck.sdk.common.manager.Doordeck
-import com.doordeck.sdk.common.utils.LOG
 import java.util.concurrent.CompletableFuture
 
 /**
@@ -10,27 +10,19 @@ import java.util.concurrent.CompletableFuture
  */
 internal class VerifyDevicePresenter {
 
-    private val TAG = VerifyDevicePresenter::class.java.canonicalName?.toString() ?: ""
-    private var view: VerifyDeviceView? = null
+    private lateinit var view: VerifyDeviceView
 
     fun onStart(view: VerifyDeviceView) {
         this.view = view
     }
 
     /**
-     * clean memory
-     */
-    fun onStop() {
-        this.view = null
-    }
-
-    /**
      * callback when the user click on the button "re-send code"
      */
     fun onSendCode(): CompletableFuture<UserDetailsResponse> {
-        return Doordeck.getHeadlessInstance().helper().assistedRegisterEphemeralKeyAsync()
+        return Doordeck.getHeadlessInstance(view as Context).helper().assistedRegisterEphemeralKeyAsync()
             .thenCompose {
-                return@thenCompose Doordeck.getHeadlessInstance().account().getUserDetailsAsync()
+                return@thenCompose Doordeck.getHeadlessInstance(view as Context).account().getUserDetailsAsync()
             }
     }
 
@@ -39,13 +31,12 @@ internal class VerifyDevicePresenter {
      * @param code  code entered by the user, to validate
      */
     fun verifyCode(code: String) {
-        Doordeck.getHeadlessInstance().account().verifyEphemeralKeyRegistrationAsync(code)
+        Doordeck.getHeadlessInstance(view as Context).account().verifyEphemeralKeyRegistrationAsync(code)
             .thenAccept {
-                view?.succeed()
+                view.succeed()
             }
             .exceptionally {
-                LOG.e(TAG, "verifyCode error : $it")
-                view?.fail()
+                view.fail()
                 return@exceptionally null
             }
     }

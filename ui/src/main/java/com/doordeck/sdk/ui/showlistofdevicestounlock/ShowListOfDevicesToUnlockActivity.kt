@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.doordeck.multiplatform.sdk.model.responses.LockResponse
+import com.doordeck.sdk.common.utils.json
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityListOfDevicesToUnlockBinding
 import com.doordeck.sdk.ui.BaseActivity
@@ -11,7 +12,6 @@ import com.doordeck.sdk.ui.showlistofdevicestounlock.adapter.DevicesToUnlockAdap
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.utils.recyclerview.VerticalSpaceItemDecoration
-import kotlinx.serialization.json.Json
 
 
 // screen responsible to display different locks to unlock
@@ -64,7 +64,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
 
     private val devices: List<LockResponse>
         get() = intent.extras?.getString(LIST_OF_DEVICES)?.let {
-            return@let Json.decodeFromString<List<LockResponse>>(it)
+            return@let json.decodeFromString<List<LockResponse>>(it)
         } ?: listOf()
 
     companion object {
@@ -73,7 +73,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
 
         fun start(context: Context, devices: List<LockResponse>) {
             val starter = Intent(context, ShowListOfDevicesToUnlockActivity::class.java)
-            starter.putExtra(LIST_OF_DEVICES, Json.encodeToString(devices))
+            starter.putExtra(LIST_OF_DEVICES, json.encodeToString(devices))
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }

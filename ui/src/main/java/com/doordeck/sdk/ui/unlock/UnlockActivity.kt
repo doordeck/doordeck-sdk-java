@@ -23,6 +23,7 @@ import com.doordeck.multiplatform.sdk.model.responses.SiteLocksResponse
 import com.doordeck.sdk.common.manager.AuthStatus
 import com.doordeck.sdk.common.manager.Doordeck
 import com.doordeck.sdk.common.manager.authStatus
+import com.doordeck.sdk.common.utils.json
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.nfc.NFCActivity
 import com.doordeck.sdk.ui.qrcode.QRcodeActivity
@@ -301,7 +302,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         resetAnimation()
 
-        if (Doordeck.getHeadlessInstance().authStatus == AuthStatus.UNAUTHORIZED) {
+        if (Doordeck.getHeadlessInstance(this).authStatus == AuthStatus.UNAUTHORIZED) {
             noUserLoggedIn()
             return
         }
@@ -311,7 +312,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
         if (tileId != null) {
             unlockPresenter?.resolveTile(tileId)
         } else if (deviceJson != null) {
-            val deviceToUnlock = Json.decodeFromString<SiteLocksResponse>(deviceJson)
+            val deviceToUnlock = json.decodeFromString<SiteLocksResponse>(deviceJson)
             unlockPresenter?.resolveTile(deviceToUnlock.id)
         }
     }

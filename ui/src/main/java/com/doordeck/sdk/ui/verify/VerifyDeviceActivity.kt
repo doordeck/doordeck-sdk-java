@@ -250,13 +250,6 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         presenter.onStart(this)
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter.onStop()
-    }
-
-
-
     companion object {
         @JvmStatic
         fun start(context: Context) {
