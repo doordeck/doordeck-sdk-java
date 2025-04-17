@@ -17,51 +17,47 @@ import kotlinx.coroutines.flow.Flow
 import java.util.UUID
 import java.util.concurrent.CompletableFuture
 
-
-@Suppress("OVERLOADS_WITHOUT_DEFAULT_ARGUMENTS")
 object Doordeck {
 
-    // usage of the light theme boolean
     internal var darkMode: Boolean = true
+    private var doordeck: com.doordeck.multiplatform.sdk.Doordeck? = null
 
-    // headless sdk instance
-    private var doordeck: com.doordeck.multiplatform.sdk.Doordeck? = null // Not initialized yet
     private val requireDoordeck: com.doordeck.multiplatform.sdk.Doordeck
         get() = doordeck!!
 
     private var objectToUnlock: ObjectToUnlock? = null
 
-    // public //
-
     /**
-     * Initialize the Doordeck SDK with your valid auth token
-     * This is the first method to call from the your Android Application class. The reason for this being in the Application class is
-     * for the SDK to be able to initialize and unlock from NFC touch, even when the parent app is not running in the background yet.
+     * Initializes the Doordeck SDK.
      *
-     * @param ctx Your application context! Warning, providing non-application context might break the app or cause memory leaks.
-     * @param darkMode (Optional) set dark or light theme of the sdk.
-     * @return Doordeck the current instance of the SDK
+     * You must call this before using any other SDK methods.
+     * It can be called at any point in your app lifecycle, and with any valid context.
+     *
+     * @param context Any valid Android context (application or activity).
+     * @param darkMode Optional: Enables dark mode for SDK UI. Default is false.
+     * @return The initialized Doordeck instance.
      */
     @JvmOverloads
     fun initialize(
-        ctx: Context,
+        context: Context,
         darkMode: Boolean = false,
     ): Doordeck {
         this.darkMode = darkMode
         doordeck = KDoordeckFactory.initialize(
             SdkConfig.Builder()
-                .setApplicationContext(ApplicationContext.apply { set(ctx) })
+                .setApplicationContext(ApplicationContext.apply { set(context) })
                 .build()
         )
         return this
     }
 
     /**
-     * Update your authToken
-     * Call this method after logging in to update the token.
-     * @param authToken new valid auth token
+     * Updates the authentication token for the SDK.
+     *
+     * Must be called after login with a valid Doordeck JWT token.
+     *
+     * @param authToken The Doordeck JWT auth token.
      */
-    @JvmOverloads
     fun setToken(authToken: String) {
         if (authToken.isBlank()) throw IllegalArgumentException("Token needs to be provided")
 
@@ -70,42 +66,42 @@ object Doordeck {
     }
 
     /**
-     * Update the theme
-     * @param darkMode set dark or light theme
+     * Updates the UI theme for the SDK.
+     *
+     * @param darkMode Whether to enable dark mode.
      */
     fun setDarkMode(darkMode: Boolean) {
         this.darkMode = darkMode
     }
 
     /**
-     * Observable to subscribe to, to be able to listen to the events sent by the SDK
-     * @return Observable of events
+     * Flow for observing SDK events.
+     *
+     * @return A Flow of DoordeckEvent values.
      */
     fun eventsFlow(): Flow<DoordeckEvent> {
         return EventsManager.eventsFlow()
     }
 
     /**
-     * Unlock method for unlocking via button unlock
+     * Triggers the unlock flow for a given device.
      *
-     * @param ctx current Context
-     * @param device a valid device.
-     *
+     * @param ctx Context for launching the unlock screen.
+     * @param device The LockResponse representing the device to unlock.
+     * @return A CompletableFuture that completes when the UI is shown.
      */
-    @JvmOverloads
-    fun unlock(ctx: Context, device: LockResponse) {
+    fun unlock(ctx: Context, device: LockResponse): CompletableFuture<Void> {
         this.objectToUnlock = DeviceToUnlock(device)
-        showUnlock(ctx, ScanType.UNLOCK)
+        return showUnlock(ctx, ScanType.UNLOCK)
     }
 
     /**
-     * Unlock method for unlocking via UUID
+     * Triggers the unlock flow using a tile UUID (e.g. from QR or NFC).
      *
-     * @param context current Context
-     * @param tileId: Tile UUID is UUID for a ile from a deeplink or QR or background NFC
-     *
+     * @param context Valid context to launch the unlock screen.
+     * @param tileId A valid tile UUID string.
+     * @return A CompletableFuture that completes when the UI is shown.
      */
-    @JvmOverloads
     fun unlockTileID(context: Context, tileId: String): CompletableFuture<Void> {
         if (isUUID(tileId)) {
             this.objectToUnlock = TileIdToUnlock(UUID.fromString(tileId))
@@ -116,10 +112,11 @@ object Doordeck {
     }
 
     /**
-     * Show the unlock screen given the Scan type given in parameter
+     * Shows the unlock screen using the specified scan type.
      *
-     * @param context current context
-     * @param type type of scan to use (NFC or QR) , NFC by default if not provided, optional
+     * @param context Context for launching the screen.
+     * @param type Type of unlock scan (NFC, QR, or UNLOCK).
+     * @return A CompletableFuture that completes after navigation is triggered.
      */
     @JvmOverloads
     fun showUnlock(context: Context, type: ScanType = ScanType.NFC): CompletableFuture<Void> {
@@ -141,7 +138,7 @@ object Doordeck {
                     )
 
                     null -> {
-                        // NO-OP
+                        // No-op if nothing to unlock
                     }
                 }
             }
@@ -150,9 +147,20 @@ object Doordeck {
         }
     }
 
+    /**
+     * Returns the current authentication status of the SDK.
+     */
     val authStatus: AuthStatus
         get() = requireDoordeck.authStatus
 
+    /**
+     * Retrieves the headless instance of the SDK.
+     *
+     * Lazily initializes if not yet done.
+     *
+     * @param context A valid context (preferably application context).
+     * @return The internal Doordeck instance.
+     */
     fun getHeadlessInstance(context: Context): com.doordeck.multiplatform.sdk.Doordeck {
         if (doordeck == null) {
             doordeck = KDoordeckFactory.initialize(
@@ -166,20 +174,29 @@ object Doordeck {
     }
 
     /**
-     * Cleanup the data internally
-     * Call when you log out a user.
+     * Logs out the current user and clears all local SDK data.
+     *
+     * @return A CompletableFuture that resolves once logout completes.
      */
     fun logout(): CompletableFuture<Unit> {
         return requireDoordeck.account().logoutAsync()
     }
 
     /**
-     * Shows the verification screen
+     * Shows the device verification screen.
+     *
+     * Call this to allow the user to verify their device if needed.
+     *
+     * @param context A valid context for navigation.
      */
     fun showVerificationScreen(context: Context) {
         VerifyDeviceActivity.start(context)
     }
 
+    /**
+     * Helper.
+     * Generates and sets a key pair if none exists.
+     */
     private fun setKeyPairIfNeeded() {
         if (!requireDoordeck.contextManager().isKeyPairValid()) {
             val newKeyPair = requireDoordeck.crypto().generateKeyPair()
