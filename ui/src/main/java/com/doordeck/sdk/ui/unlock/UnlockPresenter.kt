@@ -31,7 +31,7 @@ internal class UnlockPresenter {
     fun onStart(view: UnlockView) {
         this.view = view
         this.locationService = LocationService(view as Activity)
-        this.deviceRepository = DeviceRepositoryImpl(Doordeck.getHeadlessInstance(view))
+        this.deviceRepository = DeviceRepositoryImpl(Doordeck.getHeadlessInstance())
     }
 
     /**

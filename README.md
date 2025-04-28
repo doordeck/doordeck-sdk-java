@@ -32,15 +32,13 @@ The 2nd param is optional, and correspond to the theme to use. Light or Dark. By
  * Initializes the Doordeck SDK.
  *
  * You must call this before using any other SDK methods.
- * It can be called at any point in your app lifecycle, and with any valid context.
+ * It can be called at any point in your app lifecycle.
  *
- * @param context Any valid Android context (application or activity).
  * @param darkMode Optional: Enables dark mode for SDK UI. Default is false.
  * @return The initialized Doordeck instance.
  */
 @JvmOverloads
 fun initialize(
-    context: Context,
     darkMode: Boolean = false,
 ): Doordeck
 ``` 
@@ -216,10 +214,9 @@ DoordeckEvent is now a sealed class. The SDK emits the following events:
 ### 🧱 Interface Changes
 
 ```kotlin
-fun initialize(ctx: Context, darkMode: Boolean = false): Doordeck
+fun initialize(darkMode: Boolean = false): Doordeck
 ```
 
-- Now accepts any valid Context (Application or Activity).
 - Can be called at any point in your app’s lifecycle.
 - No longer accepts an auth token directly — you must call setToken(...) separately.
 

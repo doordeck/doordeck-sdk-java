@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        Doordeck.initialize(applicationContext, true)
+        Doordeck.initialize(true)
         Doordeck.setToken(getString(R.string.doordeck_api_key))
 
         listenToEvents()

@@ -1,6 +1,6 @@
 package com.doordeck.sdk.ui.verify
 
-import android.content.Context
+import com.doordeck.multiplatform.sdk.exceptions.TooManyRequestsException
 import com.doordeck.multiplatform.sdk.model.responses.UserDetailsResponse
 import com.doordeck.sdk.common.manager.Doordeck
 import java.util.concurrent.CompletableFuture
@@ -20,9 +20,13 @@ internal class VerifyDevicePresenter {
      * callback when the user click on the button "re-send code"
      */
     fun onSendCode(): CompletableFuture<UserDetailsResponse> {
-        return Doordeck.getHeadlessInstance(view as Context).helper().assistedRegisterEphemeralKeyAsync()
-            .thenCompose {
-                return@thenCompose Doordeck.getHeadlessInstance(view as Context).account().getUserDetailsAsync()
+        return Doordeck.getHeadlessInstance().helper().assistedRegisterEphemeralKeyAsync()
+            .thenCompose { response ->
+                if (response.requiresRetry) {
+                    return@thenCompose CompletableFuture<UserDetailsResponse>().also { it.completeExceptionally(TooManyRequestsException("Requires retry")) }
+                } else {
+                    return@thenCompose Doordeck.getHeadlessInstance().account().getUserDetailsAsync()
+                }
             }
     }
 
@@ -31,7 +35,7 @@ internal class VerifyDevicePresenter {
      * @param code  code entered by the user, to validate
      */
     fun verifyCode(code: String) {
-        Doordeck.getHeadlessInstance(view as Context).account().verifyEphemeralKeyRegistrationAsync(code)
+        Doordeck.getHeadlessInstance().account().verifyEphemeralKeyRegistrationAsync(code)
             .thenAccept {
                 view.succeed()
             }

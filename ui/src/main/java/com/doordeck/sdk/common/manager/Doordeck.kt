@@ -1,7 +1,6 @@
 package com.doordeck.sdk.common.manager
 
 import android.content.Context
-import com.doordeck.multiplatform.sdk.ApplicationContext
 import com.doordeck.multiplatform.sdk.KDoordeckFactory
 import com.doordeck.multiplatform.sdk.config.SdkConfig
 import com.doordeck.multiplatform.sdk.model.responses.LockResponse
@@ -31,21 +30,18 @@ object Doordeck {
      * Initializes the Doordeck SDK.
      *
      * You must call this before using any other SDK methods.
-     * It can be called at any point in your app lifecycle, and with any valid context.
+     * It can be called at any point in your app lifecycle.
      *
-     * @param context Any valid Android context (application or activity).
      * @param darkMode Optional: Enables dark mode for SDK UI. Default is false.
      * @return The initialized Doordeck instance.
      */
     @JvmOverloads
     fun initialize(
-        context: Context,
         darkMode: Boolean = false,
     ): Doordeck {
         this.darkMode = darkMode
         doordeck = KDoordeckFactory.initialize(
             SdkConfig.Builder()
-                .setApplicationContext(ApplicationContext.apply { set(context) })
                 .build()
         )
         return this
@@ -158,15 +154,12 @@ object Doordeck {
      *
      * Lazily initializes if not yet done.
      *
-     * @param context A valid context (preferably application context).
      * @return The internal Doordeck instance.
      */
-    fun getHeadlessInstance(context: Context): com.doordeck.multiplatform.sdk.Doordeck {
+    fun getHeadlessInstance(): com.doordeck.multiplatform.sdk.Doordeck {
         if (doordeck == null) {
             doordeck = KDoordeckFactory.initialize(
-                SdkConfig.Builder()
-                    .setApplicationContext(ApplicationContext.apply { set(context) })
-                    .build()
+                SdkConfig.Builder().build()
             )
         }
 
@@ -198,7 +191,7 @@ object Doordeck {
      * Generates and sets a key pair if none exists.
      */
     private fun setKeyPairIfNeeded() {
-        if (!requireDoordeck.contextManager().isKeyPairValid()) {
+        if (requireDoordeck.contextManager().getKeyPair() == null) {
             val newKeyPair = requireDoordeck.crypto().generateKeyPair()
             requireDoordeck.contextManager().setKeyPair(
                 publicKey = newKeyPair.public,

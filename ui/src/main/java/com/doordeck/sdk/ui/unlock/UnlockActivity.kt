@@ -302,7 +302,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
         resetAnimation()
 
-        if (Doordeck.getHeadlessInstance(this).authStatus == AuthStatus.UNAUTHORIZED) {
+        if (Doordeck.getHeadlessInstance().authStatus == AuthStatus.UNAUTHORIZED) {
             noUserLoggedIn()
             return
         }

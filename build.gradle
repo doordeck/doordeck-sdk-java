@@ -10,7 +10,7 @@ buildscript {
 
     ext.versions = [
             'kotlin': '2.0.0',
-            'doordeck_headless_sdk': '0.98.0',
+            'doordeck_headless_sdk': '0.101.0',
             'jackson': '2.17.2',
     ]
 
@@ -28,7 +28,7 @@ buildscript {
     ]
 
     dependencies {
-        classpath 'com.android.tools:r8:8.7.18'
+        classpath 'com.android.tools:r8:8.9.35'
         classpath "com.android.tools.build:gradle:8.6.1"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}"
