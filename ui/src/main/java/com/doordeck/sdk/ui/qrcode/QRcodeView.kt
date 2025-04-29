@@ -6,26 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.os.Build
 import android.util.AttributeSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.doordeck.sdk.common.utils.LOG
 import com.doordeck.sdk.common.utils.isUUID
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_QR_SCAN
-import com.google.zxing.ResultPoint
 import com.google.zxing.client.android.Intents
-import com.journeyapps.barcodescanner.BarcodeCallback
-import com.journeyapps.barcodescanner.BarcodeResult
 import com.journeyapps.barcodescanner.CompoundBarcodeView
 
 /**
  * Custom view for the QRCode
  */
 internal class QRcodeView : CompoundBarcodeView {
-
-    private val TAG = QRcodeView::class.java.simpleName
 
     constructor(context: Context) : super(context) {}
 
@@ -41,8 +34,7 @@ internal class QRcodeView : CompoundBarcodeView {
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
             startScanning()
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.CAMERA), QRcodeActivity.CAMERA)
+            ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.CAMERA), QRcodeActivity.CAMERA)
         }
 
     }
@@ -57,24 +49,14 @@ internal class QRcodeView : CompoundBarcodeView {
         viewFinder.setLaserVisibility(false)
         viewFinder.setMaskColor(Color.TRANSPARENT)
 
-        decodeSingle(object : BarcodeCallback {
-            override fun barcodeResult(result: BarcodeResult) {
-                val scan = result.toString()
-                LOG.d(TAG, "scanned data : $result")
-                val uuid = scan.substring(scan.lastIndexOf("/") + 1)
-                if (isUUID(uuid)) {
-                    pause()
-                    (context as? Activity)?.let { activity -> UnlockActivity.start(activity, uuid, comingFrom = COMING_FROM_QR_SCAN) }
-                } else {
-                    // show error
-                    LOG.d(TAG, "not a uuid")
-                }
+        decodeSingle { result ->
+            val scan = result.toString()
+            val uuid = scan.substring(scan.lastIndexOf("/") + 1)
+            if (isUUID(uuid)) {
+                pause()
+                (context as? Activity)?.let { activity -> UnlockActivity.start(activity, uuid, comingFrom = COMING_FROM_QR_SCAN) }
             }
-
-            override fun possibleResultPoints(resultPoints: List<ResultPoint>) {
-
-            }
-        })
+        }
     }
 
 }

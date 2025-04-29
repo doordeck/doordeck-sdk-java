@@ -3,14 +3,15 @@ apply plugin: 'kotlin-android'
 
 android {
     defaultConfig {
-        compileSdk 34
+        compileSdk 35
         buildToolsVersion = '34.0.0'
     }
     namespace "com.doordeck.doordecksdk"
     defaultConfig {
         applicationId "com.doordeck.doordecksdk"
-        minSdkVersion 24
-        targetSdkVersion 34
+        minSdkVersion 26
+        targetSdkVersion 35
+        compileSdk 35
         versionCode 1
         versionName "1.2"
     }
@@ -37,6 +38,7 @@ android {
 
     packagingOptions {
         exclude 'META-INF/atomicfu.kotlin_module'
+        exclude 'META-INF/versions/9/OSGI-INF/MANIFEST.MF'
     }
 
 }

@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
 import android.os.Bundle
@@ -15,6 +14,7 @@ import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_NFC
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityNfcBinding
+import androidx.core.net.toUri
 
 
 /**
@@ -98,7 +98,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
 
 
     override fun unlockFromTileId(tileId: String) {
-        val uuid = Uri.parse(tileId).lastPathSegment ?: ""
+        val uuid = tileId.toUri().lastPathSegment ?: ""
 
         intent.action = ""
         UnlockActivity.start(this, uuid, comingFrom = COMING_FROM_NFC)
@@ -129,7 +129,7 @@ internal class NFCActivity : BaseActivity(), NFCView {
             IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED).apply {
                 addDataScheme(getString(R.string.nfc_uri_scheme))
                 addDataAuthority(getString(R.string.nfc_uri_host), null)
-            }
+            },
         )
     }
 

@@ -6,13 +6,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.os.Handler
+import android.os.Looper
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import com.doordeck.sdk.common.manager.Doordeck
+import com.doordeck.multiplatform.sdk.exceptions.TooManyRequestsException
+import com.doordeck.sdk.ui.BaseActivity
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityVerifyDeviceBinding
-import com.doordeck.sdk.ui.BaseActivity
 
 // screen responsible to send a new verification code and validate the user
 internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
@@ -29,7 +31,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
 
         binding.tvVerifyDesc.visibility = View.GONE
         presenter = VerifyDevicePresenter()
-        presenter.onSendCode()
+        onSendCode()
         setupListeners()
     }
 
@@ -37,7 +39,7 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
      * Setup the listener on each field to move to the next one when a digit is entered
      */
     private fun setupListeners() {
-        binding.tvReSendCode.setOnClickListener { presenter.onSendCode() }
+        binding.tvReSendCode.setOnClickListener { onSendCode() }
         binding.tvSend.setOnClickListener { presenter.verifyCode(concatAllDigits()) }
         binding.ivClose.setOnClickListener { finish() }
 
@@ -193,9 +195,33 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     }
 
     private fun hideVerifySend() {
-        binding.tvReSendCode.setOnClickListener { presenter.onSendCode() }
+        binding.tvReSendCode.setOnClickListener { onSendCode() }
         binding.tvReSendCode.text = getString(R.string.resend_code)
         binding.tvReSendCodeSent.visibility = View.GONE
+    }
+
+    private fun onSendCode() {
+        binding.verifyLoading.visibility = View.VISIBLE
+        presenter.onSendCode()
+            .thenApply { userDetails ->
+                Handler(Looper.getMainLooper()).post {
+                    setEmail(userDetails.email)
+                    verifyCodeSuccess()
+                }
+            }
+            .exceptionally { error ->
+                Handler(Looper.getMainLooper()).post {
+                    when (error.cause) {
+                        is TooManyRequestsException -> verifyCodeRequestedTooManyTimes()
+                        else -> verifyCodeFail()
+                    }
+                }
+            }
+            .whenComplete { _, _ ->
+                Handler(Looper.getMainLooper()).post {
+                    binding.verifyLoading.visibility = View.GONE
+                }
+            }
     }
 
     private fun showError(title: String, message: String) {
@@ -212,9 +238,6 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
     // the code is valid, close the with and come back on the previous screen : The UnlockActivity
     override fun succeed() {
         finish()
-        if (shouldUnlockAfterSuccessVerifying) {
-            Doordeck.showUnlock(this)
-        }
     }
 
     override fun fail() {
@@ -227,25 +250,11 @@ internal class VerifyDeviceActivity : BaseActivity(), VerifyDeviceView {
         presenter.onStart(this)
     }
 
-    override fun onStop() {
-        super.onStop()
-        presenter.onStop()
-    }
-
-
-    private val shouldUnlockAfterSuccessVerifying: Boolean
-        get() = intent.extras?.getBoolean(SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY) ?: defaultShouldUnlockAfterSuccessVerifying
-
     companion object {
-
-        private const val SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY = "SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING"
-        const val defaultShouldUnlockAfterSuccessVerifying = false
-
         @JvmStatic
-        fun start(context: Context, shouldUnlockAfterSuccessVerifying: Boolean = defaultShouldUnlockAfterSuccessVerifying) {
+        fun start(context: Context) {
             val starter = Intent(context, VerifyDeviceActivity::class.java)
             starter
-                .putExtra(SHOULD_UNLOCK_AFTER_SUCCESS_VERIFYING_KEY, shouldUnlockAfterSuccessVerifying)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }

@@ -3,16 +3,15 @@ package com.doordeck.sdk.ui.showlistofdevicestounlock
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.doordeck.multiplatform.sdk.model.responses.LockResponse
+import com.doordeck.sdk.common.utils.json
 import com.github.doordeck.ui.R
 import com.github.doordeck.ui.databinding.ActivityListOfDevicesToUnlockBinding
-import com.doordeck.sdk.dto.device.Device
-import com.doordeck.sdk.jackson.Jackson
 import com.doordeck.sdk.ui.BaseActivity
 import com.doordeck.sdk.ui.showlistofdevicestounlock.adapter.DevicesToUnlockAdapter
 import com.doordeck.sdk.ui.unlock.UnlockActivity
 import com.doordeck.sdk.ui.unlock.UnlockActivity.Companion.COMING_FROM_DIRECT_UNLOCK
 import com.doordeck.sdk.ui.utils.recyclerview.VerticalSpaceItemDecoration
-import com.fasterxml.jackson.core.type.TypeReference
 
 
 // screen responsible to display different locks to unlock
@@ -46,7 +45,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
         presenter = null
     }
 
-    override fun showDevices(devices: List<Device>) {
+    override fun showDevices(devices: List<LockResponse>) {
         with(binding.recyclerView) {
             adapter = DevicesToUnlockAdapter(devices) {
                 goToUnlockDevice(it)
@@ -59,24 +58,22 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
         }
     }
 
-    private fun goToUnlockDevice(device: Device) {
+    private fun goToUnlockDevice(device: LockResponse) {
         UnlockActivity.start(this, device, comingFrom = COMING_FROM_DIRECT_UNLOCK)
     }
 
-    private val devices: List<Device>
+    private val devices: List<LockResponse>
         get() = intent.extras?.getString(LIST_OF_DEVICES)?.let {
-            val om = Jackson.sharedObjectMapper()
-            return@let om.readValue<List<Device>?>(it, object : TypeReference<List<Device>>() {})
+            return@let json.decodeFromString<List<LockResponse>>(it)
         } ?: listOf()
 
     companion object {
 
         private const val LIST_OF_DEVICES = "LIST_OF_DEVICES"
 
-        fun start(context: Context, devices: List<Device>) {
+        fun start(context: Context, devices: List<LockResponse>) {
             val starter = Intent(context, ShowListOfDevicesToUnlockActivity::class.java)
-            val om = Jackson.sharedObjectMapper()
-            starter.putExtra(LIST_OF_DEVICES, om.writeValueAsString(ArrayList(devices)))
+            starter.putExtra(LIST_OF_DEVICES, json.encodeToString(devices))
             starter.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(starter)
         }
