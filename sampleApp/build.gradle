@@ -35,17 +35,15 @@ android {
     kotlin {
         jvmToolchain(17)
     }
-    packagingOptions {
-        resources {
-            excludes += ['META-INF/atomicfu.kotlin_module', 'META-INF/versions/9/OSGI-INF/MANIFEST.MF']
-        }
-    }
 
+    packagingOptions {
+        exclude 'META-INF/atomicfu.kotlin_module'
+    }
 
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
 
     implementation project(path: ':ui')
 
