@@ -286,6 +286,7 @@ internal class UnlockActivity : BaseActivity(), UnlockView {
 
     @Suppress("OVERRIDE_DEPRECATION")
     override fun onBackPressed() {
+        super.onBackPressed()
         back()
     }
 

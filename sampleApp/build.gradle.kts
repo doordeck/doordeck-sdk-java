@@ -55,7 +55,4 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.7.1")
 
     implementation(project(":ui"))
-
-    // rx
-    implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
 }
