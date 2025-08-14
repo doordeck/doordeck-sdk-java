@@ -1,33 +1,34 @@
 Doordeck SDK
-=================
+============
 
 The official Doordeck SDK for Android
 
-
 ### What Is This?
 
-The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC on your android device or simply to tap the QR located on the door to unlock.
+The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC on your android 
+device or simply to tap the QR located on the door to unlock.
 
 ### Integration
 
-Integrate the module `ui` inside your project and add `implementation project(path: ':ui')` in the build.gradle of your app.
+Integrate the module `ui` inside your project and add `implementation project(path: ':ui')` in the 
+`build.gradle.kts` of your app.
 
 ### Running the SDK Sample Code
 
-Developers can run the sample application, located in the `sampleApp` directory, to immediately run code and see how the Doordeck Android SDK can be used.
+Developers can run the sample application, located in the `sampleApp` directory, to immediately run 
+code and see how the Doordeck Android SDK can be used.
 
 
 ### How to use the SDK ? 
 
-
 #### Initialization
 
+The Doordeck SDK is a singleton that needs to initialized before using it, either in your 
+Application or your MainActivity. Firstly, the method `initialize` will need to be called with the 
+provided `apiKey`. The 2nd param is optional, and correspond to the theme to use. Light or Dark. 
+By default the dark theme is used.
 
-The Doordeck SDK is a singleton that needs to initialized before using it, either in your Application or your MainActivity.
-firstly, the method `initialize` will need to be called with the provided `apiKey`.
-The 2nd param is optional, and correspond to the theme to use. Light or Dark. By default the dark theme is used.
-
-```
+```kotlin
 /**
  * Initializes the Doordeck SDK.
  *
@@ -45,18 +46,17 @@ fun initialize(
 
 #### Tweak the NFC Uri settings
 Default values for a NFC Uri link would be `https://doordeck.link/${uuid}`.
-If you want to customise this values, go to your main project's `build.gradle`, inside `buildscript { }` define:
+If you want to customise this values, go to your main project's `gradle.properties` define:
 
-```
-ext.nfcUri = [
-    "scheme": "https", // Replace with the scheme you want or leave it empty
-    "host": "doordeck.link", // Replace with the host you want or leave it empty
-]
+```properties
+nfcUri.scheme=https
+nfcUri.host=doordeck.link
 ```
 
 #### Proguard
 
-When enabling `minifyEnabled`, proguard and or R8 tools, you need to include these rules to the proguard-rules.pro:
+When enabling `minifyEnabled`, proguard and or R8 tools, you need to include these rules to the 
+`proguard-rules.pro`:
 
 ```
 -keep class com.doordeck.** { *; }
@@ -66,15 +66,18 @@ When enabling `minifyEnabled`, proguard and or R8 tools, you need to include the
     
 #### Unlock a door by NFC/QR
 
-The SDK has a method that will open an activity to get the information regarding the door to open, and open it according to the option you give to the method.
+The SDK has a method that will open an activity to get the information regarding the door to open, 
+and open it according to the option you give to the method.
+
 - The `Context` needs to be provided, it's required.
 - the `ScanType`, QR or NFC, with NFC by default. It's optional
 - A `callback`, providing you some info regarding the action (auth OK, auth KO, unlock OK, unlock KO)
 
-Once the door unlocked, the activity opened by the SDK will close automatically and get back to the screen to open door (using NFC or QR)
+Once the door unlocked, the activity opened by the SDK will close automatically and get back to the 
+screen to open door (using NFC or QR)
 
 
-```
+```kotlin
 /**
  * Shows the unlock screen using the specified scan type.
  *
@@ -83,14 +86,15 @@ Once the door unlocked, the activity opened by the SDK will close automatically 
  * @return A CompletableFuture that completes after navigation is triggered.
  */
 fun showUnlock(context: Context, type: ScanType = ScanType.NFC)
-
 ```
 
 #### Unlock by Tile ID
-The SDK has a method that will open an activity to pass the information once obtained the Tile ID (UUID) beforehand.
+The SDK has a method that will open an activity to pass the information once obtained the Tile ID 
+(UUID) beforehand.
+
 - You need the `UUID (String)`
 
-```
+```kotlin
 /**
  * Triggers the unlock flow using a tile UUID (e.g. from QR or NFC).
  *
@@ -103,7 +107,8 @@ fun unlockTileID(context: Context, tileId: String): CompletableFuture<Void>
 
 ## 📡 Listening to SDK Events
 
-The Doordeck SDK exposes important events — such as unlock status, tile resolution, or geofence issues — through a Kotlin `Flow`.
+The Doordeck SDK exposes important events — such as unlock status, tile resolution, or geofence 
+issues — through a Kotlin `Flow`.
 
 This is the official and only supported way to observe SDK state in version `3.0.0`.
 
@@ -152,7 +157,8 @@ lifecycleScope.launch {
 ## ⚠️ Breaking Changes in v3.0.0
 
 Version `3.0.0` introduces major refactors to modernize the SDK and simplify the interface.
-Several legacy APIs have been removed, event handling has been updated to use Kotlin `Flow`, and the unlock mechanism has been restructured.
+Several legacy APIs have been removed, event handling has been updated to use Kotlin `Flow`, and the
+unlock mechanism has been restructured.
 
 # We strongly suggest this is the right time for you to move into our [Doordeck Headless SDK](https://github.com/doordeck/doordeck-headless-sdk/) 
 
@@ -234,8 +240,9 @@ fun unlock(ctx: Context, device: LockResponse): CompletableFuture<Void>
 fun unlockTileID(ctx: Context, tileId: String): CompletableFuture<Void>
 ```
 
-- All these won't use the old `UnlockCallback`. Errors related to Auth will be thrown inside the `CompletableFuture` and
-performing errors will be thrown inside the `DoordeckEvent`'s flow and visually.
+- All these won't use the old `UnlockCallback`. Errors related to Auth will be thrown inside the 
+  `CompletableFuture` and performing errors will be thrown inside the `DoordeckEvent`'s flow and 
+  visually.
 
 ### 🧹 General Cleanup
 - Removed the api/ module *(to favour the new Doordeck Headless SDK)*

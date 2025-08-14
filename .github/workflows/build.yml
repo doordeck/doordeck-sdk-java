@@ -11,17 +11,11 @@ on:
       - 'main'
 
 jobs:
-  validation:
-    name: "Gradle Wrapper Validation"
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: gradle/actions/wrapper-validation@v3
-
   build:
     name: "Build"
-    needs: validation
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +34,6 @@ jobs:
 
   dependency-submission:
     name: "Update Dependency Graph"
-    needs: validation
     runs-on: ubuntu-latest
 
     permissions:
@@ -54,5 +47,8 @@ jobs:
         with:
           distribution: corretto
           java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
 
       - uses: gradle/actions/dependency-submission@v4
