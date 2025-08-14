@@ -5,9 +5,7 @@ plugins {
 
 android {
     namespace = "com.doordeck.doordecksdk"
-
     compileSdk = 36
-    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.doordeck.doordecksdk"
@@ -24,7 +22,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
@@ -40,19 +37,10 @@ android {
     kotlin {
         jvmToolchain(17)
     }
-
-    packaging {
-        resources {
-            excludes += setOf(
-                "META-INF/atomicfu.kotlin_module",
-                "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-            )
-        }
-    }
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation(libs.androidx.appcompat)
 
     implementation(project(":ui"))
 }

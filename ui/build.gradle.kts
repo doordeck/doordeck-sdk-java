@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
-    id("org.jetbrains.kotlin.android")
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
 }
 
@@ -30,12 +31,6 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
-    }
-
-    packaging {
-        resources {
-            excludes += "META-INF/atomicfu.kotlin_module"
-        }
     }
 
     buildTypes {
@@ -79,22 +74,19 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.7.1")
-    implementation("androidx.constraintlayout:constraintlayout:2.2.1")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
+    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
 
     // scan
-    implementation("com.journeyapps:zxing-android-embedded:4.1.0") {
-        isTransitive = false
-    }
-    implementation("com.google.zxing:core:3.4.0")
+    implementation(libs.journeyapps.zxing)
 
     // location
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation(libs.play.auth)
+    implementation(libs.play.location)
 
-    implementation("com.doordeck.headless.sdk:doordeck-sdk:${libs.versions.doordeck.sdk.get()}")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
+    implementation(libs.doordeck.headless.sdk)
+    implementation(libs.kotlinx.serialization.json)
 }

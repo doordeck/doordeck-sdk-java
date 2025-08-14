@@ -18,3 +18,18 @@ buildscript {
         }
     }
 }
+
+allprojects {
+    configurations.all {
+        // Transitive dependencies
+        resolutionStrategy {
+            eachDependency {
+                when (requested.group) {
+                    "io.netty" -> useVersion("4.1.123.Final")
+                    "org.bouncycastle" -> useVersion("1.81")
+                    "io.grpc" -> useVersion("1.74.0")
+                }
+            }
+        }
+    }
+}
