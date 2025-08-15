@@ -8,7 +8,7 @@ buildscript {
     configurations.all {
         // Transitive dependencies
         resolutionStrategy {
-            force("commons.compress:commons-compress:1.28.0")
+            force("org.apache.commons:commons-compress:1.28.0")
 
             eachDependency {
                 when (requested.group) {
@@ -26,7 +26,7 @@ allprojects {
     configurations.all {
         // Transitive dependencies
         resolutionStrategy {
-            force("commons.compress:commons-compress:1.28.0")
+            force("org.apache.commons:commons-compress:1.28.0")
 
             eachDependency {
                 when (requested.group) {
