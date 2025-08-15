@@ -1,0 +1,23 @@
+[versions]
+agp = "8.12.0"
+kotlin = "2.2.10"
+
+[libraries]
+androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
+androidx-cardview = "androidx.cardview:cardview:1.0.0"
+androidx-constraintlayout = "androidx.constraintlayout:constraintlayout:2.2.1"
+androidx-lifecycle-runtime-ktx = "androidx.lifecycle:lifecycle-runtime-ktx:2.9.2"
+androidx-recyclerview = "androidx.recyclerview:recyclerview:1.4.0"
+
+journeyapps-zxing = "com.journeyapps:zxing-android-embedded:4.3.0"
+kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0"
+
+play-auth = "com.google.android.gms:play-services-auth:21.4.0"
+play-location = "com.google.android.gms:play-services-location:21.3.0"
+
+doordeck-headless-sdk = "com.doordeck.headless.sdk:doordeck-sdk:0.101.0"
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}

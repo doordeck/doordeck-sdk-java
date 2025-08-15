@@ -32,6 +32,7 @@ internal class ShowListOfDevicesToUnlockActivity : BaseActivity(), ShowListOfDev
     }
 
     override fun onBackPressed() {
+        super.onBackPressed()
         finish()
     }
 
