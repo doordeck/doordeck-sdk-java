@@ -8,11 +8,14 @@ buildscript {
     configurations.all {
         // Transitive dependencies
         resolutionStrategy {
+            force("commons.compress:commons-compress:1.28.0")
+
             eachDependency {
                 when (requested.group) {
-                    "io.netty" -> useVersion("4.1.123.Final")
+                    "io.netty" -> useVersion("4.1.124.Final")
                     "org.bouncycastle" -> useVersion("1.81")
                     "io.grpc" -> useVersion("1.74.0")
+                    "com.google.protobuf" -> useVersion("3.25.5")
                 }
             }
         }
@@ -23,11 +26,14 @@ allprojects {
     configurations.all {
         // Transitive dependencies
         resolutionStrategy {
+            force("commons.compress:commons-compress:1.28.0")
+
             eachDependency {
                 when (requested.group) {
-                    "io.netty" -> useVersion("4.1.123.Final")
+                    "io.netty" -> useVersion("4.1.124.Final")
                     "org.bouncycastle" -> useVersion("1.81")
                     "io.grpc" -> useVersion("1.74.0")
+                    "com.google.protobuf" -> useVersion("3.25.5")
                 }
             }
         }
