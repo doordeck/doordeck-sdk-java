@@ -1,6 +1,5 @@
 plugins {
     id("com.android.library")
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
     id("maven-publish")
 }
@@ -19,7 +18,6 @@ android {
     defaultConfig {
         minSdk = 26
         compileSdk = 35
-        buildToolsVersion = "35.0.0"
         vectorDrawables.useSupportLibrary = true
 
         resValue("string", "nfc_uri_host", nfcHost.get())
@@ -31,6 +29,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        resValues = true
     }
 
     buildTypes {
@@ -38,7 +37,7 @@ android {
             buildConfigField("String", "BASE_URL_API", "\"https://api.staging.doordeck.com\"")
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
@@ -46,7 +45,7 @@ android {
             buildConfigField("String", "BASE_URL_API", "\"https://api.doordeck.com\"")
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }

@@ -1,0 +1,61 @@
+# .github/workflows/dependencies.yml
+name: Gradle Dependency Submission
+
+on:
+  push:
+    branches:
+      - 'main'
+  pull_request:
+    branches:
+      - 'main'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  dependency-submission:
+    name: "Update Dependency Graph"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          distribution: corretto
+          java-version: 21
+          cache: gradle
+
+      - name: Submit Dependency Graph
+        uses: gradle/actions/dependency-submission@39e147cb9de83bb9910b8ef8bd7fff0ee20fcd6f # v6.0.1
+        with:
+          cache-disabled: true
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        if: github.event_name == 'pull_request'
+        with:
+          fail-on-severity: high
+          comment-summary-in-pr: always
+          warn-on-openssf-scorecard-level: 2
+          allow-licenses: >-
+            MIT,
+            Apache-2.0,
+            BSD-3-Clause
+          # Restrictive licenses allowed in build tools
+          allow-dependencies-licenses: >-
+            pkg:githubactions/actions/dependency-review-action,
+            pkg:githubactions/actions/checkout,
+            pkg:githubactions/actions/setup-java,
+            pkg:githubactions/actions/gradle/actions/dependency-submission,
+            pkg:githubactions/actions/gradle/actions/setup-gradle,
+            pkg:maven/com.googlecode.juniversalchardet/juniversalchardet,
+            pkg:maven/net.java.dev.jna/jna-platform,
+            pkg:maven/javax.annotation/javax.annotation-api,
+            pkg:maven/org.jdom/jdom2,
+            pkg:maven/org.jacoco/org.jacoco.agent,
+            pkg:maven/org.jacoco/org.jacoco.ant,
+            pkg:maven/org.jacoco/org.jacoco.core,
+            pkg:maven/org.jacoco/org.jacoco.report

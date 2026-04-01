@@ -1,6 +1,9 @@
 [versions]
-agp = "8.12.0"
+agp = "9.1.0"
 kotlin = "2.2.10"
+jdom = "2.0.6.1"
+jose4j = "0.9.6"
+netty = "4.1.132.Final"
 
 [libraries]
 androidx-appcompat = "androidx.appcompat:appcompat:1.7.1"
@@ -17,7 +20,10 @@ play-location = "com.google.android.gms:play-services-location:21.3.0"
 
 doordeck-headless-sdk = "com.doordeck.headless.sdk:doordeck-sdk:0.101.0"
 
+# Build dependencies
+jdom = { group = "org.jdom", name = "jdom2", version.ref = "jdom" }
+jose4j = { group = "org.bitbucket.b_c", name = "jose4j", version.ref = "jose4j" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
