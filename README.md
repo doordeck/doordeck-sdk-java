@@ -53,6 +53,18 @@ nfcUri.scheme=https
 nfcUri.host=doordeck.link
 ```
 
+#### Android Auto Backup
+
+The SDK uses `EncryptedSharedPreferences`, which relies on a hardware-backed Android Keystore key 
+that is **never included in backups**. If Auto Backup restores the encrypted file without the 
+original key, the app will crash with `AEADBadTagException`.
+
+Disable Auto Backup or exclude the encrypted prefs file:
+
+```xml
+<application android:allowBackup="false" ...>
+```
+
 #### Proguard
 
 When enabling `minifyEnabled`, proguard and or R8 tools, you need to include these rules to the 
