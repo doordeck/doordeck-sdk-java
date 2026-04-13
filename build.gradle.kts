@@ -1,21 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
     alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.kotlin.android) apply false
 }
 
 buildscript {
     configurations.all {
-        // Transitive dependencies
         resolutionStrategy {
-            force("org.apache.commons:commons-compress:1.28.0")
+            force(libs.jdom)
+            force(libs.jose4j)
 
             eachDependency {
-                when (requested.group) {
-                    "io.netty" -> useVersion("4.1.124.Final")
-                    "org.bouncycastle" -> useVersion("1.81")
-                    "io.grpc" -> useVersion("1.74.0")
-                    "com.google.protobuf" -> useVersion("3.25.5")
+                if (requested.group == "io.netty") {
+                    useVersion(libs.versions.netty.get())
+                    because("Various security fixes")
                 }
             }
         }
@@ -24,17 +21,10 @@ buildscript {
 
 allprojects {
     configurations.all {
-        // Transitive dependencies
-        resolutionStrategy {
-            force("org.apache.commons:commons-compress:1.28.0")
-
-            eachDependency {
-                when (requested.group) {
-                    "io.netty" -> useVersion("4.1.124.Final")
-                    "org.bouncycastle" -> useVersion("1.81")
-                    "io.grpc" -> useVersion("1.74.0")
-                    "com.google.protobuf" -> useVersion("3.25.5")
-                }
+        resolutionStrategy.eachDependency {
+            if (requested.group == "io.netty") {
+                useVersion(rootProject.libs.versions.netty.get())
+                because("Various security fixes")
             }
         }
     }
