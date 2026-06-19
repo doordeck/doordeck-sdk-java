@@ -3,6 +3,15 @@ Doordeck SDK
 
 The official Doordeck SDK for Android
 
+> ## ⚠️ End of Life
+>
+> **This SDK is end of life and is no longer actively maintained.**
+>
+> New and existing integrations should migrate to the
+> [**Doordeck Headless SDK**](https://github.com/doordeck/doordeck-headless-sdk/), which is the
+> actively supported, cross-platform replacement. See the migration note in
+> [Breaking Changes in v3.0.0](#️-breaking-changes-in-v300) below.
+
 ### What Is This?
 
 The Doordeck SDK enables you to unlock doors. You can unlock doors using the NFC on your android 
