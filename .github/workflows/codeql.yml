@@ -1,13 +1,12 @@
 # .github/workflows/codeql.yml
 name: "CodeQL (Advanced Security)"
 
+# Weekly only (Mondays 02:00 UTC), plus manual runs. Deliberately kept off PRs
+# and pushes to main, as the analysis is too slow to gate PRs on.
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
   schedule:
-    - cron: "0 4 * * 1"
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
 
 permissions:
   actions: read
@@ -18,6 +17,7 @@ jobs:
   analyze-code:
     name: "Analyze (Java/Kotlin)"
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -50,6 +50,7 @@ jobs:
   analyze-actions:
     name: "Analyze (GitHub Actions)"
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v7
