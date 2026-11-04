@@ -30,6 +30,10 @@ buildscript {
                         useVersion(libs.versions.httpclient.get())
                         because("Cross-site scripting fix (CVE-2020-13956)")
                     }
+                    requested.group == "com.google.guava" && requested.name == "guava" -> {
+                        useVersion(libs.versions.guava.get())
+                        because("Uncontrolled memory allocation on deserialization fix (CVE-2026-102554)")
+                    }
                 }
             }
         }
@@ -51,6 +55,9 @@ allprojects {
                 }
                 requested.group == "org.apache.httpcomponents" && requested.name == "httpclient" -> {
                     useVersion(rootProject.libs.versions.httpclient.get())
+                }
+                requested.group == "com.google.guava" && requested.name == "guava" -> {
+                    useVersion(rootProject.libs.versions.guava.get())
                 }
             }
         }

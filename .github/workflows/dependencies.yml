@@ -58,4 +58,5 @@ jobs:
             pkg:maven/org.jacoco/org.jacoco.agent,
             pkg:maven/org.jacoco/org.jacoco.ant,
             pkg:maven/org.jacoco/org.jacoco.core,
-            pkg:maven/org.jacoco/org.jacoco.report
+            pkg:maven/org.jacoco/org.jacoco.report,
+            pkg:maven/com.google.errorprone/error_prone_annotations
